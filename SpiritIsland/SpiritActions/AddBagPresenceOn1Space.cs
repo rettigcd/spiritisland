@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class AddBagPresenceOn1Space : SpiritAction {
+public class AddBagPresenceOn1Space : SpiritAction, ISerializableSelfCmd {
 
 	public AddBagPresenceOn1Space():base( "Setup_PlacePresenceOnSpace1" ) { }
 
@@ -11,5 +11,16 @@ public class AddBagPresenceOn1Space : SpiritAction {
 		await self.Presence.Token.AddTo(space);
 	}
 
+	#region Json
+
+	const string Tag = "AddBagPresenceOn1Space";
+
+	JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new AddBagPresenceOn1Space() );
+
+	#endregion Json
 
 }

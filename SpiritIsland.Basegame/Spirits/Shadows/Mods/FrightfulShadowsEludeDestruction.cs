@@ -36,4 +36,19 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 
 	void ICleanupSpiritWhenTimePasses.CleanupSpirit( Spirit spirit ) => UsedThisRound = false;
 
+	// SpiritPresenceToken's base ToJson (GetType().Name-tagged) only captures Self - this has extra
+	// state (UsedThisRound), so it needs its own override, same as GatewayToken/PresenceCountDefend
+	// resolving to an existing owned instance instead of constructing a fresh one.
+	public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( nameof( FrightfulShadowsEludeDestruction ), ctx.IndexOf( Self ), UsedThisRound );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( nameof( FrightfulShadowsEludeDestruction ), FromJson );
+
+	static object FromJson( JsonArray json, ISerializationContext ctx ) {
+		var token = (FrightfulShadowsEludeDestruction)ctx.SpiritAt( (int)json[1]! ).Presence.Token;
+		token.UsedThisRound = json[2]!.GetValue<bool>();
+		return token;
+	}
+
 }

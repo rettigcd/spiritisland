@@ -30,7 +30,9 @@ public class CivilUnrest : FearCardBase, IFearCard {
 			Cmd.EachStrifeDamagesInvader.In().EachActiveLand()
         ).ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( CivilUnrest ), () => new CivilUnrest() );
 
 }
 

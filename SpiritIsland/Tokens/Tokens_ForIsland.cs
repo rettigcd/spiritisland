@@ -130,6 +130,94 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 
 	#endregion Memento
 
+	#region Json
+
+	/// <summary>
+	/// Named keys - `TokenDefaults` is `{ tokenClassLabel: humanTokenKey, ... }`; `Spaces` is
+	/// `{ spaceLabel: { DoesExist, Tokens: { entityKey: count, ... } }, ... }` - every entity is just its
+	/// bare lookup-table key now, never inline detail (see ISerializationContext's remarks on
+	/// InternSpaceEntity), and each space's own token counts are a plain key-&gt;count object rather than
+	/// an array of pairs, since each space's entities are already unique keys (a CountDictionary); same
+	/// reasoning is why `Spaces` itself is keyed by label rather than an array of entries - space labels
+	/// are already unique. The "Island-Mods" entry round-trips through the same shape as any other space
+	/// - see SpaceSpecOrFakeByLabel for how its FakeSpace key resolves back to the one this class's own
+	/// constructor already created, rather than needing a separate registry.
+	///
+	/// `EntityLookup` is computed last - `TokenDefaults`/`Spaces` above are built into local variables
+	/// first (where entities actually get interned, both directly and via nested ISerializableSpaceEntity
+	/// mods like ToDreamAThousandDeaths/BlisteringHeat/UnnervingPall), so by the time `ctx.LookupTableToJson()`
+	/// runs, every entity referenced anywhere in this section has already been interned. This covers every
+	/// HumanToken/ITokenClass/ISerializableSpaceEntity reference in the whole engine that flows through a
+	/// Space's token dictionary - nothing outside Tokens_ForIsland's own subtree does - so scoping the
+	/// table here (rather than at GameState) keeps it self-contained: tests that round-trip
+	/// Tokens_ForIsland in isolation (not through a full GameState.ToJson/RestoreFromJson) still work.
+	/// </summary>
+	public JsonObject ToJson( ISerializationContext ctx ) {
+		var defaults = new JsonObject();
+		foreach( var pair in TokenDefaults )
+			defaults[pair.Key.Label] = ctx.SerializeHumanToken( pair.Value );
+
+		var spaces = new JsonObject();
+		foreach( var pair in _tokenCounts )
+			spaces[pair.Key.Label] = new JsonObject {
+				["DoesExist"] = pair.Key.DoesExists,
+				["Tokens"] = SerializeCounts( pair.Value, ctx )
+			};
+
+		return new JsonObject {
+			["TokenDefaults"] = defaults,
+			["Spaces"] = spaces,
+			["EntityLookup"] = ctx.LookupTableToJson()
+		};
+	}
+
+	static JsonObject SerializeCounts( CountDictionary<ISpaceEntity> counts, ISerializationContext ctx ) {
+		var obj = new JsonObject();
+		foreach( var pair in counts )
+			obj[ctx.InternSpaceEntity( pair.Key )] = pair.Value;
+		return obj;
+	}
+
+	/// <summary>
+	/// Restores onto an existing `target` rather than building a fresh instance - wipes `_tokenCounts`
+	/// (and `_islandMods`, re-seeding the "Island-Mods" bucket the constructor would've) first, so
+	/// whatever tokens/mods were on `target` before this call (e.g. an Adversary's `Init`/`Adjust`
+	/// mutating a normally-constructed board before restore - see docs/GameSerialization-Roadmap.md
+	/// section 9) are discarded rather than double-applied; JSON is the sole source of truth for
+	/// everything `_tokenCounts` covers afterward. Static (not an instance method) so the target reads as
+	/// an explicit parameter rather than an implicit `this` - same shape callers already reason about for
+	/// "restore JSON onto a specific object."
+	/// Known caveat, not addressed here: `SpaceSpec.DoesExists` lives on the shared live `SpaceSpec`
+	/// object, not inside `_tokenCounts` - if something mutated it before this call for a space this JSON
+	/// doesn't mention at all, that mutation isn't undone by the wipe.
+	/// </summary>
+	public static void FromJson( Tokens_ForIsland target, JsonObject json, ISerializationContext ctx ) {
+		// Must run first - populates the table every DeserializeHumanToken/DeserializeSpaceEntity call
+		// below (directly, and via nested ISerializableSpaceEntity mods) needs to resolve an entity from
+		// its short key.
+		ctx.LoadLookupTable( (JsonObject)json["EntityLookup"]! );
+
+		target._tokenCounts.Clear();
+		target._islandMods.Clear();
+		target._tokenCounts.Add( new FakeSpace( "Island-Mods" ), target._islandMods );
+
+		foreach( var (label, node) in (JsonObject)json["TokenDefaults"]! ) {
+			var tokenClass = (HumanTokenClass)ctx.TokenClassByLabel( label );
+			target.TokenDefaults[tokenClass] = ctx.DeserializeHumanToken( node! );
+		}
+
+		foreach( var (label, node) in (JsonObject)json["Spaces"]! ) {
+			var spaceEntry = (JsonObject)node!;
+			SpaceSpec spec = ctx.SpaceSpecOrFakeByLabel( label );
+			spec.DoesExists = spaceEntry["DoesExist"]!.GetValue<bool>();
+
+			CountDictionary<ISpaceEntity> counts = target.GetTokensCounts( spec );
+			foreach( var (key, countNode) in (JsonObject)spaceEntry["Tokens"]! )
+				counts[ctx.ResolveSpaceEntity( key )] = countNode!.GetValue<int>();
+		}
+	}
+
+	#endregion Json
 
 	public override string ToString() => _tokenCounts
 		.Select(p=>p.Key+":"+p.Value.TokenSummary())

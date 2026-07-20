@@ -3,7 +3,7 @@
 namespace SpiritIsland;
 
 /// <summary> Configures Dahan and Invader behavior on a per-space bases. </summary>
-public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
+public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 	public static RavageBehavior DefaultBehavior => s_defaultRavageBehavior;
 
@@ -38,6 +38,31 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			AttackersDefend = AttackersDefend
 		};
 	}
+
+	#region Serialization
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray(
+		Tag,
+		new JsonArray( SequenceSteps.Select( s => (JsonNode)SerializeMember( s, ctx ) ).ToArray() ),
+		new JsonArray( DamageAdjusters.Select( a => (JsonNode)SerializeMember( a, ctx ) ).ToArray() ),
+		AttackersDefend
+	);
+
+	static JsonArray SerializeMember( object member, ISerializationContext ctx ) => member is ISerializableSpaceEntity entity
+		? entity.ToJson( ctx )
+		: throw new NotSupportedException( $"{member.GetType()} must implement ISerializableSpaceEntity to be added to RavageBehavior's SequenceSteps/DamageAdjusters" );
+
+	const string Tag = "RavageBehavior";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new RavageBehavior {
+			SequenceSteps = [.. json[1]!.AsArray().Select( n => (IRavageSequenceStep)SpaceEntitySerialization.Deserialize( (JsonArray)n!, ctx ) )],
+			DamageAdjusters = [.. json[2]!.AsArray().Select( n => (IAdjustAttackerDamage)SpaceEntitySerialization.Deserialize( (JsonArray)n!, ctx ) )],
+			AttackersDefend = json[3]!.GetValue<int>()
+		} );
+
+	#endregion
 
 	/// <summary> Executes up to 1 potential Ravage </summary>
 	public async Task Exec( Space space ) {

@@ -22,7 +22,8 @@ public class BargainsOfPowerAndProtection {
 	// From now on: Each dahan within range of 1 of your presence provides Defend 1 in its land
 	public class EachDahanAtRange1Defend1( Spirit self )
 		: BaseModEntity
-		, IHandleTokenAdded, IHandleTokenRemoved {
+		, IHandleTokenAdded, IHandleTokenRemoved
+		, ISerializableSpaceEntity {
 
 		Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
 			if( IsPresence(args.Added) ) Presence_Added(args);
@@ -72,6 +73,13 @@ public class BargainsOfPowerAndProtection {
 
 		readonly TokenVariety _myDefend = new TokenVariety(Token.Defend, "💪");
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( self ) );
+
+		const string Tag = "EachDahanAtRange1Defend1";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new EachDahanAtRange1Defend1( ctx.SpiritAt( (int)json[1]! ) ) );
 	}
 
 

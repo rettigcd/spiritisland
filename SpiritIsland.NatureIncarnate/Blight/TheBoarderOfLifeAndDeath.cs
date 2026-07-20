@@ -33,4 +33,15 @@ public sealed class TheBorderOfLifeAndDeath : StillHealthyBlightCard, IRunBefore
 		}
 	);
 
+	// Real finding: unlike its 6 siblings (DownwardSpiral, MemoryFadesToDust, PowerCorrodesTheSpirit,
+	// UntendedLandCrumbles, AttenuatedEssence, BlightCorrodesTheSpirit), this card had no
+	// [ModuleInitializer] registration at all - it didn't round-trip through BlightCardRegistry despite
+	// section 7 of docs/GameSerialization-Roadmap.md claiming full coverage. Fixed here alongside the
+	// section 10 identity-resolution work, since both are needed for this card to serialize at all.
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( TheBorderOfLifeAndDeath ), ( json, ctx ) => new TheBorderOfLifeAndDeath() );
+		PreInvaderPhaseActionRegistry.Register( nameof( TheBorderOfLifeAndDeath ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
+
 }

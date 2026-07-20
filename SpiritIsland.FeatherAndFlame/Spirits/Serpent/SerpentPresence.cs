@@ -41,4 +41,12 @@ public class SerpentPresence : SpiritPresence {
 		set { AbsorbedPresences.SetItems( (Spirit[]?)value! ); }
 	}
 
+	/// <summary> Each absorbed Spirit resolves by index, same pattern used everywhere else a Spirit
+	/// reference needs to round-trip (e.g. EntwinedPower). </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx )
+		=> new JsonArray( AbsorbedPresences.Select( s => (JsonNode)ctx.IndexOf( s ) ).ToArray() );
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx )
+		=> AbsorbedPresences.SetItems( ( (JsonArray)json! ).Select( n => ctx.SpiritAt( n!.GetValue<int>() ) ).ToArray() );
+
 }

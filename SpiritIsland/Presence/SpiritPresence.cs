@@ -233,4 +233,42 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	#endregion
 
+	#region Json
+
+	/// <summary>
+	/// [ energyJson, cardPlaysJson, destroyedCount, incarnaEmpowered, customStateJson ]. Only the mutable
+	/// runtime deltas - Track structure/slot contents (which Tracks exist on Energy/CardPlays) is
+	/// spirit-type data, identical every time the same concrete Spirit subtype is (re)constructed, so it
+	/// isn't captured here - same reasoning Spirit.ToJson uses for GrowthTrack/InnatePowers (see
+	/// docs/GameSerialization-Roadmap.md's Spirit-core-state section). Energy/CardPlays each serialize
+	/// themselves via IPresenceTrack.ToJson/RestoreFromJson - handles CompoundPresenceTrack (Starlight
+	/// Seeks Its Form) and FinderTrack (Finder of Paths Unseen) as well as the plain PresenceTrack case.
+	/// customStateJson is CustomStateToJson below - SerpentPresence's AbsorbedPresences is the one known
+	/// override, hence the ISerializationContext parameter neither Energy/CardPlays/Destroyed/Incarna
+	/// otherwise need.
+	/// </summary>
+	public JsonArray ToJson( ISerializationContext ctx ) => new JsonArray(
+		Energy.ToJson(), CardPlays.ToJson(), Destroyed.Count, Incarna.Empowered, CustomStateToJson( ctx ) );
+
+	/// <summary> Restores onto an already-constructed SpiritPresence - see Spirit.RestoreFromJson. </summary>
+	public void RestoreFromJson( JsonArray json, ISerializationContext ctx ) {
+		Energy.RestoreFromJson( json[0]! );
+		CardPlays.RestoreFromJson( json[1]! );
+		Destroyed.Count = json[2]!.GetValue<int>();
+		Incarna.Empowered = json[3]!.GetValue<bool>();
+		RestoreCustomStateFromJson( json[4], ctx );
+	}
+
+	/// <summary>
+	/// Hook for SerpentPresence's AbsorbedPresences (List&lt;Spirit&gt;) - the one known SpiritPresence
+	/// subclass with extra state beyond the fields above (previously only tracked via CustomMementoValue's
+	/// in-memory-only Memento). No-op by default. Deliberately independent of CustomMementoValue - Mementos
+	/// are slated for removal later (same reasoning as Spirit.CustomStateToJson).
+	/// </summary>
+	protected virtual JsonNode? CustomStateToJson( ISerializationContext ctx ) => null;
+
+	/// <summary> Restore-side counterpart to CustomStateToJson - see its remarks. </summary>
+	protected virtual void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) { }
+
+	#endregion
 }

@@ -11,4 +11,8 @@ public class NullFearCard : FearCardBase, IFearCard {
 	public override Task Level2( GameState gs ) { return Task.CompletedTask; }
 	[FearLevel("x")]
 	public override Task Level3( GameState gs ) { return Task.CompletedTask; }
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( NullFearCard ), () => new NullFearCard() );
 }

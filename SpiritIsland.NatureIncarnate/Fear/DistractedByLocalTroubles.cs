@@ -49,10 +49,14 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 		protected override int GetAdjustment( RavageExchange ravageExchange )
 			=> - ravageExchange.Attackers.Active.Sum(pair => Math.Min(pair.Key.Attack,pair.Key.Damage) * pair.Value );
 
-		
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( nameof( ReduceAttackByReceivedDamageMod ), ( json, ctx ) => new ReduceAttackByReceivedDamageMod() );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DistractedByLocalTroubles ), () => new DistractedByLocalTroubles() );
 
 }
 

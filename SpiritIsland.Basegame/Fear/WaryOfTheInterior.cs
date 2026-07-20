@@ -29,5 +29,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( WaryOfTheInterior ), () => new WaryOfTheInterior() );
 }

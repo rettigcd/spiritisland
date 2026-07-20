@@ -22,8 +22,16 @@ public class CallToGuard{
 		, (ctx) => ctx.Space.Adjust( new DamageNewInvaders(), 1 )
 	);
 
-	public class DamageNewInvaders : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class DamageNewInvaders : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses, ISerializableSpaceEntity {
 		public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args )
 			=> to.Invaders.ApplyDamageTo1( 1, args.Added.AsHuman() );
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "DamageNewInvaders";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new DamageNewInvaders() );
 	}
 }

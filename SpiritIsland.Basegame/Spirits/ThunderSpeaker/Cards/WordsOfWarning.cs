@@ -21,7 +21,7 @@ public class WordsOfWarning {
 
 }
 
-public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 	Task IConfigRavages.Config( Space space ) {
 
@@ -41,5 +41,13 @@ public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePas
 		space.Init( orig.SetRavageOrder( order ), space[orig] );
 		space.Init( orig, 0 );
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "SimultaneousDefend";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SimultaneousDefend() );
 
 }

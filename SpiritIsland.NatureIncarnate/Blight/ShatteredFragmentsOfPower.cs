@@ -27,7 +27,9 @@ public class ShatteredFragmentsOfPower : BlightCard {
 		}
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( ShatteredFragmentsOfPower ), ( json, ctx ) => new ShatteredFragmentsOfPower() );
 
 }
 

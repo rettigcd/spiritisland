@@ -39,11 +39,19 @@ public static partial class Cmd {
 		gs => gs.AddTimePassesAction( new NextRoundCommand( tag ) ) // There are no actions here, just game reconfig
 	);
 
-	internal class NextRoundCommand( string tag ) : IRunWhenTimePasses {
+	internal class NextRoundCommand( string tag ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 		Task IRunWhenTimePasses.TimePasses( GameState gameState ) => NextRoundCommandRegistry.Get( tag ).ActAsync( gameState );
+
+		const string Tag = "GameCmd.NextRoundCommand";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, tag );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new NextRoundCommand( json[1]!.GetValue<string>() ) );
 
 	}
 

@@ -37,7 +37,7 @@ public class WarnOfImpendingConflict {
 /// Ravage-Config - (some or all) of the Dahan attack before invaders.
 /// </summary>
 class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
-	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
+	: BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity
 {
 
 	int _dahanToGoEarly = dahanToGoEarly;
@@ -88,4 +88,12 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 
 	private async Task<bool> UserWantsToUseOnThisSpace( Space space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Label}?", "Yes, attack early", "No, save for another ravage." );
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ), _dahanToGoEarly, _allSpaces );
+
+	const string Tag = "WarnToken";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx )
+			=> new WarnToken( ctx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<int>(), json[3]!.GetValue<bool>() ) );
 }

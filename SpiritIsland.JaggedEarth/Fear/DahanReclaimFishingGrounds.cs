@@ -49,6 +49,8 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 		}
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DahanReclaimFishingGrounds ), () => new DahanReclaimFishingGrounds() );
 
 }

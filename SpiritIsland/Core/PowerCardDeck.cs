@@ -54,6 +54,33 @@ public sealed class PowerCardDeck : IHaveMemento {
 
 	#endregion
 
+	#region Json
+
+	/// <summary>
+	/// Named keys - same fields as MyMemento above; index `[0]` of each array is still the top of the
+	/// stack, matching `Stack&lt;T&gt;.SetItems`'s own convention (`IEnumerableExtensions.SetItems`) - no
+	/// reversal needed since a `Stack&lt;T&gt;` already enumerates top-first. Each entry is just
+	/// `PowerCard.ToJson()` - its bare `Title`, resolved back via the single shared `PowerCardRegistry`
+	/// (Major/Minor/Spirit cards all share one pool, so nothing deck-specific needs to travel alongside
+	/// it). `_randomizer`'s seed is deliberately not captured - accepted drift, not a gap: a reshuffle
+	/// after restore won't match what the original run would have produced, but reshuffles are rare in
+	/// practice (none observed) and the current card order is preserved exactly either way. See the
+	/// field's own remarks below.
+	/// </summary>
+	public JsonObject ToJson() => new JsonObject {
+		["Cards"] = new JsonArray( _cards.Select( c => c.ToJson() ).ToArray() ),
+		["Discards"] = new JsonArray( _discards.Select( c => c.ToJson() ).ToArray() )
+	};
+
+	/// <summary> Restores onto this existing deck (built through the normal constructor, so PowerType/
+	/// the RNG seed are already set) rather than constructing a new one - same "restore onto existing"
+	/// shape as Fear.RestoreFromJson/InvaderDeck.RestoreFromJson. </summary>
+	public void RestoreFromJson( JsonObject json ) {
+		_cards.SetItems( ( (JsonArray)json["Cards"]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+		_discards.SetItems( ( (JsonArray)json["Discards"]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+	}
+
+	#endregion Json
 
 	#region private
 

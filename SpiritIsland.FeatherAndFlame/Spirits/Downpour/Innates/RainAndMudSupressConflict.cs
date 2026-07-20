@@ -60,10 +60,17 @@ internal class RainAndMudSupressConflict {
 
 
 public class MudToken( Spirit _self, int _count )
-	: BaseModEntity, IEndWhenTimePasses, IConfigRavages {
+	: BaseModEntity, IEndWhenTimePasses, IConfigRavages, ISerializableSpaceEntity {
 	Task IConfigRavages.Config( Space space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
 		return Task.CompletedTask;
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _self ), _count );
+
+	const string Tag = "MudToken";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new MudToken( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<int>() ) );
 }

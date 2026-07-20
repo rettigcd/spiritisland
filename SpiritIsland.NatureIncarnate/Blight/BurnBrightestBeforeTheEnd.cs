@@ -36,6 +36,8 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 		}
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( BurnBrightestBeforeTheEnd ), ( json, ctx ) => new BurnBrightestBeforeTheEnd() );
 
 }

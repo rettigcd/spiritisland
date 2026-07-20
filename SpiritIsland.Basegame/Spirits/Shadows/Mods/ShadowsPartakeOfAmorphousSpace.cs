@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
+class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions, IOwnedActionFactories {
 
 	public const string Name = "Shadows Partake of Amorphous Space";
 	const string Description = "During each Fast and each Slow phase, you may move 1 of your Presence to an adjacent land, or to a land with Dahan anywhere on the island.";
@@ -48,6 +48,25 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 	}
 	#endregion IModifyAvailableActions imp
 
+	#region Json
+
+	// _moveFast/_moveSlow are compared by reference against spirit.UsedActions - restoring them must
+	// resolve back to these exact instances (already re-added by aspect replay before RestoreFromJson
+	// runs), not fresh ones built from their own serialized content. See IOwnedActionFactories.
+	const string Tag = "ShadowsPartakeOfAmorphousSpace";
+
+	string IOwnedActionFactories.ModTag => Tag;
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory )
+		=> factory == _moveFast ? "moveFast" : factory == _moveSlow ? "moveSlow" : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key ) => key switch {
+		"moveFast" => _moveFast,
+		"moveSlow" => _moveSlow,
+		_ => throw new ArgumentException( $"Unknown key '{key}'" )
+	};
+
+	#endregion Json
 
 	#region private fields
 

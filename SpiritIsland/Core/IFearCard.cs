@@ -11,6 +11,8 @@ public interface IFearCard : IOption {
 
 	/// <param name="activation">1..3 or null to use ActivatedTerrorLevel</param>
 	string GetDescription(int activation);
+
+	JsonArray ToJson();
 }
 
 public abstract class FearCardBase {
@@ -58,5 +60,10 @@ public abstract class FearCardBase {
 	abstract public Task Level3(GameState gameState);
 
 	bool _flipped;
+
+	// ActivatedTerrorLevel isn't captured - Fear.MyMemento doesn't capture it either (display-only,
+	// re-derivable), so this follows the same precedent as everywhere else this session: the
+	// existing in-memory memento's field list is the guide for what actually needs to round-trip.
+	public JsonArray ToJson() => new JsonArray( GetType().Name, Flipped );
 
 }

@@ -26,7 +26,9 @@ public class DahanGainTheEdge : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( gs );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DahanGainTheEdge ), () => new DahanGainTheEdge() );
 
 }
 

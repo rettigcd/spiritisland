@@ -43,7 +43,9 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 				);
 		} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( StrugglesOverFarmland ), () => new StrugglesOverFarmland() );
 
 }
 

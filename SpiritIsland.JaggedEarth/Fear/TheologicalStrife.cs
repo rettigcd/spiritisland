@@ -41,6 +41,8 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().Which( Has.YourPresence ).ByPickingToken( Human.Invader )
 			.ForEachSpirit();
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( TheologicalStrife ), () => new TheologicalStrife() );
 
 }

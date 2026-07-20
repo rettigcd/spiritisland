@@ -27,7 +27,7 @@ public class AbsoluteStasis {
 
 	}
 
-	internal class RestoreSpaceExistence( SpaceSpec spaceSpec ) : IRunWhenTimePasses {
+	internal class RestoreSpaceExistence( SpaceSpec spaceSpec ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
@@ -35,6 +35,14 @@ public class AbsoluteStasis {
 			spaceSpec.DoesExists = true;
 			return Task.CompletedTask;
 		}
+
+		const string Tag = "AbsoluteStasis.RestoreSpaceExistence";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, spaceSpec.Label );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new RestoreSpaceExistence( ctx.SpaceSpecByLabel( json[1]!.GetValue<string>() ) ) );
 
 	}
 

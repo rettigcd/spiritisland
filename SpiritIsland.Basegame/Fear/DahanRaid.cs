@@ -29,6 +29,8 @@ public class DahanRaid : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DahanRaid ), () => new DahanRaid() );
 
 }

@@ -28,6 +28,8 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( EmigrationAccelerates ), () => new EmigrationAccelerates() );
 
 }

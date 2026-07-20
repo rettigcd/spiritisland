@@ -33,6 +33,8 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( FearOfTheUnseen ), () => new FearOfTheUnseen() );
 
 }

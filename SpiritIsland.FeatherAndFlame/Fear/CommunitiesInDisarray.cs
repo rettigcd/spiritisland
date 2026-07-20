@@ -32,7 +32,9 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 		}
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( CommunitiesInDisarray ), () => new CommunitiesInDisarray() );
 
 }
 

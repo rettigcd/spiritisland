@@ -54,6 +54,12 @@ public class UntendedLandCrumbles : BlightCard, IRunBeforeInvaderPhase {
 
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( UntendedLandCrumbles ), ( json, ctx ) => new UntendedLandCrumbles() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
+		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( UntendedLandCrumbles ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

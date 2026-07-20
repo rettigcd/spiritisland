@@ -3,7 +3,12 @@ namespace SpiritIsland.NatureIncarnate;
 /// <summary>
 /// Split from SlowDissolutionOfWill (the blight card): the recurring Invader-Phase behavior, and the
 /// per-spirit token choice it depends on, live here instead - not entangled with the BlightCard's own
-/// identity.
+/// identity. Not ISpaceEntity, per the standing correction that IRunBeforeInvaderPhase-only types are
+/// never placed on a Space (see docs/ISpaceEntity-Types.md). Registered with
+/// PreInvaderPhaseActionRegistry, same tag-dispatch shape as BlightCardRegistry/SpaceEntitySerialization -
+/// nothing calls PreInvaderPhaseActionRegistry.Deserialize end-to-end yet (that needs GameState's
+/// hook-action-list serialization, docs/GameSerialization-Roadmap.md section 10), but this is ready
+/// for whenever it does.
 /// </summary>
 class SlowDissolutionOfWillMod : IRunBeforeInvaderPhase {
 
@@ -27,5 +32,21 @@ class SlowDissolutionOfWillMod : IRunBeforeInvaderPhase {
 	}
 
 	readonly Dictionary<Spirit,IToken> _replacements = [];
+
+	public JsonArray ToJson( ISerializationContext ctx )
+		=> new JsonArray( Tag, new JsonArray( _replacements.Select( p => (JsonNode)new JsonArray( ctx.IndexOf( p.Key ), ( (ITokenClass)p.Value ).Label ) ).ToArray() ) );
+
+	const string Tag = "SlowDissolutionOfWillMod";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> PreInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => {
+			var mod = new SlowDissolutionOfWillMod();
+			foreach( JsonNode? node in (JsonArray)json[1]! ) {
+				var pair = (JsonArray)node!;
+				mod._replacements[ ctx.SpiritAt( (int)pair[0]! ) ] = (IToken)ctx.TokenClassByLabel( pair[1]!.GetValue<string>() );
+			}
+			return mod;
+		} );
 
 }

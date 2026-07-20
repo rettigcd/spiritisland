@@ -24,5 +24,7 @@ public class BesetByManyTroubles : FearCardBase, IFearCard {
 			.In().EachActiveLand().Which( Has.AnyBacTokenOrAdjacentTo(1) )
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( BesetByManyTroubles ), () => new BesetByManyTroubles() );
 }

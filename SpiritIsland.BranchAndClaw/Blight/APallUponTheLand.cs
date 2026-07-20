@@ -34,6 +34,8 @@ public class APallUponTheLand : BlightCard {
 			await spaceToken.Destroy();
 		} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( APallUponTheLand ), ( json, ctx ) => new APallUponTheLand() );
 
 }

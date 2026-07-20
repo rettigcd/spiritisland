@@ -23,7 +23,9 @@ public class SpreadingTimidity : FearCardBase, IFearCard {
 		.ForEachSpirit()
 		.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( SpreadingTimidity ), () => new SpreadingTimidity() );
 }
 
 

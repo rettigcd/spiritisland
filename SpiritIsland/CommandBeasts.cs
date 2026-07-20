@@ -12,6 +12,7 @@ public class CommandBeasts( string title )
 	, IRunWhenTimePasses
 	, IHaveMemento
 	, ILogEntry
+	, ISerializableTimePassesAction
 {
 
 	#region ILogEntry
@@ -81,6 +82,23 @@ public class CommandBeasts( string title )
 
 	#endregion IHaveMemento
 
+	#region Json
+
+	/// <summary>
+	/// [ Tag, Title, _used ]. Covers this object's own _timePassesActions membership only - the
+	/// gameState.ReminderCards entry (added alongside this in OnCardRevealed) round-trips separately via
+	/// GameState.ReminderCardsToJson/RestoreReminderCardsFromJson, which resolves back to this same
+	/// restored instance by Title rather than constructing a disconnected duplicate.
+	/// </summary>
+	JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title, _used );
+
+	const string Tag = "CommandBeasts";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new CommandBeasts( json[1]!.GetValue<string>() ) { _used = json[2]!.GetValue<bool>() } );
+
+	#endregion Json
 
 	#region private
 

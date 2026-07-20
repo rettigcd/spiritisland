@@ -23,6 +23,8 @@ public class ThrivingCommunitites : BlightCard {
 
 	} ).OnlyExecuteIf( x => x.Space.HasAny( Human.Explorer_Town ) );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( ThrivingCommunitites ), ( json, ctx ) => new ThrivingCommunitites() );
 
 }

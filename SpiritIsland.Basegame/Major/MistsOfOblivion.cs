@@ -20,7 +20,7 @@ public class MistsOfOblivion {
 			await ctx.DamageInvaders(3);
 	}
 
-	public class FearOnTownCityDestroy : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
+	public class FearOnTownCityDestroy : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved, ISerializableSpaceEntity {
 
 		public FearOnTownCityDestroy( TargetSpaceCtx ctx ) {
 			_ctx = ctx;
@@ -41,6 +41,26 @@ public class MistsOfOblivion {
 				_mayDestroy -= fearToGrant;
 			}
 		}
+
+		#region Serialization
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization() => SpaceEntitySerialization.Register( Tag, FromJson );
+
+		const string Tag = "FearOnTownCityDestroy";
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx )
+			=> new JsonArray( Tag, ctx.IndexOf( _ctx.Self ), _ctx.SpaceSpec.Label, _mayDestroy );
+
+		static object FromJson( JsonArray json, ISerializationContext ctx ) {
+			Spirit spirit = ctx.SpiritAt( (int)json[1]! );
+			SpaceSpec spec = ctx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+			var result = new FearOnTownCityDestroy( ctx.TargetSpace( spirit, spec ) );
+			result._mayDestroy = (int)json[3]!;
+			return result;
+		}
+
+		#endregion
 
 	}
 

@@ -17,7 +17,7 @@ public class FlamesFury{
 		return Task.CompletedTask;
 	}
 
-	internal class RemoveBonusDamage( Spirit spirit ) : IRunWhenTimePasses {
+	internal class RemoveBonusDamage( Spirit spirit ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
@@ -25,6 +25,14 @@ public class FlamesFury{
 			--spirit.BonusDamage;
 			return Task.CompletedTask;
 		}
+
+		const string Tag = "FlamesFury.RemoveBonusDamage";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new RemoveBonusDamage( ctx.SpiritAt( json[1]!.GetValue<int>() ) ) );
 
 	}
 

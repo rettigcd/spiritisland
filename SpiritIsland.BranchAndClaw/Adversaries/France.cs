@@ -136,6 +136,15 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 				await cmd.ForEachBoard().ActAsync( gameState );
 			}
 		}
+
+		// Stateless - reads gameState.RoundNumber/InvaderDeck.InvaderStage fresh each run.
+		JsonArray IRunBeforeInvaderPhase.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "SlaveRebellion";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> PreInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => new SlaveRebellion() );
 	}
 
 	static BaseCmd<BoardCtx> SmallUprising => new BaseCmd<BoardCtx>(
@@ -237,7 +246,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 	/// Intercepts blight being added to blight card.
 	/// Batches into 3/player before adding to card.
 	/// </summary>
-	public class SlowBlightMod(GameState gs) : BaseModEntity, IModifyAddingToken {
+	public class SlowBlightMod(GameState gs) : BaseModEntity, IModifyAddingToken, ISerializableSpaceEntity {
 		public Task ModifyAddingAsync(AddingTokenArgs args) {
 			// if this does not reach the flushing threshold
 			if (_tokens.Count + args.Count < _flushThreshold ) {
@@ -255,6 +264,17 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		readonly int _flushThreshold = gs.Spirits.Length * 3;
 		readonly BlightTokenBinding _tokens = gs.Tokens[FrancePanel].Blight;
 		static readonly FakeSpace FrancePanel = new FakeSpace("FranceAdversaryPanel"); // stores slow blight - !!! save to memento
+
+		// No fields need capturing: _flushThreshold is always spirits.Length*3 (deterministic
+		// from gs), and _tokens is a live view into the FrancePanel FakeSpace's own blight count -
+		// that space's own data, serialized separately, not this mod's responsibility.
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "SlowBlightMod";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SlowBlightMod( GameState.Current ) );
 	}
 
 	#endregion Level 5 - Slow-Healing Ecosystem

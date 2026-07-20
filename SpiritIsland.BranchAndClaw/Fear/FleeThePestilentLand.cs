@@ -29,6 +29,8 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 		).ForEachSpirit()
 		.ActAsync(ctx);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( FleeThePestilentLand ), () => new FleeThePestilentLand() );
 
 }

@@ -137,4 +137,18 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	#endregion Cards
 
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		var provider = new GameComponentProvider();
+		foreach( PowerCard card in provider.MinorCards ) PowerCardRegistry.Register( card );
+		foreach( PowerCard card in provider.MajorCards ) PowerCardRegistry.Register( card );
+		foreach( string spiritName in provider.SpiritNames ) {
+			Spirit spirit = provider.MakeSpirit( spiritName )!;
+			foreach( PowerCard card in spirit.Hand ) PowerCardRegistry.Register( card );
+			foreach( InnatePower innate in spirit.InnatePowers ) InnatePowerRegistry.Register( innate );
+		}
+		GameComponentProviderSeeding.RegisterAspectExclusiveCards( provider );
+		foreach( string adversaryName in provider.AdversaryNames ) AdversaryRegistry.Register( provider.MakeAdversary( adversaryName )! );
+	}
+
 }

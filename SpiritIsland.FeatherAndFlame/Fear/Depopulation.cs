@@ -41,7 +41,9 @@ public class Depopulation : FearCardBase, IFearCard {
 			await ctx.Space.RemoveAsync(invader.Token,1);
 	} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Depopulation ), () => new Depopulation() );
 
 }
 

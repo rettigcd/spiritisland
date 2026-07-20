@@ -3,7 +3,9 @@ namespace SpiritIsland;
 /// <summary>
 /// The "no adversary selected" placeholder builder - a real, empty-effect AdversaryLevel[] so
 /// Adversary's normal machinery (ActiveLevels, Init/AdjustPlacedTokens) works unmodified rather than
-/// needing a special-cased null-adversary branch elsewhere.
+/// needing a special-cased null-adversary branch elsewhere. Was a private nested class of GameBuilder;
+/// promoted to its own public type so AdversaryRegistry (deserializing AdversaryConfig.NullAdversary)
+/// can reuse it instead of re-deriving the same "no adversary" AdversaryLevel definition.
 /// </summary>
 public class NullAdversaryBuilder : IAdversaryBuilder {
 	public string Name => "No Adversary";

@@ -40,6 +40,8 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 		return ss.RemoveN(ctx.Self);
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( TooManyMonsters ), () => new TooManyMonsters() );
 
 }

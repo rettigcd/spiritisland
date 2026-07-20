@@ -41,6 +41,7 @@ public class StopDahanDamageAndDestruction( string _sourceName )
 	, IAdjustDamageToDahan
 	, IModifyRemovingToken
 	, IEndWhenTimePasses
+	, ISerializableSpaceEntity
 {
 	void IAdjustDamageToDahan.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
@@ -51,5 +52,13 @@ public class StopDahanDamageAndDestruction( string _sourceName )
 		}
 		return Task.CompletedTask;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _sourceName );
+
+	const string Tag = "StopDahanDamageAndDestruction";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopDahanDamageAndDestruction( json[1]!.GetValue<string>() ) );
 
 }

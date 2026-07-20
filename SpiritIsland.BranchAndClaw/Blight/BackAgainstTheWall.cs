@@ -16,6 +16,8 @@ public class BackAgainstTheWall : BlightCard {
 		spirit.TempCardPlayBoost++;
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( BackAgainstTheWall ), ( json, ctx ) => new BackAgainstTheWall() );
 
 }

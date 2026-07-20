@@ -28,6 +28,8 @@ public class PlanForDeparture : FearCardBase, IFearCard {
 		)
 		.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( PlanForDeparture ), () => new PlanForDeparture() );
 
 }

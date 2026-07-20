@@ -2,7 +2,7 @@
 
 /// <summary> Causes any dahan in-or-adjacent-to the given Incarna, to not paritcipate in ravage. </summary>
 /// <remarks> Added to entire board for Wandering Voice </remarks>
-public class SpreadTumultAndDelusion( Spirit spirit ) : BaseModEntity, IConfigRavages {
+public class SpreadTumultAndDelusion( Spirit spirit ) : BaseModEntity, IConfigRavages, ISerializableSpaceEntity {
 
 	public const string Name = "Spread Tumult and Delusion";
 	const string StrifeStopsRavage_Description = "In lands with or adjacent to Incarna: if Strife is present, Dahan do not participate in Ravage.";
@@ -18,5 +18,13 @@ public class SpreadTumultAndDelusion( Spirit spirit ) : BaseModEntity, IConfigRa
 			SitOutRavage.AllSitOutThisRavageAction(space,Human.Dahan);
 		return Task.CompletedTask;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	const string Tag = "SpreadTumultAndDelusion";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SpreadTumultAndDelusion( ctx.SpiritAt( (int)json[1]! ) ) );
 
 }

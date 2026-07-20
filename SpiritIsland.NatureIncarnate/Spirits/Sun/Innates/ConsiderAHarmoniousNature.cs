@@ -61,6 +61,7 @@ public class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 	, IModifyRemovingToken
 	, IAdjustDamageToDahan
 	, IEndWhenTimePasses
+	, ISerializableSpaceEntity
 {
 	readonly Spirit _spirit = spirit;
 	readonly string _source = source;
@@ -83,10 +84,17 @@ public class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 		return Task.CompletedTask;
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _spirit ), _source );
+
+	const string Tag = "MyPowersDontDamageDahanThisRound";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new MyPowersDontDamageDahanThisRound( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<string>() ) );
 }
 
 public class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source )
-	: BaseModEntity, IModifyAddingToken, IEndWhenTimePasses
+	: BaseModEntity, IModifyAddingToken, IEndWhenTimePasses, ISerializableSpaceEntity
 {
 	readonly Spirit _spirit = spirit;
 	readonly string _source = source;
@@ -101,4 +109,11 @@ public class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source 
 		}
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _spirit ), _source );
+
+	const string Tag = "DestroyPresenceInsteadOfAddingBlight";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new DestroyPresenceInsteadOfAddingBlight( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<string>() ) );
 }

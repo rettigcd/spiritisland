@@ -28,6 +28,12 @@ public class BlightCorrodesTheSpirit : BlightCard, IRunBeforeInvaderPhase {
 			.DestroyN(ctx.Self,Present.Always)
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( BlightCorrodesTheSpirit ), ( json, ctx ) => new BlightCorrodesTheSpirit() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
+		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( BlightCorrodesTheSpirit ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

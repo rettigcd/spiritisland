@@ -14,6 +14,12 @@ public class PowerCorrodesTheSpirit : BlightCard, IRunBeforeInvaderPhase {
 				.OnlyExecuteIf( self => 3 <= self.InPlay.Count || self.InPlay.Any( c => 4 <= c.Cost ) )
 		).ActAsync( gameState );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( PowerCorrodesTheSpirit ), ( json, ctx ) => new PowerCorrodesTheSpirit() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
+		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( PowerCorrodesTheSpirit ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

@@ -11,7 +11,7 @@ public class ExhaleConfusionAndDelirium {
 		ctx.Space.Init(new BlightedInvadersSitOutRavage(),1);
 	}
 
-	public class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
+	public class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 		Task IConfigRavages.Config( Space space ) {
 
@@ -24,6 +24,13 @@ public class ExhaleConfusionAndDelirium {
 			return Task.CompletedTask;
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "BlightedInvadersSitOutRavage";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new BlightedInvadersSitOutRavage() );
 	}
 
 }

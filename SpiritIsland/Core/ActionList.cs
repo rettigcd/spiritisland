@@ -33,6 +33,21 @@ public abstract class ActionList<T> : IHaveMemento {
 
 	record MyMemento(T[] actions, Dictionary<IHaveMemento,object> mementos );
 
+	#region Json
+
+	/// <summary>
+	/// Ordered [ [tag, ...], ... ] - the serialize/deserialize delegates are supplied by the caller
+	/// (e.g. TimePassesActionRegistry) rather than baked in here, since each concrete ActionList&lt;T&gt;
+	/// (TimePassesActionList/PreInvaderPhaseActionList/PostInvaderPhaseActionList) holds a different T
+	/// needing a different registry. See docs/GameSerialization-Roadmap.md section 10.
+	/// </summary>
+	public JsonArray ToJson( ISerializationContext ctx, Func<T, ISerializationContext, JsonArray> serialize ) =>
+		new JsonArray( _actions.Select( a => (JsonNode)serialize( a, ctx ) ).ToArray() );
+
+	public void RestoreFromJson( JsonArray json, ISerializationContext ctx, Func<JsonArray, ISerializationContext, T> deserialize ) =>
+		_actions.SetItems( json.Select( n => deserialize( (JsonArray)n!, ctx ) ).ToArray() );
+
+	#endregion
 }
 
 public class PreInvaderPhaseActionList : ActionList<IRunBeforeInvaderPhase> {

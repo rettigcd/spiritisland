@@ -3,7 +3,8 @@
 public class HabsburgMakeTownsDurable
 	:  BaseModEntity
 	, IHandleTokenRemoved
-	, IModifyAddingToken {
+	, IModifyAddingToken
+	, ISerializableSpaceEntity {
 	public HabsburgMakeTownsDurable(){ }
 
 	public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
@@ -27,6 +28,13 @@ public class HabsburgMakeTownsDurable
 		return Task.CompletedTask;
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "HabsburgMakeTownsDurable";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new HabsburgMakeTownsDurable() );
 }
 
 

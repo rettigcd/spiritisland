@@ -26,6 +26,8 @@ public class Quarantine : FearCardBase, IFearCard {
 		)
 		.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Quarantine ), () => new Quarantine() );
 
 }

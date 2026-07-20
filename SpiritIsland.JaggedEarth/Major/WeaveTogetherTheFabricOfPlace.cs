@@ -76,7 +76,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	/// more than one label, it's rebuilt via MultiSpaceSpec.Build from the matching OrigSpaces entries.
 	/// </summary>
 	internal class UnweaveSpaces( Spirit self, SpaceSpec spaceSpec, SpaceSpec[] spaceOldAdjacents, SpaceSpec otherSpec, SpaceSpec[] otherOldAdjacents )
-		: IRunWhenTimePasses {
+		: IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
@@ -98,6 +98,54 @@ public class WeaveTogetherTheFabricOfPlace {
 
 			CopyNewModsToBoth( spaceSpec, otherSpec, multiSpec );
 		}
+
+		static string[] UnderlyingLabels( SpaceSpec spec ) => spec is MultiSpaceSpec m
+			? m.OrigSpaces.Select( s => s.Label ).ToArray()
+			: [ spec.Label ];
+
+		const string Tag = "WeaveTogetherTheFabricOfPlace.UnweaveSpaces";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray(
+			Tag,
+			ctx.IndexOf( self ),
+			MultiSpaceSpec.Build( spaceSpec, otherSpec ).Label,
+			new JsonArray( UnderlyingLabels( spaceSpec ).Select( l => (JsonNode)l ).ToArray() ),
+			new JsonArray( spaceOldAdjacents.Select( s => (JsonNode)s.Label ).ToArray() ),
+			new JsonArray( UnderlyingLabels( otherSpec ).Select( l => (JsonNode)l ).ToArray() ),
+			new JsonArray( otherOldAdjacents.Select( s => (JsonNode)s.Label ).ToArray() )
+		);
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => {
+				Spirit resolvedSelf = ctx.SpiritAt( json[1]!.GetValue<int>() );
+				var joined = (MultiSpaceSpec)ctx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+
+				SpaceSpec Resolve( JsonArray labelsJson ) {
+					SpaceSpec[] parts = labelsJson
+						.Select( n => (SpaceSpec)joined.OrigSpaces.First( s => s.Label == n!.GetValue<string>() ) )
+						.ToArray();
+					return parts.Length == 1 ? parts[0] : MultiSpaceSpec.Build( parts );
+				}
+
+				SpaceSpec resolvedSpaceSpec = Resolve( (JsonArray)json[3]! );
+				SpaceSpec resolvedOtherSpec = Resolve( (JsonArray)json[5]! );
+
+				// Each side's own OldAdjacents may include the *other* side (they were adjacent to each
+				// other before merging, or the card would never have offered them) - that other side is
+				// itself still detached at this point too, so it won't resolve via a normal board lookup;
+				// check against the two sides already reconstructed above before falling back to one.
+				SpaceSpec ResolveAdjacent( string label ) => label switch {
+					_ when label == resolvedSpaceSpec.Label => resolvedSpaceSpec,
+					_ when label == resolvedOtherSpec.Label => resolvedOtherSpec,
+					_ => ctx.SpaceSpecByLabel( label )
+				};
+
+				SpaceSpec[] resolvedSpaceOldAdjacents = ( (JsonArray)json[4]! ).Select( n => ResolveAdjacent( n!.GetValue<string>() ) ).ToArray();
+				SpaceSpec[] resolvedOtherOldAdjacents = ( (JsonArray)json[6]! ).Select( n => ResolveAdjacent( n!.GetValue<string>() ) ).ToArray();
+
+				return new UnweaveSpaces( resolvedSelf, resolvedSpaceSpec, resolvedSpaceOldAdjacents, resolvedOtherSpec, resolvedOtherOldAdjacents );
+			} );
 
 	}
 

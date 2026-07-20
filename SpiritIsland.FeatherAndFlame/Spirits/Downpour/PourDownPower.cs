@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-class PourDownPower : IModifyAvailableActions {
+class PourDownPower : IModifyAvailableActions, IOwnedActionFactories {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Pour Down Power Across the Island",
@@ -36,6 +36,26 @@ class PourDownPower : IModifyAvailableActions {
 
 	#endregion private
 
+	#region Json
+
+	// _a1/_a2 are compared by reference against spirit.UsedActions - restoring them must resolve back
+	// to these exact instances (already re-added by this spirit's own constructor before
+	// RestoreFromJson runs), not fresh ones built from their own serialized content. See
+	// IOwnedActionFactories.
+	const string Tag = "PourDownPower";
+
+	string IOwnedActionFactories.ModTag => Tag;
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory )
+		=> factory == _a1 ? "a1" : factory == _a2 ? "a2" : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key ) => key switch {
+		"a1" => _a1,
+		"a2" => _a2,
+		_ => throw new ArgumentException( $"Unknown key '{key}'" )
+	};
+
+	#endregion Json
 
 	#region Actions
 

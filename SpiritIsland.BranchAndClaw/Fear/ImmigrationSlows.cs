@@ -37,6 +37,8 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( ImmigrationSlows ), () => new ImmigrationSlows() );
 
 }

@@ -17,5 +17,7 @@ public sealed class ThrivingCrops : StillHealthyBlightCard {
 		await GameState.Current.InvaderDeck.Build.Engine.TryToDo1Build(ctx.Space);
 	});
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( ThrivingCrops ), ( json, ctx ) => new ThrivingCrops() );
 }

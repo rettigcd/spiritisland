@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s), ISpiritMod, ICleanupSpiritWhenTimePasses {
+class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s), ISpiritMod, ICleanupSpiritWhenTimePasses, ISerializableSpiritMod {
 
 	public const string Name = "Gather Power from the Cool and Dark";
 	const string Description = "Once a turn, when you Gain a Power Card without fire, gain 1 Energy";
@@ -24,5 +24,19 @@ class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s), ISpiritMod,
 
 	void ICleanupSpiritWhenTimePasses.CleanupSpirit( Spirit spirit ) => _usedThisRound = false;
 
+	#region Json
+
+	// Always present for ShroudOfSilentMist (spirit's own constructor, deterministic) - so this only
+	// ever needs to find-and-mutate the already-replayed instance, never construct a new one.
+	const string Tag = "GatherPowerFromTheCoolAndDark";
+
+	JsonArray ISerializableSpiritMod.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _usedThisRound );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpiritModRegistry.Register( Tag, ( spirit, json, ctx )
+			=> spirit.Mods.OfType<GatherPowerFromTheCoolAndDark>().Single()._usedThisRound = json[1]!.GetValue<bool>() );
+
+	#endregion Json
 
 }

@@ -33,6 +33,8 @@ public class AidFromLesserSpirits : BlightCard {
 
 		} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( AidFromLesserSpirits ), ( json, ctx ) => new AidFromLesserSpirits() );
 
 }

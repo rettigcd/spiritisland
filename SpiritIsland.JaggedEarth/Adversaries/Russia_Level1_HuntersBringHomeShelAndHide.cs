@@ -3,7 +3,7 @@
 /// <summary>
 /// Tracks Beast destroyed by adding ravage Blight
 /// </summary>
-public class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdded {
+public class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 
 	#region Loss Condition
 
@@ -39,4 +39,11 @@ public class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleT
 
 	static readonly public FakeSpace AdversaryCard = new FakeSpace( "Russia Adv Card" );
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "Russia_Level1_HuntersBringHomeShelAndHide";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new Russia_Level1_HuntersBringHomeShelAndHide() );
 }

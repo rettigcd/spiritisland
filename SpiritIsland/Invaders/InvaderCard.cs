@@ -50,6 +50,11 @@ public sealed class InvaderCard : IOption {
 
 	#endregion
 
+	#region Json
+
+	public JsonArray ToJson() => new JsonArray( Code, Flipped );
+
+	#endregion Json
 
 	#region private fields
 	readonly public InvaderCardSpaceFilter Filter; // public so Drawer can draw it.

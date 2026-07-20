@@ -16,6 +16,7 @@ public class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	, IAdjustDamageToInvaders_FromSpiritPowers	// Fire
 	, IHandleTokenAdded							// Sun (strife)
 	, IHandleSpaceDefended						// Earth
+	, ISerializableSpaceEntity
 {
 
 	// https://spiritislandwiki.com/index.php?title=Intensify
@@ -132,5 +133,13 @@ public class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 			});
 		}
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+	const string Tag = "IntensifyThroughUnderstanding";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new IntensifyThroughUnderstanding( (ShiftingMemoryOfAges)ctx.SpiritAt( (int)json[1]! ) ) );
 
 }

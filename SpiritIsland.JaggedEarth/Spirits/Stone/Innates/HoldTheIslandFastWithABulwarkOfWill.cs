@@ -30,6 +30,7 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IEndWhenTimePasses
+	, ISerializableSpaceEntity
 {
 	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
@@ -47,12 +48,21 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _spirit ), _cost );
+
+	const string Tag = "PayEnergyToTakeFromBox";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new PayEnergyToTakeFromBox( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<int>() ) );
+
 }
 
 class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit )
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IEndWhenTimePasses
+	, ISerializableSpaceEntity
 {
 	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token.HasTag(TokenCategory.Presence)
@@ -63,5 +73,13 @@ class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit )
 			--args.Count;
 		}
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+	const string Tag = "StopPresenceDestructionFromBlightOrEvents";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopPresenceDestructionFromBlightOrEvents( ctx.SpiritAt( (int)json[1]! ) ) );
 
 }

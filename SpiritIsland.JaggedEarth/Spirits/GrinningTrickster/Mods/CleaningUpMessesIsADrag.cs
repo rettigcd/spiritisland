@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleTokenRemoved {
+public class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleTokenRemoved, ISerializableSpaceEntity {
 
 	#region rule
 	public const string Name = "Cleaning up Messes is a Drag";
@@ -18,5 +18,13 @@ public class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleToke
 		}
 		return Task.CompletedTask;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	const string Tag = "CleaningUpMessesIsADrag";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new CleaningUpMessesIsADrag( ctx.SpiritAt( (int)json[1]! ) ) );
 
 }

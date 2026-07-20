@@ -27,7 +27,7 @@ class SereneWaters : IHealingCard {
 
 	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.SpecialRules.Any( r => r.Title == Name );
 
-	public class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
+	public class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 		readonly Spirit _spirit = spirit;
 
 		async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
@@ -57,6 +57,13 @@ class SereneWaters : IHealingCard {
 
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+		const string Tag = "SereneWatersMod";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new Mod( ctx.SpiritAt( (int)json[1]! ) ) );
 	}
 
 }

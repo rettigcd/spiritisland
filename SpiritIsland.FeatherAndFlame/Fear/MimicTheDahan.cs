@@ -31,7 +31,9 @@ public class MimicTheDahan : FearCardBase, IFearCard {
 		await ReplaceInvader.WithDahanAsync(ctx.Space,Human.Explorer_Town);
 	} ).OnlyExecuteIf( x=>x.Space.HasAny(Human.Explorer_Town));
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( MimicTheDahan ), () => new MimicTheDahan() );
 }
 
 

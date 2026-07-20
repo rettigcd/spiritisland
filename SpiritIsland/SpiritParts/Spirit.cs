@@ -504,6 +504,240 @@ public abstract partial class Spirit
 
 	#endregion
 
+	#region Json
+
+	/// <summary>
+	/// Named keys. Assumes the target Spirit was already reconstructed via the normal MakeSpirit +
+	/// aspect-application pipeline (real game setup, and how PowerCardRegistry/InnatePowerRegistry seed themselves - see
+	/// docs/GameSerialization-Roadmap.md section 4) *before* RestoreFromJson is called - it only
+	/// overlays the runtime-mutable deltas on top, the same "construct through the normal path, then
+	/// overwrite fields" approach Fear/Island/BlightCard's FromJson already use.
+	///
+	/// Deliberately NOT captured, because they're spirit-type/aspect data - identical every time the
+	/// same concrete Spirit subtype + aspect selection is (re)constructed, not a runtime delta:
+	/// - GrowthTrack / InnatePowers: aspects mutate these once during ModSpirit (e.g. Tactician,
+	///   SpreadingHostility, Pandemonium's innate swap) - re-running that setup reproduces them, same
+	///   "re-run setup" approach Mods (below) also relies on for its Low tier.
+	/// - EnergyCollected / SelectionMade - wiring, not state (section 11); re-subscribed by replaying
+	///   InitSpirit/InitAspect, not serialized.
+	///
+	/// Closed gap: TargetingSourceStrategy/PowerRangeCalc used to only round-trip the DefaultXxx
+	/// singleton case. An active *temporary* override round-trips via TargetingSourceStrategyRegistry/
+	/// RangeCalcRegistry (EntwinedPower's EntwinedPresenceSource, Locus of the Serpent's Regard's
+	/// IncludeSerpentsIncarna, and the 4 named ICalcRange decorators with a non-null Previous:
+	/// RangeExtender, IncludeALandRangeCalculator, SkyStretchesToShoreApi, ExtendRange1FromMountain). A
+	/// mod-assigned *persistent* non-default calculator's identity is still expected to already be
+	/// correct post-replay (same as GrowthTrack above) rather than serialized directly - but where one
+	/// also carries its own extra runtime state (ReachThroughEphemeralDistance's _usedThisRound), it
+	/// registers its own RangeCalcRegistry tag purely to carry that state, resolving back to the
+	/// already-replayed instance rather than constructing a fresh one (see its own ToJson remarks) -
+	/// same reasoning as the Mods bucket immediately below.
+	///
+	/// Mods (docs/ISpiritMod-Types.md): most entries need nothing here at all - constructing the Spirit
+	/// (or applying its aspect) already deterministically re-adds them, the same "replay is safe" logic
+	/// as GrowthTrack/InnatePowers above (the catalog's Low tier, verified empirically by
+	/// SpiritMods_LowTier_Tests). `mods` (ModsToJson/RestoreModsFromJson below) captures only the ones
+	/// that also carry small extra state on top (the catalog's Medium tier) via ISerializableSpiritMod -
+	/// SpiritModRegistry's own doc comment explains why most readers mutate an already-present instance
+	/// rather than constructing a new one. Still open: the catalog's High tier (MarkedBeastMover,
+	/// UnrelentingStrides, PourDownPower's RepeatLandCardForCost, IntensifyAirWater) - these track "used"
+	/// by reference-equality against their own live instance inside _usedActions/AllActions below, so
+	/// restoring them correctly needs Mods and _usedActions/_availableActions resolved in a coordinated
+	/// order, not just independently reconstructed - see docs/ISpiritMod-Types.md's High tier plan.
+	///
+	/// Known gaps, documented rather than silently dropped:
+	/// - _availableActions/_usedActions: PowerCard/InnatePower/GrowthAction/FastSlowAction resolve (the
+	///   latter via SelfCmdRegistry, keyed off FastSlowAction.Cmd's own ISerializableSelfCmd - only
+	///   PlayCardForCost implements it, the only IActOn&lt;Spirit&gt; FastSlowAction ever wraps
+	///   solution-wide). Beyond those four, ISerializableActionFactory/ActionFactoryRegistry (same
+	///   tag-dispatch shape) is the general extension point for types added directly via
+	///   AddActionFactory - RepeatCardForCost, RepeatCheapestCardForCost, RepeatSpecificCardForCost
+	///   (JaggedEarth, wraps a PowerCard resolved via the existing PowerCardRegistry), RepeatCardForFree,
+	///   RelentlessRepeater (NatureIncarnate, wraps a PowerCard + a live Space resolved via
+	///   ISerializationContext.Tokens/SpaceSpecByLabel), and EmpoweredAbduct (NatureIncarnate, stateless -
+	///   resolves to its own shared static Singleton, not a fresh instance, since
+	///   EnableEmpoweredAbductMod's Mods entry compares spirit.UsedActions against that exact reference)
+	///   all implement it.
+	///   ResolveSlowDuringFast/ResolveSlowDuringFast_OrViseVersa/SharpFangs's setup action are the
+	///   remaining AddActionFactory-based holdouts - still throw, but are all trivially name-resolvable
+	///   (stateless/parameterless) whenever someone gets to them.
+	///   A structurally different, harder bucket: MarkedBeastMover, TheBehemothRises, and PourDownPower's
+	///   private RepeatLandCardForCost are never added via AddActionFactory at all - they're injected
+	///   each round by an IModifyAvailableActions mod, and each owning mod tracks "was this used" by
+	///   reference equality against its own cached singleton field (PourDownPower.UsedCounts,
+	///   UnrelentingStrides.BehemothUsed, MarkedBeastMover's own "once per round" check) - the same
+	///   reference-identity class of bug fixed for SpiritPresenceToken/_usedInnates elsewhere in this
+	///   section. See the Mods paragraph above - this is exactly its still-open High tier.
+	/// - CustomMementoValue (the in-memory undo mechanism) is deliberately NOT reused here - Mementos are
+	///   slated for removal later, so CustomStateToJson/RestoreCustomStateFromJson below re-implement
+	///   whatever each of the 7 known subclasses needs directly against their real fields, independent of
+	///   CustomMementoValue's getter/setter and its nested Memento-holder classes.
+	/// </summary>
+	public JsonObject ToJson( ISerializationContext ctx ) => new JsonObject {
+		["Presence"] = Presence.ToJson( ctx ),
+		["Energy"] = Energy,
+		["TempCardPlayBoost"] = TempCardPlayBoost,
+		["Elements"] = SerializeElements( Elements.Elements ),
+		["Hand"] = SerializeCards( Hand ),
+		["InPlay"] = SerializeCards( InPlay ),
+		["DiscardPile"] = SerializeCards( DiscardPile ),
+		["TargetingSource"] = TargetingSourceStrategy.ToJson( ctx ),
+		["PowerRangeCalc"] = PowerRangeCalc.ToJson( ctx ),
+		["AvailableActions"] = SerializeActionFactories( _availableActions, ctx ),
+		["UsedActions"] = SerializeActionFactories( _usedActions, ctx ),
+		["UsedInnates"] = new JsonArray( _usedInnates.Select( ip => (JsonNode)ip.ToJson() ).ToArray() ),
+		["BonusDamage"] = BonusDamage,
+		["CustomState"] = CustomStateToJson( ctx ),
+		["Mods"] = ModsToJson( ctx )
+	};
+
+	/// <summary> Restores onto an already-reconstructed Spirit - see ToJson's remarks. </summary>
+	public void RestoreFromJson( JsonObject json, ISerializationContext ctx ) {
+		Presence.RestoreFromJson( (JsonArray)json["Presence"]!, ctx );
+		Energy = json["Energy"]!.GetValue<int>();
+		TempCardPlayBoost = json["TempCardPlayBoost"]!.GetValue<int>();
+		InitFromArray( Elements.Elements, DeserializeElements( (JsonArray)json["Elements"]! ) );
+
+		Hand.SetItems( DeserializeCards( (JsonArray)json["Hand"]! ) );
+		InPlay.SetItems( DeserializeCards( (JsonArray)json["InPlay"]! ) );
+		DiscardPile.SetItems( DeserializeCards( (JsonArray)json["DiscardPile"]! ) );
+
+		TargetingSourceStrategy = TargetingSourceStrategyRegistry.Deserialize( (JsonArray)json["TargetingSource"]!, ctx );
+		PowerRangeCalc = RangeCalcRegistry.Deserialize( (JsonArray)json["PowerRangeCalc"]!, ctx );
+
+		_availableActions.SetItems( DeserializeActionFactories( (JsonArray)json["AvailableActions"]!, this, ctx ) );
+		_usedActions.SetItems( DeserializeActionFactories( (JsonArray)json["UsedActions"]!, this, ctx ) );
+		_usedInnates.SetItems( ( (JsonArray)json["UsedInnates"]! ).Select( n => ResolveInnate( (JsonArray)n!, this ) ).ToArray() );
+
+		BonusDamage = json["BonusDamage"]!.GetValue<int>();
+		RestoreCustomStateFromJson( json["CustomState"], ctx );
+		RestoreModsFromJson( (JsonArray)json["Mods"]!, ctx );
+	}
+
+	/// <summary>
+	/// Only mods implementing ISerializableSpiritMod are captured - see its own remarks. Everything else
+	/// in Mods (docs/ISpiritMod-Types.md's Low tier) is expected to already be correct after whatever
+	/// reconstructs this Spirit replays its constructor/aspect selection, same reasoning as GrowthTrack/
+	/// InnatePowers above - not serialized here, not a gap.
+	/// </summary>
+	JsonArray ModsToJson( ISerializationContext ctx ) => new JsonArray(
+		Mods.OfType<ISerializableSpiritMod>().Select( m => (JsonNode)m.ToJson( ctx ) ).ToArray() );
+
+	void RestoreModsFromJson( JsonArray json, ISerializationContext ctx ) {
+		foreach( JsonNode? n in json ) SpiritModRegistry.Restore( this, (JsonArray)n!, ctx );
+	}
+
+	/// <summary>
+	/// Hook for the 7 known Spirit subclasses with extra state beyond the fields above (previously only
+	/// tracked via CustomMementoValue's in-memory-only Memento) - FinderOfPathsUnseen (GatewayToken),
+	/// FracturedDaysSplitTheSky (RNG replay position/Time/Days-That-Never-Were decks),
+	/// ShiftingMemoryOfAges (prepared elements), WoundedWatersBleeding (healing markers/seek-healing
+	/// flag), EmberEyedBehemoth (GrowthTrack group count), DancesUpEarthquakes (impending cards/energy).
+	/// No-op by default. Deliberately independent of CustomMementoValue - see the ToJson remarks above.
+	/// </summary>
+	protected virtual JsonNode? CustomStateToJson( ISerializationContext ctx ) => null;
+
+	/// <summary> Restore-side counterpart to CustomStateToJson - see its remarks. </summary>
+	protected virtual void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) { }
+
+	/// <summary> protected, not private - ShiftingMemoryOfAges' CustomStateToJson reuses this for its own
+	/// PreparedElements dictionary (same CountDictionary&lt;Element&gt; shape as Elements itself). </summary>
+	protected static JsonArray SerializeElements( CountDictionary<Element> elements ) => new JsonArray(
+		elements.Select( p => (JsonNode)new JsonArray( p.Key.ToString(), p.Value ) ).ToArray() );
+
+	protected static KeyValuePair<Element, int>[] DeserializeElements( JsonArray json ) => json
+		.Select( n => {
+			var pair = (JsonArray)n!;
+			return new KeyValuePair<Element, int>( Enum.Parse<Element>( pair[0]!.GetValue<string>() ), pair[1]!.GetValue<int>() );
+		} )
+		.ToArray();
+
+	static JsonArray SerializeCards( IEnumerable<PowerCard> cards ) => new JsonArray(
+		cards.Select( c => (JsonNode)c.ToJson() ).ToArray() );
+
+	static PowerCard[] DeserializeCards( JsonArray json ) => json
+		.Select( n => PowerCardRegistry.Deserialize( n! ) )
+		.ToArray();
+
+	JsonArray SerializeActionFactories( IEnumerable<IActionFactory> factories, ISerializationContext ctx ) => new JsonArray(
+		factories.Select( f => (JsonNode)SerializeActionFactory( f, ctx ) ).ToArray() );
+
+	/// <summary>
+	/// Checks every Mods entry that owns cached IActionFactory instances (docs/ISpiritMod-Types.md's
+	/// High tier) before falling through to the ordinary cases below - see IOwnedActionFactories'
+	/// own remarks for why this has to come first.
+	/// </summary>
+	JsonArray SerializeActionFactory( IActionFactory factory, ISerializationContext ctx ) {
+		foreach( IOwnedActionFactories owner in Mods.OfType<IOwnedActionFactories>() ) {
+			string? key = owner.KeyFor( factory );
+			if( key is not null ) return new JsonArray( "ModOwned", owner.ModTag, key );
+		}
+		return factory switch {
+			PowerCard card => new JsonArray( "Card", card.ToJson() ),
+			InnatePower innate => new JsonArray( "Innate", innate.ToJson() ),
+			GrowthAction growth => SerializeGrowthAction( growth, ctx ),
+			FastSlowAction fastSlow => new JsonArray( "FastSlow", SelfCmdRegistry.Serialize( fastSlow.Cmd, ctx ) ),
+			ISerializableActionFactory custom => custom.ToJson( ctx ),
+			_ => throw new NotSupportedException( $"Spirit.ToJson doesn't support IActionFactory of type {factory.GetType().Name} yet - only PowerCard/InnatePower/GrowthAction/FastSlowAction/ISerializableActionFactory implementers are resolvable (see docs/GameSerialization-Roadmap.md section 4's 'Also out of scope' note)." )
+		};
+	}
+
+	/// <summary>
+	/// Identifies a GrowthAction by its position in GrowthTrack where possible - GrowthAction instances
+	/// cached per GrowthGroup (GrowthGroup.GrowthActionFactories) aren't registered anywhere, so position
+	/// is the only stable identity available for those. Some GrowthActions are never part of
+	/// GrowthTrack at all though - one-off instances built with `.ToGrowth()` and added directly via
+	/// AddActionFactory during spirit setup (e.g. SharpFangs.SetupAction, Ocean/Volcano/FinderOfPathsUnseen's
+	/// setup actions) - for those, falls back to "GrowthCmd", resolving the wrapped Cmd via
+	/// SelfCmdRegistry (same registry FastSlowAction uses) plus the captured Phase. Requires the wrapped
+	/// SpiritAction to be a named ISerializableSelfCmd subclass (Locus.PlaceIncarnaAndFireEnergy,
+	/// WarriorSpiritsRaidingParty.PlaceIncarna, Lair.InitLair) rather than an anonymous
+	/// `new SpiritAction(title, delegate)` - an inline lambda/method-group delegate has nothing to key a
+	/// JSON round-trip off of.
+	/// </summary>
+	JsonArray SerializeGrowthAction( GrowthAction growth, ISerializationContext ctx ) {
+		var pickGroups = GrowthTrack.PickGroups;
+		for( int p = 0; p < pickGroups.Count; ++p ) {
+			GrowthGroup[] groups = pickGroups[p].Groups;
+			for( int g = 0; g < groups.Length; ++g ) {
+				int a = Array.IndexOf( groups[g].GrowthActionFactories, growth );
+				if( a != -1 ) return new JsonArray( "Growth", p, g, a );
+			}
+		}
+		return new JsonArray( "GrowthCmd", (int)growth.Phase, SelfCmdRegistry.Serialize( growth.Cmd, ctx ) );
+	}
+
+	static IActionFactory[] DeserializeActionFactories( JsonArray json, Spirit spirit, ISerializationContext ctx ) => json
+		.Select( n => DeserializeActionFactory( (JsonArray)n!, spirit, ctx ) )
+		.ToArray();
+
+	static IActionFactory DeserializeActionFactory( JsonArray json, Spirit spirit, ISerializationContext ctx ) => json[0]!.GetValue<string>() switch {
+		"Card" => PowerCardRegistry.Deserialize( json[1]! ),
+		"Innate" => ResolveInnate( (JsonArray)json[1]!, spirit ),
+		"Growth" => spirit.GrowthTrack.PickGroups[json[1]!.GetValue<int>()].Groups[json[2]!.GetValue<int>()].GrowthActionFactories[json[3]!.GetValue<int>()],
+		"GrowthCmd" => new GrowthAction( SelfCmdRegistry.Deserialize( (JsonArray)json[2]!, ctx ), (Phase)json[1]!.GetValue<int>() ),
+		"FastSlow" => new FastSlowAction( SelfCmdRegistry.Deserialize( (JsonArray)json[1]!, ctx ) ),
+		// Resolves through the already-replayed Mods entry itself (see IOwnedActionFactories), not a
+		// fresh instance - same reasoning as SpiritModRegistry.
+		"ModOwned" => spirit.Mods.OfType<IOwnedActionFactories>().Single( o => o.ModTag == json[1]!.GetValue<string>() ).ResolveActionFactory( json[2]!.GetValue<string>() ),
+		_ => ActionFactoryRegistry.Deserialize( json, ctx )
+	};
+
+	/// <summary>
+	/// Resolves by Title against the target spirit's own (reconstruction-assumed-identical)
+	/// InnatePowers array, NOT InnatePowerRegistry - unlike PowerCard (fully immutable, reused
+	/// everywhere via the registry with no reference-identity consequences), InnatePower references
+	/// in _usedInnates must be reference-equal to the entries in Spirit.InnatePowers, because
+	/// AllActions/InnateWasUsed compare them by reference (List.Contains). The registry's singleton
+	/// comes from a *different* MakeSpirit() call (its own module-initializer seeding one), so using
+	/// it here would silently make a used innate look unused again after restore.
+	/// </summary>
+	static InnatePower ResolveInnate( JsonArray json, Spirit spirit ) {
+		string title = json[0]!.GetValue<string>();
+		return spirit.InnatePowers.First( ip => ip.Title == title );
+	}
+
+	#endregion
 
 	#region Targeting / Range
 

@@ -29,8 +29,20 @@ public class TradeSuffers : FearCardBase, IFearCard {
 		ctx.Space.Adjust( new StopBuildInCityLands(), 1);
 	}
 
-	public class StopBuildInCityLands() : SkipBuild_Custom(Name, true) {
+	public class StopBuildInCityLands() : SkipBuild_Custom(Name, true), ISerializableSpaceEntity {
 		protected override bool ShouldSkip(Space space) => space.HasAny(Human.City);
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopBuildInCityLands";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopBuildInCityLands() );
 	}
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( TradeSuffers ), () => new TradeSuffers() );
 
 }

@@ -2,7 +2,7 @@
 
 /// <summary> Stops 1 Ravage. </summary>
 public class SkipRavage(string label, UsageDuration duration = UsageDuration.SkipOneThisTurn)
-	: BaseModEntity, IEndWhenTimePasses, ISkipRavages {
+	: BaseModEntity, IEndWhenTimePasses, ISkipRavages, ISerializableSpaceEntity {
 
 	/// <summary> So we can log what it was that stopped the ravage. </summary>
 	public string SourceLabel { get; } = label;
@@ -21,6 +21,14 @@ public class SkipRavage(string label, UsageDuration duration = UsageDuration.Ski
 	readonly UsageDuration _duration = duration;
 
 	#endregion
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, SourceLabel, (int)_duration );
+
+	const string Tag = "SkipRavage";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SkipRavage( json[1]!.GetValue<string>(), (UsageDuration)json[2]!.GetValue<int>() ) );
 
 }
 

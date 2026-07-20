@@ -32,7 +32,7 @@ public class UnnervingPall {
 			.SelectFightersAndSitThemOut(ctx.Self);
 	}
 
-	public class InvadersDontParticipateInRavage( CountDictionary<HumanToken> sitOuts ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+	public class InvadersDontParticipateInRavage( CountDictionary<HumanToken> sitOuts ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 		readonly CountDictionary<HumanToken> _sitOuts = sitOuts;
 
@@ -57,5 +57,21 @@ public class UnnervingPall {
 			return Task.CompletedTask;
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray(
+			Tag, new JsonArray( _sitOuts.Select( kvp => (JsonNode)new JsonArray( ctx.SerializeHumanToken( kvp.Key ), kvp.Value ) ).ToArray() )
+		);
+
+		const string Tag = "InvadersDontParticipateInRavage";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+				var sitOuts = new CountDictionary<HumanToken>();
+				foreach( JsonNode? entry in json[1]!.AsArray() ) {
+					JsonArray pair = entry!.AsArray();
+					sitOuts[ctx.DeserializeHumanToken( pair[0]! )] = pair[1]!.GetValue<int>();
+				}
+				return new InvadersDontParticipateInRavage( sitOuts );
+			} );
 	}
 }

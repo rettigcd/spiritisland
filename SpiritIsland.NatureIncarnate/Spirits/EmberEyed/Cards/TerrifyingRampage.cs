@@ -14,7 +14,7 @@ public class TerrifyingRampage {
 		await ctx.PushDahan(3);
 	}
 
-	public class InvadersSitOut( Spirit invaderPicker ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+	public class InvadersSitOut( Spirit invaderPicker ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 		readonly Spirit _invaderPicker = invaderPicker;
 
@@ -23,6 +23,14 @@ public class TerrifyingRampage {
 				.UseQuota( new Quota().AddGroup(2,Human.Invader) )
 				.SelectFightersAndSitThemOut( _invaderPicker );
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _invaderPicker ) );
+
+		const string Tag = "InvadersSitOut";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new InvadersSitOut( ctx.SpiritAt( (int)json[1]! ) ) );
 
 	}
 

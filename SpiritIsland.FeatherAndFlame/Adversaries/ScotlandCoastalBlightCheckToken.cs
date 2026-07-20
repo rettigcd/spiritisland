@@ -8,6 +8,7 @@ public class ScotlandCoastalBlightCheckToken
 	: BaseModEntity
 	, IHandleTokenAdded
 	, IModifyRemovingToken
+	, ISerializableSpaceEntity
 {
 
 	const string Name = "Runoff and Bilgewater";
@@ -68,4 +69,11 @@ public class ScotlandCoastalBlightCheckToken
 
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "ScotlandCoastalBlightCheckToken";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ScotlandCoastalBlightCheckToken() );
 }

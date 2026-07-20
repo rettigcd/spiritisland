@@ -2,7 +2,7 @@
 
 //	Level 1 - Heavy Mining: >=6 +1 blight
 //	The additional Blight does not destroy Presence or cause cascades.
-public class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandDamage {
+public class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandDamage, ISerializableSpaceEntity {
 
 	public bool MiningRush { get; set; }
 
@@ -44,4 +44,12 @@ public class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandD
 			}
 
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, MiningRush );
+
+	const string Tag = "SwedenHeavyMining";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SwedenHeavyMining() { MiningRush = json[1]!.GetValue<bool>() } );
 }

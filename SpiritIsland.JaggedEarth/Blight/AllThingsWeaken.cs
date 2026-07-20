@@ -44,10 +44,18 @@ public class AllThingsWeaken : BlightCard {
 		"The land takes blight on 1 less Damage.", 
 		gs => { gs.AddIslandMod( new LandDamageBoost() ); }
 	);
-	public class LandDamageBoost : BaseModEntity, IAdjustBlightThreshold {
+	public class LandDamageBoost : BaseModEntity, IAdjustBlightThreshold, ISerializableSpaceEntity {
 		void IAdjustBlightThreshold.ModifyLandsResilience(Space space, ref int landResilience) {
 			--landResilience;
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "LandDamageBoost";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new LandDamageBoost() );
 	}
 
 	static BaseCmd<GameState> AddBlightDestroyesPresence => new BaseCmd<GameState>(
@@ -57,12 +65,13 @@ public class AllThingsWeaken : BlightCard {
 
 	[ModuleInitializer]
 	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( AllThingsWeaken ), ( json, ctx ) => new AllThingsWeaken() );
 		NextRoundCommandRegistry.Register( nameof( AllThingsWeaken ), BuildAtTheStartOfNextRoundCmd );
 	}
 
 }
 
-public class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
+public class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added != Token.Blight) return;
 
@@ -89,4 +98,12 @@ public class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
 		ActionScope.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
 
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "DestroyerOfBeastsAndPresence";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new DestroyerOfBeastsAndPresence() );
 }

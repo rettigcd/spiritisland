@@ -29,6 +29,8 @@ public class Retreat : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Retreat ), () => new Retreat() );
 
 }

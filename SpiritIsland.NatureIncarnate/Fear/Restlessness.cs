@@ -26,7 +26,9 @@ public class Restlessness : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( gs );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Restlessness ), () => new Restlessness() );
 
 }
 

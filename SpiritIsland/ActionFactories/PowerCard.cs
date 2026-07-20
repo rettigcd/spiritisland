@@ -113,6 +113,15 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	#endregion
 
+	#region Json
+
+	/// <summary> PowerCard is fully immutable (every field is readonly, set only via ForDecorated) -
+	/// `Title` alone is the whole identity, no per-instance state to capture. Title is unique across the
+	/// entire card pool (Major, Minor, and every spirit's own Spirit-type cards share one
+	/// PowerCardRegistry), so PowerType doesn't need to travel alongside it. </summary>
+	public JsonNode ToJson() => Title;
+
+	#endregion Json
 
 	readonly ITargetCtxFactory _targetCtxFactory;
 

@@ -92,6 +92,29 @@ class BlisteringHeat(Spirit spirit) : SpiritPresenceToken(spirit)
 
 	#endregion
 
+	#region Json
+
+	// SpiritPresenceToken's base ToJson (shared fixed tag) only captures Self - this has extra state
+	// (_downgradedTokens, which invaders got their sacred-site health reduction, needed to know which
+	// to restore when they leave), so it needs its own override - same shape as
+	// FrightfulShadowsEludeDestruction's UsedThisRound.
+	public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray(
+		Tag, ctx.IndexOf( Self ), new JsonArray( _downgradedTokens.Select( t => (JsonNode)ctx.SerializeHumanToken( t ) ).ToArray() )
+	);
+
+	const string Tag = "BlisteringHeat";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, FromJson );
+
+	static object FromJson( JsonArray json, ISerializationContext ctx ) {
+		var token = (BlisteringHeat)ctx.SpiritAt( (int)json[1]! ).Presence.Token;
+		token._downgradedTokens = ( (JsonArray)json[2]! ).Select( n => ctx.DeserializeHumanToken( n! ) ).ToHashSet();
+		return token;
+	}
+
+	#endregion
 
 	HashSet<HumanToken> _downgradedTokens = [];
 }

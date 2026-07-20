@@ -45,6 +45,7 @@ public class SettleIntoHuntingGrounds {
 public class FreezePresence( string _name, SpiritPresence _presence, IToken beast, IToken badland ) : BaseModEntity
 	,IModifyRemovingToken // Prevent presence from being moved.
 	,IRunWhenTimePasses
+	,ISerializableSpaceEntity
 {
 	bool IRunWhenTimePasses.RemoveAfterRun => true;
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
@@ -69,5 +70,23 @@ public class FreezePresence( string _name, SpiritPresence _presence, IToken beas
 
 	bool IsFrozen(IToken token) => token == badland || token == beast || token.HasTag(_presence);
 
+	// Resolved via _presence.Token.Self rather than needing a way to construct/hold a SpiritPresence
+	// standalone, same as PresenceCountDefend/DefendWherePresent. beast/badland go through the
+	// polymorphic IToken resolver - they're TokenVariety instances at runtime, which only became
+	// serializable in the prior pass; that's what unblocked this conversion.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx )
+		=> new JsonArray( Tag, _name, ctx.IndexOf( _presence.Token.Self ), ctx.SerializeToken( beast ), ctx.SerializeToken( badland ) );
+
+	const string Tag = "FreezePresence";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx )
+			=> new FreezePresence(
+				json[1]!.GetValue<string>(),
+				ctx.SpiritAt( (int)json[2]! ).Presence,
+				ctx.DeserializeToken( (JsonArray)json[3]! ),
+				ctx.DeserializeToken( (JsonArray)json[4]! )
+			) );
 }
 

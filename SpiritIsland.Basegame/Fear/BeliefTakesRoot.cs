@@ -34,6 +34,8 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 			.Count( ss => ss.OfAnyTag( Human.Invader ).Length != 0 );
 	} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( BeliefTakesRoot ), () => new BeliefTakesRoot() );
 
 }

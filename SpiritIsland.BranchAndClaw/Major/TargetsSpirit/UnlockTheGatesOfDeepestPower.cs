@@ -40,7 +40,7 @@ public class UnlockTheGatesOfDeepestPower {
 		);
 	}
 
-	internal class ForgetCardAtEndOfTurn( Spirit spirit, PowerCard card ) : IRunWhenTimePasses {
+	internal class ForgetCardAtEndOfTurn( Spirit spirit, PowerCard card ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Early;
@@ -48,6 +48,17 @@ public class UnlockTheGatesOfDeepestPower {
 			spirit.Forget.ThisCard( card );
 			return Task.CompletedTask;
 		}
+
+		const string Tag = "UnlockTheGatesOfDeepestPower.ForgetCardAtEndOfTurn";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ), card.ToJson() );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new ForgetCardAtEndOfTurn(
+				ctx.SpiritAt( json[1]!.GetValue<int>() ),
+				PowerCardRegistry.Deserialize( json[2]! )
+			) );
 
 	}
 

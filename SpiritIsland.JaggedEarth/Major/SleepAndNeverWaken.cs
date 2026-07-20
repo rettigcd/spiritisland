@@ -25,13 +25,21 @@ public class SleepAndNeverWaken {
 		await ctx.AddFear( removedCounter.Count / 2 );
 	}
 
-	public class CountDestroyedExplorers : BaseModEntity, IHandleTokenRemoved {
+	public class CountDestroyedExplorers : BaseModEntity, IHandleTokenRemoved, ISerializableSpaceEntity {
 		public int Count { get; private set; }
 		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 			if(args.Removed.Class == Human.Explorer)
 				Count += args.Count;
 			return Task.CompletedTask;
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Count );
+
+		const string Tag = "CountDestroyedExplorers";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new CountDestroyedExplorers() { Count = json[1]!.GetValue<int>() } );
 	}
 
 	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {

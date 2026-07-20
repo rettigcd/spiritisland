@@ -117,6 +117,47 @@ public class Fear : IHaveMemento {
 	// - events -
 	readonly GameState _gs;
 
+	#region Json
+
+	/// <summary>
+	/// Named keys - same field list as MyMemento below. CardsPerLevel_Initial isn't here - its own doc
+	/// comment says it's only adjusted during Setup and doesn't need saved.
+	/// </summary>
+	public JsonObject ToJson()
+		=> new JsonObject {
+			["EarnedFear"] = EarnedFear,
+			["PoolMax"] = PoolMax,
+			["ResolvedCardCount"] = ResolvedCardCount,
+			["Deck"] = new JsonArray( Deck.Select( c => (JsonNode)c.ToJson() ).ToArray() ),
+			["ActivatedCards"] = new JsonArray( ActivatedCards.Select( c => (JsonNode)c.ToJson() ).ToArray() )
+		};
+
+	/// <remarks> Needs a live GameState to construct through - Fear's own constructor requires one
+	/// (PoolMax defaults from Spirits.Length, Init() pads the deck) - so this builds fresh via `new
+	/// Fear(gs)` then overwrites every field from JSON, same as Island.FromJson going through Island's
+	/// normal constructor rather than bypassing it. Standalone convenience only - GameState.Fear has no
+	/// setter (an adversary can subscribe to the *existing* Fear's CardActivated event during Init replay,
+	/// e.g. Russia L6 - see docs/GameSerialization-Roadmap.md's Adversary section), so a full-GameState
+	/// restore must call <see cref="RestoreFromJson"/> on the GameState's own Fear instance instead of
+	/// swapping in one of these. </remarks>
+	public static Fear FromJson( JsonObject json, GameState gs ) {
+		var fear = new Fear( gs );
+		fear.RestoreFromJson( json );
+		return fear;
+	}
+
+	/// <summary> Restores onto this existing Fear instance, preserving whatever event subscriptions
+	/// (e.g. an adversary's CardActivated hook) it already carries - see the remarks on
+	/// <see cref="FromJson"/>. </summary>
+	public void RestoreFromJson( JsonObject json ) {
+		EarnedFear = json["EarnedFear"]!.GetValue<int>();
+		PoolMax = json["PoolMax"]!.GetValue<int>();
+		ResolvedCardCount = json["ResolvedCardCount"]!.GetValue<int>();
+		Deck.SetItems( ( (JsonArray)json["Deck"]! ).Select( n => FearCardRegistry.Deserialize( (JsonArray)n! ) ).ToArray() );
+		ActivatedCards.SetItems( ( (JsonArray)json["ActivatedCards"]! ).Select( n => FearCardRegistry.Deserialize( (JsonArray)n! ) ).ToArray() );
+	}
+
+	#endregion Json
 
 	#region Memento
 

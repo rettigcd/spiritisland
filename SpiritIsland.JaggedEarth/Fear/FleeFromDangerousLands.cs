@@ -35,6 +35,8 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	static ITokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.MyFilter( ctx ) ? Human.Invader : Human.Explorer_Town;
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( FleeFromDangerousLands ), () => new FleeFromDangerousLands() );
 
 }

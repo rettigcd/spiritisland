@@ -34,6 +34,7 @@ public class TriggerAfterNoRavageOrBuild( Spirit spirit, TargetSpaceCtx ctx, ITo
 	, ISkipBuilds
 	, IConfigRavages
 	, IRunAfterInvaderPhase
+	, ISerializableSpaceEntity
 {
 
 	readonly Spirit _spirit = spirit;
@@ -93,6 +94,37 @@ public class TriggerAfterNoRavageOrBuild( Spirit spirit, TargetSpaceCtx ctx, ITo
 			.PushN( ctx.Self );
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray(
+		Tag, serCtx.IndexOf( _spirit ), ctx.SpaceSpec.Label, serCtx.SerializeToken( beastToken ), _hadRavageOrBuild
+	);
+
+	/// <summary>
+	/// Just the tag and space label - this entry also sits on the board (placed via
+	/// ctx.Space.Adjust(this,1) in UnearthABeastOfWrathfulStone.ActAsync, restored by
+	/// Tokens_ForIsland.FromJson/section 1), so restoring _postInvaderPhaseActions must resolve back to
+	/// that same live instance rather than building a second, disconnected copy via
+	/// SpaceEntitySerialization.Deserialize - same recurring identity-resolution shape as
+	/// England.HighImmegrationSlot. See docs/GameSerialization-Roadmap.md section 10.
+	/// </summary>
+	JsonArray IRunAfterInvaderPhase.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, ctx.SpaceSpec.Label );
+
+	const string Tag = "TriggerAfterNoRavageOrBuild";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+			Spirit resolvedSpirit = serCtx.SpiritAt( (int)json[1]! );
+			SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+			IToken resolvedBeastToken = serCtx.DeserializeToken( (JsonArray)json[3]! );
+			return new TriggerAfterNoRavageOrBuild( resolvedSpirit, serCtx.TargetSpace( resolvedSpirit, spec ), resolvedBeastToken ) {
+				_hadRavageOrBuild = json[4]!.GetValue<bool>()
+			};
+		} );
+		PostInvaderPhaseActionRegistry.Register( Tag, ( json, serCtx ) => {
+			SpaceSpec spec = serCtx.SpaceSpecByLabel( json[1]!.GetValue<string>() );
+			return serCtx.ExistingSpaceEntity<TriggerAfterNoRavageOrBuild>( spec );
+		} );
+	}
 }
 
 /// <summary>
@@ -101,13 +133,20 @@ public class TriggerAfterNoRavageOrBuild( Spirit spirit, TargetSpaceCtx ctx, ITo
 public class MarkedBeast : IToken
 	, IModifyRemovingToken
 	, IHandleTokenAdded
+	, ISerializableSpaceEntity
 {
 	string IToken.Badge => "🦏";
 
 	public MarkedBeast(Spirit controlSpirit) {
+		_controlSpirit = controlSpirit;
 		// Each Slow phase: You may Push Marked Beast. 1 Fear and 2 Damage at Marked Beast
 		controlSpirit.Mods.Add( new MarkedBeastMover( controlSpirit, this ) );
 	}
+
+	// Not used at runtime (MarkedBeastMover already holds its own reference) - kept only so
+	// serialization has a way to reconstruct this instance, since the constructor doesn't
+	// otherwise retain it.
+	readonly Spirit _controlSpirit;
 
 	#region IToken stuff
 	public Img Img => Img.Beast;
@@ -136,12 +175,28 @@ public class MarkedBeast : IToken
 
 	public SpaceSpec? SpaceSpec { get; private set; }
 
+	// Note: reconstructing calls the constructor, which re-registers a fresh MarkedBeastMover into
+	// Spirit.Mods. Fine for an isolated round-trip; a full board restore needs to make sure the
+	// original mover doesn't also survive, same caveat as AJoiningOfSwarmsAndFlocks's beast token.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _controlSpirit ), SpaceSpec?.Label );
+
+	const string Tag = "MarkedBeast";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			var beast = new MarkedBeast( ctx.SpiritAt( (int)json[1]! ) );
+			if( json[2] is JsonValue label )
+				beast.SpaceSpec = ctx.SpaceSpecByLabel( label.GetValue<string>() );
+			return beast;
+		} );
+
 }
 
 /// <summary>
 /// Each Slow phase: pushes the Marked Beast. 1 Fear and 2 Damage at its (possibly new) land.
 /// </summary>
-class MarkedBeastMover( Spirit controlSpirit, MarkedBeast beast ) : IActionFactory, IModifyAvailableActions {
+class MarkedBeastMover( Spirit controlSpirit, MarkedBeast beast ) : IActionFactory, IModifyAvailableActions, IOwnedActionFactories {
 
 	void IModifyAvailableActions.Modify( List<IActionFactory> orig, Phase phase ) {
 		if( phase == Phase.Slow
@@ -167,5 +222,23 @@ class MarkedBeastMover( Spirit controlSpirit, MarkedBeast beast ) : IActionFacto
 		await self.Target(space).DamageInvaders(2);
 	}
 
+	#region Json
+
+	// The mod IS the action factory - compared by reference against spirit.UsedActions (`x == this`
+	// above). Restoring it must resolve back to this exact instance. Unlike the other High-tier mods,
+	// this one is never re-added by spirit/aspect construction replay - MarkedBeast is a board token
+	// spawned mid-game by a Major Power, so the *only* place it (and this mover, added by its
+	// constructor) gets (re)constructed is MarkedBeast's own SpaceEntitySerialization reader, which runs
+	// (via Tokens_ForIsland.FromJson) before Spirit.RestoreFromJson - so by the time _usedActions
+	// resolves "ModOwned", this instance already exists in Mods.
+	const string Tag = "MarkedBeastMover";
+
+	string IOwnedActionFactories.ModTag => Tag;
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory ) => factory == this ? "" : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key ) => this;
+
+	#endregion Json
 
 }

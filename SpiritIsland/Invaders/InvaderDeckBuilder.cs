@@ -78,4 +78,12 @@ public class InvaderDeckBuilder( string _levels ) {
 			new Queue<InvaderCard>( l3 )
 		];
 	}
+
+	// Reuses the existing "build all cards" lists to seed InvaderCardRegistry by Code, instead of
+	// hand-writing a parallel factory per card.
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		foreach( InvaderCard card in Level1Cards.Concat( Level2Cards ).Concat( Level3Cards ) )
+			InvaderCardRegistry.Register( card.Code, () => new InvaderCard( card.Filter, card.InvaderStage, card.TriggersEscalation ) );
+	}
 }

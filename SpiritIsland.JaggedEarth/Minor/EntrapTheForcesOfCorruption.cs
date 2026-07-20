@@ -15,12 +15,20 @@ public class EntrapTheForcesOfCorruption{
 		ctx.Space.Init(new StopCascade(),1);
 	}
 
-	public class StopCascade : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken {
+	public class StopCascade : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken, ISerializableSpaceEntity {
 		public Task ModifyAddingAsync( AddingTokenArgs args ) {
 			if(args.Token == Token.Blight)
 				BlightToken.ScopeConfig.ShouldCascade = false;
 			return Task.CompletedTask;
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopCascade";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopCascade() );
 	}
 
 }

@@ -27,5 +27,7 @@ public class Unrest : FearCardBase, IFearCard {
 			)
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Unrest ), () => new Unrest() );
 }

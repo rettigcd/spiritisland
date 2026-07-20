@@ -31,10 +31,18 @@ public class MeltEarthIntoQuicksand {
 
 	}
 
-	public class Quicksand : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class Quicksand : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses, ISerializableSpaceEntity {
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(args.Added.HasAny(TokenCategory.Invader,TokenCategory.Dahan))
 				await to.Destroy( args.Added, args.Count );
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "Quicksand";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new Quicksand() );
 	}
 }

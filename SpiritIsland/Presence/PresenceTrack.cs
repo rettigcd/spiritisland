@@ -80,6 +80,17 @@ public class PresenceTrack : IPresenceTrack {
 
 	#endregion
 
+	#region Json
+
+	/// <summary> Sets revealed-count directly, bypassing RevealAsync's events/side effects - used by
+	/// SpiritPresence.RestoreFromJson, which restores Elements separately. Same field Memento captures. </summary>
+	public void SetRevealedCount( int count ) => _revealedCount = count;
+
+	JsonNode IPresenceTrack.ToJson() => _revealedCount;
+
+	void IPresenceTrack.RestoreFromJson( JsonNode json ) => _revealedCount = json.GetValue<int>();
+
+	#endregion
 
 	protected Track[] _slots;
 	int _revealedCount;

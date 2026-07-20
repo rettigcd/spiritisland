@@ -5,7 +5,7 @@ namespace SpiritIsland;
 /// <summary>
 /// Card is repeated, but does not cost energy
 /// </summary>
-public class RepeatCardForFree : IActionFactory {
+public class RepeatCardForFree : IActionFactory, ISerializableActionFactory {
 
 	#region constructors
 
@@ -49,4 +49,13 @@ public class RepeatCardForFree : IActionFactory {
 
 	readonly int maxCost;
 
+	#region Json
+
+	public JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( "RepeatCardForFree", maxCost );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> ActionFactoryRegistry.Register( "RepeatCardForFree", ( json, ctx ) => new RepeatCardForFree( json[1]!.GetValue<int>() ) );
+
+	#endregion Json
 }

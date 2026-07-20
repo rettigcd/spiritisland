@@ -16,7 +16,7 @@ public class ConfoundingMists {
 		);
 	}
 
-	public class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses, ISerializableSpaceEntity {
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
 			if(	args.Added.Class.IsOneOf(Human.Invader)
@@ -27,6 +27,13 @@ public class ConfoundingMists {
 					.PushN( _spirit );
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+		const string Tag = "MistPusher";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new MistPusher( ctx.SpiritAt( (int)json[1]! ) ) );
 	}
 
 }

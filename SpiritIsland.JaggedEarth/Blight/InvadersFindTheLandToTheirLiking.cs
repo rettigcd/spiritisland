@@ -20,6 +20,8 @@ public class InvadersFindTheLandToTheirLiking : StillHealthyBlightCard {
 			gs.Fear.PoolMax += fearCount;
 		});
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( InvadersFindTheLandToTheirLiking ), ( json, ctx ) => new InvadersFindTheLandToTheirLiking() );
 
 }

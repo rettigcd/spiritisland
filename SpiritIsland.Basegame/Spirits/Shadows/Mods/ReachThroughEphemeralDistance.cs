@@ -73,5 +73,27 @@ class ReachThroughEphemeralDistance(Spirit spirit) : DefaultRangeCalculator, ISp
 
 	#endregion private fields
 
+	#region Json
+
+	/// <summary>
+	/// DefaultRangeCalculator.ToJson's base implementation would tag this "Default", discarding both its
+	/// identity and _usedThisRound (silently downgrading a Reach-aspected spirit's PowerRangeCalc to the
+	/// generic default on restore) - overriding fixes that. Resolves back to the already-replayed
+	/// instance (spirit.PowerRangeCalc, set by InitAspect before RestoreFromJson ever runs) rather than
+	/// constructing a fresh one, same reasoning as ASingleAluringLair/GatewayToken.
+	/// </summary>
+	public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _usedThisRound, ctx.IndexOf( spirit ) );
+
+	const string Tag = "ReachThroughEphemeralDistance";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> RangeCalcRegistry.Register( Tag, ( json, ctx ) => {
+			var existing = (ReachThroughEphemeralDistance)ctx.SpiritAt( json[2]!.GetValue<int>() ).PowerRangeCalc;
+			existing._usedThisRound = json[1]!.GetValue<bool>();
+			return existing;
+		} );
+
+	#endregion Json
 
 }

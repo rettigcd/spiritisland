@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class EmpoweredAbduct : IActionFactory {
+public class EmpoweredAbduct : IActionFactory, ISerializableActionFactory {
 
 	// Shared process-wide (stateless, parameterless) rather than one per spirit - EnableEmpoweredAbductMod
 	// compares spirit.UsedActions against this exact reference, so restoring _usedActions must resolve
@@ -24,6 +24,14 @@ public class EmpoweredAbduct : IActionFactory {
 
 		await invaderToAbduct.MoveTo(EndlessDark.Space.ScopeSpace);
 	}
+
+	const string Tag = "EmpoweredAbduct";
+
+	JsonArray ISerializableActionFactory.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> ActionFactoryRegistry.Register( Tag, ( json, ctx ) => Singleton );
 
 }
 

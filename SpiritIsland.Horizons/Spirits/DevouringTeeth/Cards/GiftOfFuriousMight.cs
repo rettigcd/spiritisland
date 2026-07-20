@@ -17,6 +17,7 @@ public class GiftOfFuriousMight {
 public class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 	, IAdjustDamageToInvaders_FromSpiritPowers
 	, IEndWhenTimePasses // fallback cleanup for the "never used this round" case - RemoveIslandMod below handles the "used" case immediately.
+	, ISerializableSpaceEntity
 {
 	Task IAdjustDamageToInvaders_FromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
 
@@ -63,5 +64,16 @@ public class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 	}
 
 	readonly string _key = "Damage-Boost-" + Guid.NewGuid().ToString();
+
+	// No "used" flag to capture - if this object is being serialized at all, it's still in island
+	// mods, which already means it hasn't been used yet (a used one would have removed itself).
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( spirit ), damageBoost );
+
+	const string Tag = "OneTimeDamageBoost";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx )
+			=> new OneTimeDamageBoost( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<int>() ) );
 
 }

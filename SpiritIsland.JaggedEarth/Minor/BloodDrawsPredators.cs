@@ -14,7 +14,7 @@ public class BloodDrawsPredators{
 		return Task.CompletedTask;
 	}
 
-	public class AddBeastAndDamageOnInvaderDestroyed( TargetSpaceCtx ctx ) : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
+	public class AddBeastAndDamageOnInvaderDestroyed( TargetSpaceCtx ctx ) : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved, ISerializableSpaceEntity {
 		public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 			if(args.Reason != RemoveReason.Destroyed || !args.Removed.Class.IsOneOf(Human.Invader)) return;
 			Space from = (Space)args.From;
@@ -26,6 +26,19 @@ public class BloodDrawsPredators{
 			// Then 1 Damage per Beast (max. 3 Damage)
 			await ctx.DamageInvaders( ctx.Beasts.Count );
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx )
+			=> new JsonArray( Tag, serCtx.IndexOf( ctx.Self ), ctx.SpaceSpec.Label );
+
+		const string Tag = "AddBeastAndDamageOnInvaderDestroyed";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+				Spirit spirit = serCtx.SpiritAt( (int)json[1]! );
+				SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+				return new AddBeastAndDamageOnInvaderDestroyed( serCtx.TargetSpace( spirit, spec ) );
+			} );
 	}
 
 }

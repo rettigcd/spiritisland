@@ -2,7 +2,7 @@
 
 /// <summary> Adds a new presence (from the bag) to a Range-1 Coast. </summary>
 /// <remarks> Ocean set up. </remarks>
-public class AddBagPresenceToCostal : SpiritAction {
+public class AddBagPresenceToCostal : SpiritAction, ISerializableSelfCmd {
 
 	public AddBagPresenceToCostal():base( "Place Presence in Costal" ) { }
 
@@ -13,5 +13,16 @@ public class AddBagPresenceToCostal : SpiritAction {
 		await self.Presence.Token.AddTo( space );
 	}
 
+	#region Json
+
+	const string Tag = "AddBagPresenceToCostal";
+
+	JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new AddBagPresenceToCostal() );
+
+	#endregion Json
 
 }

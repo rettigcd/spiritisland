@@ -22,6 +22,7 @@ class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage )
 	: BaseModEntity
 	, IEndWhenTimePasses
 	, IReactToLandDamage
+	, ISerializableSpaceEntity
 {
 	async Task IReactToLandDamage.HandleDamageAddedAsync( Space space,int added ) {
 		int damage = 2;
@@ -30,4 +31,11 @@ class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage )
 		await _spirit.Target(space).DamageInvaders( damage ); // includes Badland damage
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ), _shouldAddHalfInvaderDamage );
+
+	const string Tag = "BreakThemselvesMod";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new BreakThemselvesMod( ctx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<bool>() ) );
 }

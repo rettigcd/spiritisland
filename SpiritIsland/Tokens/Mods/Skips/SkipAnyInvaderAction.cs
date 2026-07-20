@@ -5,7 +5,8 @@ public class SkipAnyInvaderAction(string label, Spirit spirit)
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds
-	, ISkipExploreTo {
+	, ISkipExploreTo
+	, ISerializableSpaceEntity {
 
 	readonly Spirit _spirit = spirit;
 
@@ -30,5 +31,13 @@ public class SkipAnyInvaderAction(string label, Spirit spirit)
 	}
 
 	protected virtual Task AfterStop(Space space) => Task.CompletedTask;
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _spirit ), Text );
+
+	const string Tag = "SkipAnyInvaderAction";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new SkipAnyInvaderAction( json[2]!.GetValue<string>(), serCtx.SpiritAt( (int)json[1]! ) ) );
 
 }

@@ -16,5 +16,7 @@ public class DisintegratingEcosystem : BlightCard {
 			)
 		);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( DisintegratingEcosystem ), ( json, ctx ) => new DisintegratingEcosystem() );
 }

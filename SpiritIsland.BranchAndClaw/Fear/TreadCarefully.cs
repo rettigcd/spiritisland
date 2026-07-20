@@ -23,6 +23,8 @@ class TreadCarefully : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( TreadCarefully ), () => new TreadCarefully() );
 
 }

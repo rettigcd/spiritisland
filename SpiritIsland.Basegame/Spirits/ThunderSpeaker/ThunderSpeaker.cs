@@ -54,8 +54,16 @@ public class Thunderspeaker : Spirit {
 
 	}
 
-	public class DestroyNearbyPresenceOnDahanDestroyed( Thunderspeaker spirit ) : BaseModEntity, IHandleTokenRemoved {
+	public class DestroyNearbyPresenceOnDahanDestroyed( Thunderspeaker spirit ) : BaseModEntity, IHandleTokenRemoved, ISerializableSpaceEntity {
 		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) => spirit.DestroyNearbyPresence( args );
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+		const string Tag = "DestroyNearbyPresenceOnDahanDestroyed";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new DestroyNearbyPresenceOnDahanDestroyed( (Thunderspeaker)ctx.SpiritAt( (int)json[1]! ) ) );
 	}
 
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {

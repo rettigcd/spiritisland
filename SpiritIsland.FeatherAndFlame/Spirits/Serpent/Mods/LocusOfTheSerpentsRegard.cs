@@ -33,6 +33,15 @@ class LocusOfTheSerpentsRegard : IHandleCardPlayed {
 			return normal;
 		}
 
+		JsonArray ITargetingSourceStrategy.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, old.ToJson( ctx ), ctx.IndexOf( serpent ) );
+
+		const string Tag = "IncludeSerpentsIncarna";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TargetingSourceStrategyRegistry.Register( Tag, ( json, ctx ) => new IncludeSerpentsIncarna(
+				TargetingSourceStrategyRegistry.Deserialize( (JsonArray)json[1]!, ctx ), ctx.SpiritAt( json[2]!.GetValue<int>() )
+			) );
 	}
 
 }

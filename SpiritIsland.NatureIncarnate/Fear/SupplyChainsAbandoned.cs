@@ -32,7 +32,9 @@ public class SupplyChainsAbandoned : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( gs );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( SupplyChainsAbandoned ), () => new SupplyChainsAbandoned() );
 
 }
 

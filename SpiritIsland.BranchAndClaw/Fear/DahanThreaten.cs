@@ -27,6 +27,8 @@ public class DahanThreaten : FearCardBase, IFearCard {
 			Cmd.OneDamagePerDahan.In().EachActiveLand().Which( Has.Strife )
 		).ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DahanThreaten ), () => new DahanThreaten() );
 
 }

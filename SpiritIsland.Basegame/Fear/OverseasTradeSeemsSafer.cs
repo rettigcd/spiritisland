@@ -27,6 +27,8 @@ public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 	static SpaceAction DoNotBuildCity => new SpaceAction( "do not build city", ctx => ctx.Space.SkipAllBuilds( $"{Name}(city)", Human.City ) );
 	static SpaceAction DoNotBuild => new SpaceAction( "do not build city", ctx => ctx.Space.SkipAllBuilds( Name ) );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( OverseasTradeSeemsSafer ), () => new OverseasTradeSeemsSafer() );
 
 }

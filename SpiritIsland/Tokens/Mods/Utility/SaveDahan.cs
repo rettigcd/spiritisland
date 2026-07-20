@@ -3,7 +3,7 @@
 /// <summary>
 /// Implements the "When Dahan would be Destroyed, Destroy N Fewer"
 /// </summary>
-public class SaveDahan : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToken {
+public class SaveDahan : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	/// <summary>
 	/// Builds an Action that stops future dahan from being destroyed.
@@ -54,5 +54,15 @@ public class SaveDahan : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToken
 	readonly int _maxPerAction;
 	readonly string _key = "SaveDahan-" + Guid.NewGuid().ToString();
 	#endregion
+
+	// _key isn't captured - it's only used to look up state in the current ActionScope, which is
+	// action-scoped (not persisted), so a freshly-generated GUID on FromJson is equivalent.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _maxPerAction, _repeat );
+
+	const string Tag = "SaveDahan";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SaveDahan( json[1]!.GetValue<int>(), json[2]!.GetValue<bool>() ) );
 
 }

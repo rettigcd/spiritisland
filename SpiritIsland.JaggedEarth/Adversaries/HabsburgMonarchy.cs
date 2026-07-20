@@ -81,7 +81,7 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 	}
 
 
-	public class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages, IAdjustAttackerDamage {
+	public class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages, IAdjustAttackerDamage, ISerializableSpaceEntity {
 		public Task Config(Space space) {
 			var adjusters = space.RavageBehavior.DamageAdjusters;
 			if( !adjusters.Contains(this) )
@@ -91,6 +91,13 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 		public int Adjust(RavageExchange rex, int runningTotal)
 			=> runningTotal + (rex.Space.Adjacent.Any(s => s.Has(Human.Town)) ? 2 : 0);
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "NeighborTownsCauseBonusLandDamage";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new NeighborTownsCauseBonusLandDamage() );
 	}
 
 	#region Escalation
@@ -186,7 +193,7 @@ class IrreperableDamage : AdversaryLossCondition {
 			GameOverException.Lost( $"Irreparable Damage - {badBlightCount} blight were added from 8+ land damage." );
 	}
 
-	public class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage {
+	public class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage, ISerializableSpaceEntity {
 		Task IReactToLandDamage.HandleDamageAddedAsync( Space space, int count ) {
 			bool shouldAddBadBadBlight = 8 <= space[LandDamage.Token];
 			if(shouldAddBadBadBlight)
@@ -194,6 +201,13 @@ class IrreperableDamage : AdversaryLossCondition {
 			return Task.CompletedTask;
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "TrackBadRavageBlight";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new TrackBadRavageBlight() );
 	}
 
 	// not a real space, just used for counting blight.   And auto-saves in GameState for rewind.

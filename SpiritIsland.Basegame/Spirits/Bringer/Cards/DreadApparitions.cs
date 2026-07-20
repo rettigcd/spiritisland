@@ -15,7 +15,7 @@ public class DreadApparitions {
 
 
 	// When powers generate fear in target land, defend 1 per fear.
-	public class ConvertFearToDefense( string powerName, Spirit spirit ) : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
+	public class ConvertFearToDefense( string powerName, Spirit spirit ) : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses, ISerializableSpaceEntity {
 		Task IReactToLandFear.HandleFearAddedAsync( Space space, int fearAdded, FearType fearType ) {
 			// (Fear from destroying town/cities does not.)
 			if( fearType != FearType.FromInvaderDestruction ) {
@@ -25,6 +25,14 @@ public class DreadApparitions {
 			return Task.CompletedTask;
 		}
 		readonly string _powerName = powerName;
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, _powerName, serCtx.IndexOf( spirit ) );
+
+		const string Tag = "ConvertFearToDefense";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new ConvertFearToDefense( json[1]!.GetValue<string>(), serCtx.SpiritAt( (int)json[2]! ) ) );
 	}
 
 }

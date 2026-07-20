@@ -86,7 +86,7 @@ public class DreamOfTheUntouchedLand {
 
 }
 
-public class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExploreTo, ICleanupSpaceWhenTimePasses {
+public class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExploreTo, ICleanupSpaceWhenTimePasses, ISerializableSpaceEntity {
 	public UsageCost Cost => UsageCost.Free;
 	public string Text => "Invaders Skip 1 Board";
 
@@ -114,4 +114,16 @@ public class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISki
 
 	Board? _toSkip = null;
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _toSkip?.Name );
+
+	const string Tag = "InvadersSkip1Board";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			var result = new InvadersSkip1Board();
+			if( json[1] is JsonValue name )
+				result._toSkip = ctx.BoardByName( name.GetValue<string>() );
+			return result;
+		} );
 }

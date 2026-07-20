@@ -25,11 +25,13 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( ExplorersAreReluctant ), () => new ExplorersAreReluctant() );
 
 }
 
-sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo {
+sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo, ISerializableSpaceEntity {
 
 	public SkipLowestNumberedExplore() : base() {}
 
@@ -58,4 +60,14 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 
 	Dictionary<Board, SpaceSpec>? _lowest = null;
 
+	// _lowest isn't captured - it's a deterministic cache re-derived from the current InvaderDeck
+	// state the first time Skip() runs, same reasoning as the earlier Space->SpaceSpec fix for
+	// this type: nothing is lost by rebuilding it fresh.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "SkipLowestNumberedExplore";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SkipLowestNumberedExplore() );
 }

@@ -23,5 +23,18 @@ public class DefaultRangeCalculator : ICalcRange {
 
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 
+	/// <summary>
+	/// Only ever reached by a bare DefaultRangeCalculator (Previous == null - the protected ctor is only
+	/// callable by the 4 named temporary-decorator subclasses, each of which overrides this with its own
+	/// tag/extra state instead).
+	/// </summary>
+	public virtual JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "Default";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> RangeCalcRegistry.Register( Tag, ( json, ctx ) => Singleton );
+
 }
 

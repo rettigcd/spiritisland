@@ -6,8 +6,21 @@
 public class LandDamage
 	: ISpaceEntity
 	, IReactToLandDamage
+	, ISerializableSpaceEntity
 {
 	public static readonly LandDamage Token = new LandDamage();
+
+	// Same identity caveat as AJoiningOfSwarmsAndFlocks/FreezePresence: FromJson reconstructs a
+	// fresh instance, not the Token singleton above. Fine for an isolated round-trip (no state to
+	// lose); a full board restore would need every space's LandDamage entries resolved back to
+	// this singleton, not a new instance per space.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "LandDamage";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new LandDamage() );
 
 	#region Static
 

@@ -75,4 +75,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		}
 	}
 
+	/// <summary> Same shape as Elements itself - reuses Spirit's own element (de)serialize helpers. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => SerializeElements( PreparedElementMgr.PreparedElements );
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx )
+		=> InitFromArray( PreparedElementMgr.PreparedElements, DeserializeElements( (JsonArray)json! ) );
+
 }

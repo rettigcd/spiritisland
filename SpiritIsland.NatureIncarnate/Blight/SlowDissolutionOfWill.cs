@@ -18,6 +18,7 @@ public class SlowDissolutionOfWill : BlightCard {
 		gs.AddPreInvaderPhaseAction( mod );
 	} );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() => BlightCardRegistry.Register( nameof( SlowDissolutionOfWill ), ( json, ctx ) => new SlowDissolutionOfWill() );
 
 }

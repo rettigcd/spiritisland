@@ -35,6 +35,8 @@ public class UnnaturalProliferation : BlightCard {
 		}
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( UnnaturalProliferation ), ( json, ctx ) => new UnnaturalProliferation() );
 
 }

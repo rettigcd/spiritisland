@@ -166,6 +166,15 @@ public class InnatePower : IPowerActionFactory {
 
 	public object? LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 
+	#region Json
+
+	/// <summary> LastTarget isn't captured - it's a scratch value set then immediately consumed within
+	/// a single activation (an event-handoff workaround, per the comment on ActAsync above), not
+	/// meaningful game state - InnatePower isn't IHaveMemento either, so undo doesn't capture it. Title
+	/// is the whole identity. </summary>
+	public JsonArray ToJson() => new JsonArray( Title );
+
+	#endregion Json
 
 	readonly InnatePowerAttribute _innatePowerAttr;
 	readonly protected SpeedAttribute _speedAttr;

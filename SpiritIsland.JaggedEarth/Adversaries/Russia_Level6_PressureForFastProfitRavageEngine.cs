@@ -18,9 +18,22 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 		await _token.PressureForFastProfit();
 	}
 
+	/// <summary>
+	/// Fixes the reference-identity bug described in docs/GameSerialization-Roadmap.md's Adversary
+	/// section: replaying Init on a restored GameState reconstructs this engine and a fresh
+	/// RecordBlightAdded together (see the constructor), but Tokens_ForIsland.FromJson then
+	/// wipes/replaces island mods with whatever the JSON snapshot says - discarding that fresh instance
+	/// as an island mod without updating _token, which would otherwise keep pointing at an instance no
+	/// longer registered as a live mod (so it stops receiving HandleTokenAddedAsync callbacks for any
+	/// board, making PressureForFastProfit wrongly treat every board as having received no Ravage
+	/// Blight from then on). Re-points _token at whichever instance actually ended up live.
+	/// </summary>
+	public override void ResolveAfterTokensRestored( ISerializationContext ctx )
+		=> _token = ctx.ExistingSpaceEntity<RecordBlightAdded>( ctx.SpaceSpecOrFakeByLabel( "Island-Mods" ) );
+
 	RecordBlightAdded _token;
 
-	public class RecordBlightAdded : BaseModEntity, IHandleTokenAdded {
+	public class RecordBlightAdded : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 
 		public void PreRavage() {
 			_receivedRavageBlight.Clear();
@@ -66,6 +79,21 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 					+ landsWithMostExplorers.SelectLabels().OrderBy(x=>x).Join( "," )
 				);
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray(
+			Tag, new JsonArray( _receivedRavageBlight.Select( b => (JsonNode)b.Name ).ToArray() )
+		);
+
+		const string Tag = "RecordBlightAdded";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+				var result = new RecordBlightAdded();
+				foreach( JsonNode? name in json[1]!.AsArray() )
+					result._receivedRavageBlight.Add( ctx.BoardByName( name!.GetValue<string>() ) );
+				return result;
+			} );
 
 	}
 

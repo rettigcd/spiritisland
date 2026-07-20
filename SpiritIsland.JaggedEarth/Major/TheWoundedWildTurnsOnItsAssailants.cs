@@ -28,12 +28,20 @@ public class TheWoundedWildTurnsOnItsAssailants {
 
 	}
 
-	public class CountDestroyedTokens : BaseModEntity, IHandleTokenRemoved {
+	public class CountDestroyedTokens : BaseModEntity, IHandleTokenRemoved, ISerializableSpaceEntity {
 		public int Count { get; private set; }
 		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 			Count++;
 			return Task.CompletedTask;
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Count );
+
+		const string Tag = "CountDestroyedTokens";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new CountDestroyedTokens() { Count = json[1]!.GetValue<int>() } );
 	}
 
 }

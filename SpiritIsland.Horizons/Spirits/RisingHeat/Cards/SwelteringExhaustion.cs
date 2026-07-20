@@ -18,7 +18,8 @@ public class SkipRavageOrBuild(string label, Spirit spirit)
 	: BaseModEntity
 	, IEndWhenTimePasses
 	, ISkipRavages
-	, ISkipBuilds {
+	, ISkipBuilds
+	, ISerializableSpaceEntity {
 
 	readonly Spirit _spirit = spirit;
 
@@ -38,5 +39,13 @@ public class SkipRavageOrBuild(string label, Spirit spirit)
 		space.Adjust(this, -1);
 		return true;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _spirit ), Text );
+
+	const string Tag = "SkipRavageOrBuild";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new SkipRavageOrBuild( json[2]!.GetValue<string>(), serCtx.SpiritAt( (int)json[1]! ) ) );
 
 }

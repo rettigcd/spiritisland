@@ -25,6 +25,8 @@ public class Panic : FearCardBase, IFearCard {
 			Cmd.StrifePenalizesHealth
 		).ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Panic ), () => new Panic() );
 
 }

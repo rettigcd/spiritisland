@@ -2,7 +2,7 @@
 
 
 // When doing Damage, Track initial state + Damage
-public class ToDreamAThousandDeaths(Spirit spirit) : BaseModEntity, IHandleInvaderDamaged, IModifyRemovingToken {
+public class ToDreamAThousandDeaths(Spirit spirit) : BaseModEntity, IHandleInvaderDamaged, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	// Spirit-scoped (not static): Violence.ModSpirit overrides this on the Bringer instance being built,
 	// and each Bringer's own DreamMod must hold its own override rather than a value shared process-wide.
@@ -68,13 +68,27 @@ public class ToDreamAThousandDeaths(Spirit spirit) : BaseModEntity, IHandleInvad
 
 		}
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	const string Tag = "ToDreamAThousandDeaths";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			// Bringer already constructs and holds its own DreamMod (with DreamFear set correctly by
+			// whatever replayed its aspect selection) - reuse that instance rather than building a second,
+			// disconnected one whose DreamFear would silently revert to the un-aspected default.
+			Bringer bringer = (Bringer)ctx.SpiritAt( (int)json[1]! );
+			return bringer.DreamMod;
+		} );
 }
 
 
 /// <summary>
 /// Records damage on one particular space, then rolls it back at end of round.
 /// </summary>
-class DreamingDamageLog : BaseModEntity, IEndWhenTimePasses {
+class DreamingDamageLog : BaseModEntity, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 	public void Record(HumanToken original,HumanToken damaged) {
 		Transition? endingOn = _appliedDamage.FirstOrDefault(x=>x.damaged == original);
@@ -116,5 +130,25 @@ class DreamingDamageLog : BaseModEntity, IEndWhenTimePasses {
 	readonly List<Transition> _appliedDamage = [];
 
 	#endregion
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, new JsonArray(
+		_appliedDamage.Select( t => (JsonNode)new JsonArray( ctx.SerializeHumanToken( t.original ), ctx.SerializeHumanToken( t.damaged ) ) ).ToArray()
+	) );
+
+	const string Tag = "DreamingDamageLog";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			var result = new DreamingDamageLog();
+			foreach( JsonNode? entry in json[1]!.AsArray() ) {
+				JsonArray pair = entry!.AsArray();
+				result._appliedDamage.Add( new Transition {
+					original = ctx.DeserializeHumanToken( pair[0]! ),
+					damaged = ctx.DeserializeHumanToken( pair[1]! )
+				} );
+			}
+			return result;
+		} );
 
 }

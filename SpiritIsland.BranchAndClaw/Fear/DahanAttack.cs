@@ -32,6 +32,8 @@ public class DahanAttack : FearCardBase, IFearCard {
 		await ctx.DamageInvaders( 2*ctx.Dahan.CountAll );
 	});
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DahanAttack ), () => new DahanAttack() );
 
 }

@@ -38,7 +38,11 @@ public class Locus : IAspect {
 	}
 
 
-	internal class PlaceIncarnaAndFireEnergy : SpiritAction {
+	// Named (rather than an anonymous `new SpiritAction(...)`) so it can implement ISerializableSelfCmd -
+	// same reasoning/pattern as PlayCardForCost. A raw SpiritAction wraps an arbitrary delegate with
+	// nothing to key a JSON round-trip off of; this one has no per-instance state, so its Tag alone
+	// resolves it.
+	internal class PlaceIncarnaAndFireEnergy : SpiritAction, ISerializableSelfCmd {
 
 		public PlaceIncarnaAndFireEnergy() : base("Place Incarna and Fire Energy") { }
 
@@ -47,6 +51,14 @@ public class Locus : IAspect {
 			space5.Init(spirit.Incarna, 1);
 			return new Move( new TrackPresence( spirit.Presence.Energy.RevealOptions.First(), spirit.Presence.Token), space5 ).Apply();
 		}
+
+		const string Tag = "Locus.PlaceIncarnaAndFireEnergy";
+
+		JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new PlaceIncarnaAndFireEnergy() );
 
 	}
 

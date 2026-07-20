@@ -29,5 +29,7 @@ public class Discord : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().AllDifferent().Which( Has.AtLeastN(2,Human.Invader) ).ByPickingToken(Human.Invader)
 			.ForEachSpirit();
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Discord ), () => new Discord() );
 }

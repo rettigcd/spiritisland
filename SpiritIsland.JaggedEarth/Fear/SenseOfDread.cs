@@ -26,6 +26,8 @@ public class SenseOfDread : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( SenseOfDread ), () => new SenseOfDread() );
 
 }

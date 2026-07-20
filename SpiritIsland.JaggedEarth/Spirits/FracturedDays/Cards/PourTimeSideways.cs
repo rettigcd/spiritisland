@@ -41,7 +41,7 @@ class PourTimeSideways {
 		GameState.Current.AddTimePassesAction( new ResetInvaderActionCounts( [.. srcBoards.Union( destBoards )] ) );
 	}
 
-	internal class ResetInvaderActionCounts( Board[] boards ) : IRunWhenTimePasses {
+	internal class ResetInvaderActionCounts( Board[] boards ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 		bool IRunWhenTimePasses.RemoveAfterRun => true;
 		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
@@ -49,6 +49,18 @@ class PourTimeSideways {
 			foreach(var b in boards) b.InvaderActionCount = 1;
 			return Task.CompletedTask;
 		}
+
+		const string Tag = "PourTimeSideways.ResetInvaderActionCounts";
+
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray(
+			Tag, new JsonArray( boards.Select( b => (JsonNode)b.Name ).ToArray() )
+		);
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new ResetInvaderActionCounts(
+				( (JsonArray)json[1]! ).Select( n => ctx.BoardByName( n!.GetValue<string>() ) ).ToArray()
+			) );
 
 	}
 

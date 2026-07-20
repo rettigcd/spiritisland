@@ -4,6 +4,7 @@ public class SpiritPresenceToken
 	: IToken
 	, ITrackMySpaces
 	, IHandleTokenRemoved
+	, ISerializableSpaceEntity
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
@@ -80,6 +81,32 @@ public class SpiritPresenceToken
 	}
 
 	#endregion Track Destroyed Presence
+
+	#region Serialization
+
+	/// <summary>
+	/// Always tags as the base type, never `GetType().Name` - which concrete subclass this actually is
+	/// gets decided entirely by "which Spirit subtype + which aspect was applied," both deterministically
+	/// replayed by whatever reconstructs the Spirit before RestoreFromJson runs (same "replay setup"
+	/// reasoning as GrowthTrack/InnatePowers, section 2) - so identity only needs to say *which spirit*,
+	/// never *which subclass*. Subclasses with real extra state beyond `Self` (e.g. `BlisteringHeat`'s
+	/// `_downgradedTokens`, `FrightfulShadowsEludeDestruction`'s `UsedThisRound`) still override this to
+	/// append their own state, but no longer need a distinct tag/registration just to identify their type.
+	/// </summary>
+	public virtual JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( nameof( SpiritPresenceToken ), ctx.IndexOf( Self ) );
+
+	/// <summary>
+	/// Resolved via spirit index rather than reconstructed, so this always returns the *same*
+	/// SpiritPresenceToken instance a Spirit already owns (spirit.Presence.Token), not a fresh one -
+	/// same reasoning/fix as Incarna.FromJson. A freshly-constructed duplicate wouldn't compare equal
+	/// (no Equals/GetHashCode override - reference equality), so live code doing space[spirit.Presence.Token]
+	/// would silently miss a deserialized token that wasn't this same instance.
+	/// </summary>
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( nameof( SpiritPresenceToken ), ( json, ctx ) => ctx.SpiritAt( (int)json[1]! ).Presence.Token );
+
+	#endregion
 
 	#region private static helpers
 

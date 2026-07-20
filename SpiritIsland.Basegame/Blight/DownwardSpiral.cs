@@ -11,6 +11,13 @@ public class DownwardSpiral : BlightCard, IRunBeforeInvaderPhase {
 	Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState )
 		=> Cmd.DestroyPresence().ForEachSpirit().ActAsync( gameState );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( DownwardSpiral ), ( json, ctx ) => new DownwardSpiral() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry (see Immediately above), so resolving it
+		// from _preInvaderPhaseActions must return the live GameState.BlightCard, not a fresh instance
+		// via BlightCardRegistry - see docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( DownwardSpiral ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

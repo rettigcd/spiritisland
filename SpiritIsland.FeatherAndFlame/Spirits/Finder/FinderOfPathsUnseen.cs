@@ -101,8 +101,16 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 		return Task.CompletedTask;
 	}
 
-	public class ResponsibilityToTheDeadMod( FinderOfPathsUnseen spirit ) : BaseModEntity, IHandleTokenRemoved {
+	public class ResponsibilityToTheDeadMod( FinderOfPathsUnseen spirit ) : BaseModEntity, IHandleTokenRemoved, ISerializableSpaceEntity {
 		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) => spirit.ResponsibilityToTheDead_Handler( args );
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+		const string Tag = "ResponsibilityToTheDeadMod";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ResponsibilityToTheDeadMod( (FinderOfPathsUnseen)ctx.SpiritAt( (int)json[1]! ) ) );
 	}
 
 	#endregion Responsibility To The Dead
@@ -116,6 +124,17 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 		get => GatewayToken ?? new object();
 		set => GatewayToken = (GatewayToken?)value;
 	}
+
+	/// <summary> GatewayToken is already ISerializableSpaceEntity and sits on 2 spaces, so
+	/// Tokens_ForIsland.FromJson restores an instance there on its own - this only needs enough to find
+	/// that live instance again, not reconstruct a second one. Reuses GatewayToken's own ToJson (index 2
+	/// is the "_from" space's label) rather than duplicating its field list - pulled out as a plain
+	/// string, since a JsonNode already owned by that temporary array can't also be attached here. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx )
+		=> GatewayToken is null ? null : ( (ISerializableSpaceEntity)GatewayToken ).ToJson( ctx )[2]!.GetValue<string>();
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx )
+		=> GatewayToken = json is null ? null : ctx.ExistingSpaceEntity<GatewayToken>( ctx.SpaceSpecByLabel( json.GetValue<string>() ) );
 
 	readonly OpenTheWays _openTheWays;
 

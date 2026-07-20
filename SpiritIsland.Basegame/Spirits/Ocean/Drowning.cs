@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame;
 
 /// <summary> Added to each Ocean to handle drowning </summary>
-class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
+class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 
 	static public Drowner GetDrowner() => new Drowner();
 
@@ -89,6 +89,13 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 	#endregion
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _ocean ), _drownedInvaderHealthAccumulator );
+
+	const string Tag = "Drowning";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new Drowning( (Ocean)ctx.SpiritAt( (int)json[1]! ) ) { _drownedInvaderHealthAccumulator = json[2]!.GetValue<int>() } );
 }
 
 class Drowner {

@@ -12,6 +12,8 @@ public class StrongEarthShattersSlowly : StillHealthyBlightCard {
 			.To().SpiritPickedLand().Which( Is.AdjacentToBlight )
 			.ForEachSpirit();
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( StrongEarthShattersSlowly ), ( json, ctx ) => new StrongEarthShattersSlowly() );
 
 }

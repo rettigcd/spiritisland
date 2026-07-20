@@ -12,10 +12,18 @@ public class BlightTokenBinding( Space space ) : TokenBinding( space, Token.Blig
 
 }
 
-public class BlockBlightToken : ISpaceEntity, IModifyAddingToken, IEndWhenTimePasses {
+public class BlockBlightToken : ISpaceEntity, IModifyAddingToken, IEndWhenTimePasses, ISerializableSpaceEntity {
 	public Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight)
 			args.Count = 0;
 		return Task.CompletedTask;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "BlockBlightToken";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new BlockBlightToken() );
 }

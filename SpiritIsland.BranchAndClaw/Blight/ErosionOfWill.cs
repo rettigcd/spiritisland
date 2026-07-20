@@ -31,6 +31,8 @@ public class ErosionOfWill : BlightCard {
 			self => self.Energy -= Math.Max(delta, self.Energy)
 		);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( ErosionOfWill ), ( json, ctx ) => new ErosionOfWill() );
 
 }

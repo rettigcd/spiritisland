@@ -2,7 +2,7 @@
 
 /// <summary> Adds a presence (from the Bag) to a mountain. </summary>
 /// <remarks> Used for Volcano Setup. </remarks>
-public class AddBagPresenceToMountain : SpiritAction { // Similar to SharpFang initialization
+public class AddBagPresenceToMountain : SpiritAction, ISerializableSelfCmd { // Similar to SharpFang initialization
 
 	public AddBagPresenceToMountain():base( "Place Presence on Mountain" ) { }
 
@@ -23,5 +23,16 @@ public class AddBagPresenceToMountain : SpiritAction { // Similar to SharpFang i
 			await targetCtx.PushDahan(targetCtx.Dahan.CountAll);
 	}
 
+	#region Json
+
+	const string Tag = "AddBagPresenceToMountain";
+
+	JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new AddBagPresenceToMountain() );
+
+	#endregion Json
 
 }

@@ -71,4 +71,15 @@ public class RepeatSpecificCardForCost(PowerCard card) : RepeatCardForCost() {
 		return base.GetCardOptions(self, phase).Where(x => x == card).ToArray();
 	}
 
+	#region Json
+
+	protected override string Tag => "RepeatSpecificCardForCost";
+
+	public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag, card.ToJson() );
+
+	[ModuleInitializer]
+	internal static void RegisterSpecificSerialization()
+		=> ActionFactoryRegistry.Register( "RepeatSpecificCardForCost", ( json, ctx ) => new RepeatSpecificCardForCost( PowerCardRegistry.Deserialize( json[1]! ) ) );
+
+	#endregion Json
 }

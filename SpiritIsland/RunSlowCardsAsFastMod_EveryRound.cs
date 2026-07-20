@@ -31,6 +31,10 @@ abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyA
 
 	protected abstract int AllowedCount { get; }
 
+	/// <summary> Exposed so each concrete subclass can implement ISerializableSpiritMod against its own
+	/// tag, capturing/restoring just this plain counter - no reference-equality concern here, unlike
+	/// _slowAsFast (rebuilt fresh from AllActions every Modify() call, never itself persisted). </summary>
+	protected int UsedCountForJson { get => _usedCount; set => _usedCount = value; }
 
 	protected virtual bool EvaluateAction(IActionFactory slowAction) {
 		return slowAction.CouldActivateDuring(Phase.Slow, _spirit);

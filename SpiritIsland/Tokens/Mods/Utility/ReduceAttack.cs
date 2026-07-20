@@ -6,7 +6,7 @@
 /// <param name="reduce"></param>
 /// <param name="classesToReduce"></param>
 public class ReduceAttack( int reduce, params HumanTokenClass[] classesToReduce )
-	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
+	: BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity
 {
 	readonly int _reduce = reduce;
 
@@ -40,4 +40,17 @@ public class ReduceAttack( int reduce, params HumanTokenClass[] classesToReduce 
 		space.Init( orig.SetAttack( Math.Max(0,orig.Attack + adjust) ), space[orig] );
 		space.Init( orig, 0 );
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray(
+		Tag, _reduce, new JsonArray( classesToReduce.Select( c => (JsonNode)c.Label ).ToArray() )
+	);
+
+	const string Tag = "ReduceAttack";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			HumanTokenClass[] classes = json[2]!.AsArray().Select( n => (HumanTokenClass)ctx.TokenClassByLabel( n!.GetValue<string>() ) ).ToArray();
+			return new ReduceAttack( json[1]!.GetValue<int>(), classes );
+		} );
 }

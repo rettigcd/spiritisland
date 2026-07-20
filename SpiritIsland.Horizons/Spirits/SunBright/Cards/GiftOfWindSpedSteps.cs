@@ -17,7 +17,7 @@ public class GiftOfWindSpedSteps {
 
 }
 
-class Run1SlowPushOrGatherAsFast(Spirit spirit) : RunSlowCardsAsFastMod_EveryRound(spirit), IEndWhenTimePasses {
+class Run1SlowPushOrGatherAsFast(Spirit spirit) : RunSlowCardsAsFastMod_EveryRound(spirit), IEndWhenTimePasses, ISerializableSpiritMod {
 
 	protected override int AllowedCount => 1;
 
@@ -37,5 +37,20 @@ class Run1SlowPushOrGatherAsFast(Spirit spirit) : RunSlowCardsAsFastMod_EveryRou
 		return s.Contains("push") || s.Contains("gather");
 	}
 
+	#region Json
+
+	// Short-lived (IEndWhenTimePasses) and added dynamically by GiftOfWindSpedSteps to whichever spirit
+	// it targets - not present after replay, so this constructs a fresh instance and Mods.Add()s it
+	// rather than finding an existing one (same reasoning as Run1SlowNonMajorAsFast).
+	const string Tag = "Run1SlowPushOrGatherAsFast";
+
+	JsonArray ISerializableSpiritMod.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, UsedCountForJson );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpiritModRegistry.Register( Tag, ( spirit, json, ctx )
+			=> spirit.Mods.Add( new Run1SlowPushOrGatherAsFast( spirit ) { UsedCountForJson = json[1]!.GetValue<int>() } ) );
+
+	#endregion Json
 
 }

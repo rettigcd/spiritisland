@@ -220,6 +220,29 @@ public class DancesUpEarthquakes : Spirit {
 
 	}
 
+	/// <summary> [ impendingCards, impendingEnergy, impendingEnergyPerRound, bonusImpendingPlays ] -
+	/// Impending's PowerCards round-trip via the same PowerCardRegistry Hand/InPlay/DiscardPile already
+	/// use; ImpendingEnergy is keyed by card Title (a string), not identity, so it's just [title,energy]
+	/// pairs. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => new JsonArray(
+		new JsonArray( Impending.Select( c => (JsonNode)c.ToJson() ).ToArray() ),
+		new JsonArray( ImpendingEnergy.Select( p => (JsonNode)new JsonArray( p.Key, p.Value ) ).ToArray() ),
+		ImpendingEnergyPerRound,
+		BonusImpendingPlays
+	);
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) {
+		var array = (JsonArray)json!;
+		Impending.SetItems( ( (JsonArray)array[0]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+		ImpendingEnergy.Clear();
+		foreach(JsonNode? n in (JsonArray)array[1]!) {
+			var pair = (JsonArray)n!;
+			ImpendingEnergy.Add( pair[0]!.GetValue<string>(), pair[1]!.GetValue<int>() );
+		}
+		ImpendingEnergyPerRound = array[2]!.GetValue<int>();
+		BonusImpendingPlays = array[3]!.GetValue<int>();
+	}
+
 	#endregion Memento
 }
 

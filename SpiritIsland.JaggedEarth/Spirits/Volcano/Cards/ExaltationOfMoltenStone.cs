@@ -32,6 +32,14 @@ public class ExaltationOfMoltenStone {
 			return Previous!.GetTargetingRoute(source, tc);
 		}
 
+		public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Previous!.ToJson( ctx ) );
+
+		const string Tag = "ExtendRange1FromMountain";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> RangeCalcRegistry.Register( Tag, ( json, ctx ) => new ExtendRange1FromMountain( RangeCalcRegistry.Deserialize( (JsonArray)json[1]!, ctx ) ) );
+
 	}
 
 }

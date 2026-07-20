@@ -50,6 +50,8 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Space.Sum( Human.Explorer );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( AngryMobs ), () => new AngryMobs() );
 
 }

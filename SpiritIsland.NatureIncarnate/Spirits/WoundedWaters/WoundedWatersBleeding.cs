@@ -148,6 +148,46 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		readonly bool _seekHealing = spirit._seekHealing;
 	}
 
+	/// <summary>
+	/// [ healingWaterMarkers, healingAnimalMarkers, seekHealing, claimedCardNames ]. InnatePowers/
+	/// SpecialRules/GrowthTrack aren't serialized directly - each healing card's Claim() effect on them
+	/// is small, fixed, and fully determined by *which cards are claimed* (RoilingWaters/SereneWaters
+	/// each add one known SpecialRule; WatersRenew/WatersTasteOfRuin each replace one known InnatePower;
+	/// any claim at all grows GrowthTrack from 2 to 3 groups), so restoring just replays those specific
+	/// state changes - not the full Claim() (which also adds an island Mod that Tokens_ForIsland.FromJson
+	/// already restores separately; replaying Claim() would double it).
+	/// </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => new JsonArray(
+		HealingMarkers[Element.Water], HealingMarkers[Element.Animal], _seekHealing,
+		new JsonArray( HealingCards.Where( c => c.IsClaimed( this ) ).Select( c => (JsonNode)c.Text ).ToArray() )
+	);
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) {
+		var array = (JsonArray)json!;
+		HealingMarkers[Element.Water] = array[0]!.GetValue<int>();
+		HealingMarkers[Element.Animal] = array[1]!.GetValue<int>();
+		_seekHealing = array[2]!.GetValue<bool>();
+		if(!_seekHealing)
+			SpecialRules = SpecialRules.Where( x => x != SeekingPath_Rule ).ToArray();
+
+		var claimedNames = ( (JsonArray)array[3]! ).Select( n => n!.GetValue<string>() ).ToHashSet();
+		if(claimedNames.Count == 0) return;
+
+		// Replay just the state-change half of each claimed card's Claim() - not the whole thing, which
+		// also adds an island Mod that Tokens_ForIsland.FromJson already restores separately.
+		foreach(IHealingCard card in HealingCards.Where( c => claimedNames.Contains( c.Text ) )) {
+			switch(card) {
+				case RoilingWaters: AddSpecialRule( RoilingWaters.Rule ); break;
+				case SereneWaters: AddSpecialRule( SereneWaters.Rule ); break;
+				case WatersRenew: InnatePowers[1] = InnatePower.For( typeof( CallToAFastnessOfRenewal ) ); break;
+				case WatersTasteOfRuin: InnatePowers[0] = InnatePower.For( typeof( AfflictWithBloodThirst ) ); break;
+			}
+		}
+
+		if(GrowthTrack.Groups.Length == 2)
+			GrowthTrack = new( [.. GrowthTrack.Groups, ThirdGrowthGroup] );
+	}
+
 	#endregion Memento
 
 }

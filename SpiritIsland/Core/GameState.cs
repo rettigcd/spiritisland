@@ -279,5 +279,149 @@ public class GameState : IHaveMemento {
 
 	#endregion
 
+	#region Json
+
+	/// <summary>
+	/// Only the entries covered by TimePassesActionRegistry (Tokens_ForIsland/Healer/Spirit, plus
+	/// anything implementing ISerializableTimePassesAction) actually round-trip today - see
+	/// docs/GameSerialization-Roadmap.md section 10 for what's still missing (identity-resolution
+	/// cases, TimePassesAction.Once(...) closures). Restoring onto a GameState already reconstructed
+	/// through the normal constructor + InitSpirits (which already re-added the free entries) is safe:
+	/// the deserialized list replaces _timePassesActions wholesale with an equivalent one, same
+	/// identities/order.
+	/// </summary>
+	public JsonArray TimePassesActionsToJson( ISerializationContext ctx ) => _timePassesActions.ToJson( ctx, TimePassesActionRegistry.Serialize );
+
+	public void RestoreTimePassesActionsFromJson( JsonArray json, ISerializationContext ctx ) => _timePassesActions.RestoreFromJson( json, ctx, TimePassesActionRegistry.Deserialize );
+
+	/// <summary>
+	/// IRunBeforeInvaderPhase.ToJson(ctx) is a plain interface member (unlike IRunWhenTimePasses, no
+	/// name collision risk to avoid), so serialization is just calling it directly - only
+	/// PreInvaderPhaseActionRegistry's deserialize side needs a lookup. Same coverage caveat as above:
+	/// only registered tags round-trip (SlowDissolutionOfWillMod, SlaveRebellion, LandStrippedBare) -
+	/// the 7 self-registering BlightCards satisfy ToJson for free via BlightCard's own virtual
+	/// implementation but have no reader registered, so deserializing one still throws.
+	/// </summary>
+	public JsonArray PreInvaderPhaseActionsToJson( ISerializationContext ctx ) => _preInvaderPhaseActions.ToJson( ctx, ( action, c ) => action.ToJson( c ) );
+
+	public void RestorePreInvaderPhaseActionsFromJson( JsonArray json, ISerializationContext ctx ) => _preInvaderPhaseActions.RestoreFromJson( json, ctx, PreInvaderPhaseActionRegistry.Deserialize );
+
+	/// <summary>
+	/// Same shape as PreInvaderPhaseActionsToJson/RestorePreInvaderPhaseActionsFromJson above -
+	/// IRunAfterInvaderPhase.ToJson(ctx) is a plain interface member, so only the deserialize side needs
+	/// a lookup (PostInvaderPhaseActionRegistry). TriggerAfterNoRavageOrBuild is currently the only
+	/// registered entry.
+	/// </summary>
+	public JsonArray PostInvaderPhaseActionsToJson( ISerializationContext ctx ) => _postInvaderPhaseActions.ToJson( ctx, ( action, c ) => action.ToJson( c ) );
+
+	public void RestorePostInvaderPhaseActionsFromJson( JsonArray json, ISerializationContext ctx ) => _postInvaderPhaseActions.RestoreFromJson( json, ctx, PostInvaderPhaseActionRegistry.Deserialize );
+
+	/// <summary>
+	/// BlightCards (plural) is the not-yet-drawn pool StillHealthyBlightCard.Side2Depleted consumes from
+	/// (gs.BlightCard = gs.BlightCards[0]; gs.BlightCards.RemoveAt(0);) - distinct from the single active
+	/// GameState.BlightCard (section 7, already covered by BlightCard.ToJson/FromJson). Reuses the same
+	/// BlightCardRegistry; no new registration needed since every concrete BlightCard already registers
+	/// itself there.
+	/// </summary>
+	public JsonArray BlightCardsToJson( ISerializationContext ctx ) => new JsonArray( BlightCards.Select( bc => (JsonNode)bc.ToJson( ctx ) ).ToArray() );
+
+	public void RestoreBlightCardsFromJson( JsonArray json, ISerializationContext ctx ) => BlightCards = json.Select( n => BlightCard.FromJson( (JsonArray)n!, ctx ) ).ToList();
+
+	/// <summary>
+	/// ReminderCards is pure UI state (StatusPanel reminder-icon list, see docs/GameSerialization-
+	/// Roadmap.md section 10) - its only real producer is CommandBeasts, which is independently restored
+	/// into _timePassesActions via TimePassesActionRegistry. Resolving by Title against that
+	/// already-restored list, rather than constructing a second, disconnected CommandBeasts, matters
+	/// because ActivateAsync calls gs.ReminderCards.Remove(this) on the live _timePassesActions instance -
+	/// a mismatched duplicate would silently fail to remove itself (List&lt;object&gt;.Remove uses
+	/// reference equality; CommandBeasts has no Equals override), leaving a stale icon after the card is
+	/// used. Same recurring identity-resolution shape as InvaderSlotByLabel/BlightCard/
+	/// ExistingSpaceEntity&lt;T&gt;. Restore ordering matters: RestoreReminderCardsFromJson must run after
+	/// RestoreTimePassesActionsFromJson.
+	/// </summary>
+	public JsonArray ReminderCardsToJson( ISerializationContext ctx ) => new JsonArray(
+		ReminderCards.Select( r => r switch {
+			CommandBeasts cb => (JsonNode)new JsonArray( "CommandBeasts", cb.Title ),
+			_ => throw new NotSupportedException( $"GameState.ReminderCardsToJson doesn't support {r.GetType().Name} yet - CommandBeasts is the only known producer." )
+		} ).ToArray()
+	);
+
+	public void RestoreReminderCardsFromJson( JsonArray json, ISerializationContext ctx ) => ReminderCards = json.Select( n => {
+		var entry = (JsonArray)n!;
+		return entry[0]!.GetValue<string>() switch {
+			"CommandBeasts" => (object)_timePassesActions.Actions.OfType<CommandBeasts>().First( cb => cb.Title == entry[1]!.GetValue<string>() ),
+			var kind => throw new NotSupportedException( $"Unknown ReminderCard kind '{kind}'" )
+		};
+	} ).ToList();
+
+	/// <summary>
+	/// Composes every section above (plus Fear/InvaderDeck/PowerCardDeck's own ToJson) into the full
+	/// mutable state a restore needs. Deliberately excludes Adversary identity/wiring - the caller
+	/// already has to know which adversary to build before it can construct a matching target GameState
+	/// to restore onto (see RestoreFromJson's precondition), so there's nothing for this method itself to
+	/// capture. MajorCards/MinorCards are asserted non-null (`!`) the same way MyMemento already does -
+	/// every real game sets both during `GameBuilder.BuildGame`. A `JsonObject` (named keys) rather than
+	/// a positional `JsonArray` - this is the outermost, whole-save shape a person is most likely to open
+	/// and read, so readability wins over the array-only convention the nested sections still use.
+	/// </summary>
+	public JsonObject ToJson( ISerializationContext ctx ) => new JsonObject {
+		["RoundNumber"] = RoundNumber,
+		["Phase"] = (int)Phase,
+		["Tokens"] = Tokens.ToJson( ctx ),
+		["InvaderDeck"] = InvaderDeck.ToJson(),
+		["Fear"] = Fear.ToJson(),
+		["MajorCards"] = MajorCards!.ToJson(),
+		["MinorCards"] = MinorCards!.ToJson(),
+		["BlightCard"] = BlightCard.ToJson( ctx ),
+		["BlightCards"] = BlightCardsToJson( ctx ),
+		["Spirits"] = new JsonArray( Spirits.Select( s => (JsonNode)s.ToJson( ctx ) ).ToArray() ),
+		["TimePassesActions"] = TimePassesActionsToJson( ctx ),
+		["PreInvaderPhaseActions"] = PreInvaderPhaseActionsToJson( ctx ),
+		["PostInvaderPhaseActions"] = PostInvaderPhaseActionsToJson( ctx ),
+		["ReminderCards"] = ReminderCardsToJson( ctx )
+	};
+
+	/// <summary>
+	/// The restore driver docs/GameSerialization-Roadmap.md's Adversary section calls for: sequences
+	/// every section above onto `this` in the only order that's actually safe, given the
+	/// identity-resolution dependencies documented throughout this file and that doc.
+	///
+	/// Precondition: `this` must already be a normally-constructed GameState built the same way the
+	/// original was (same boards/spirits/adversary/ShuffleNumber, e.g. via
+	/// `GameConfiguration.BuildGame()`) - including having already run `Adversary.Init`/
+	/// `GameState.Initialize`/`Adversary.AdjustPlacedTokens`, exactly like
+	/// `Adversary_Tests.ReplayingInit_ThenWipingTokens_PreservesEngineWiring_...` does by hand. That
+	/// replay-then-wipe ordering is what lets `Tokens_ForIsland.FromJson` make the JSON the sole source
+	/// of truth for tokens/island-mods without losing engine wiring, and what
+	/// `RavageEngine.ResolveAfterTokensRestored` re-points afterward for any reference-identity gap the
+	/// wipe opens up (Russia L6's `RecordBlightAdded`). Everything else restores onto `this`'s own
+	/// existing objects (Fear, InvaderDeck, each Spirit) rather than replacing them, preserving whatever
+	/// event wiring/identity those objects' own construction already established.
+	/// </summary>
+	public void RestoreFromJson( JsonObject json, ISerializationContext ctx ) {
+		RoundNumber = json["RoundNumber"]!.GetValue<int>();
+		Phase = (Phase)json["Phase"]!.GetValue<int>();
+
+		Tokens_ForIsland.FromJson( Tokens, (JsonObject)json["Tokens"]!, ctx );
+		InvaderDeck.Ravage.Engine.ResolveAfterTokensRestored( ctx );
+
+		InvaderDeck.RestoreFromJson( (JsonObject)json["InvaderDeck"]! );
+		Fear.RestoreFromJson( (JsonObject)json["Fear"]! );
+		MajorCards!.RestoreFromJson( (JsonObject)json["MajorCards"]! );
+		MinorCards!.RestoreFromJson( (JsonObject)json["MinorCards"]! );
+		BlightCard = BlightCard.FromJson( (JsonArray)json["BlightCard"]!, ctx );
+		RestoreBlightCardsFromJson( (JsonArray)json["BlightCards"]!, ctx );
+
+		var spiritsJson = (JsonArray)json["Spirits"]!;
+		for( int i = 0; i < Spirits.Length; ++i )
+			Spirits[i].RestoreFromJson( (JsonObject)spiritsJson[i]!, ctx );
+
+		RestoreTimePassesActionsFromJson( (JsonArray)json["TimePassesActions"]!, ctx );
+		RestorePreInvaderPhaseActionsFromJson( (JsonArray)json["PreInvaderPhaseActions"]!, ctx );
+		RestorePostInvaderPhaseActionsFromJson( (JsonArray)json["PostInvaderPhaseActions"]!, ctx );
+		RestoreReminderCardsFromJson( (JsonArray)json["ReminderCards"]!, ctx );
+	}
+
+	#endregion
 
 }

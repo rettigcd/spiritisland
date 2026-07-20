@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvaders_FromSpiritPowers, IModifyRemovingToken {
+public class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvaders_FromSpiritPowers, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	public const string Name = "Terror Stalks the Land";
 	const string Description = "You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to the Endless Dark."
@@ -31,5 +31,19 @@ public class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageTo
 
 		return Task.CompletedTask;
 	}
+
+	#region Serialization
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization() => SpaceEntitySerialization.Register( Tag, FromJson );
+
+	const string Tag = "TerrorStalksTheLand";
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	static object FromJson( JsonArray json, ISerializationContext ctx )
+		=> new TerrorStalksTheLand( ctx.SpiritAt( (int)json[1]! ) );
+
+	#endregion
 
 }

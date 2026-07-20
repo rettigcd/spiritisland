@@ -25,6 +25,8 @@ public class PanickedByWildBeasts : FearCardBase, IFearCard {
 			Cmd.Skip.AllInvaderActions( Name ).In().EachActiveLand().Which( Has.Beast )
 		).ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( PanickedByWildBeasts ), () => new PanickedByWildBeasts() );
 
 }

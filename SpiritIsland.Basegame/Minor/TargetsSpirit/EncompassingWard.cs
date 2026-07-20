@@ -16,8 +16,18 @@ public class EncompassingWard {
 		return Task.CompletedTask;
 	}
 
-	public class DefendWherePresent( SpiritPresence presence, int amount, string badge ) : DefendToken(badge) {
+	public class DefendWherePresent( SpiritPresence presence, int amount, string badge ) : DefendToken(badge), ISerializableSpaceEntity {
 		protected override int GetCount( Space space ) => 0 < space[presence.Token] ? amount : 0;
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx )
+			=> new JsonArray( Tag, ctx.IndexOf( presence.Token.Self ), amount, badge );
+
+		const string Tag = "DefendWherePresent";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx )
+				=> new DefendWherePresent( ctx.SpiritAt( (int)json[1]! ).Presence, json[2]!.GetValue<int>(), json[3]!.GetValue<string>() ) );
 	}
 
 }

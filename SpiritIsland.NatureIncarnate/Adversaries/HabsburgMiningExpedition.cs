@@ -35,6 +35,14 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 			return Task.CompletedTask;
 		}
 
+		// Stateless - re-scans ActionScope.Current.Spaces_Existing fresh each run.
+		JsonArray IRunBeforeInvaderPhase.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "LandStrippedBare";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> PreInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => new LandStrippedBare() );
 		#endregion IRunBeforeInvaderPhase
 	}
 
@@ -83,7 +91,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 	/// <summary>
 	/// Replaces a Ravage-Blight-Cascade with an Invader upgrade
 	/// </summary>
-	public class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAdded {
+	public class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAdded, ISerializableSpaceEntity {
 
 		// !!! If there is another Mod that stops the cascade, it should run first so we don't trigger this effect.
 
@@ -130,9 +138,16 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 
 		#endregion
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "AvariceRewardedMod";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new AvariceRewardedMod() );
 	}
 
-	public class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
+	public class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages, ISerializableSpaceEntity {
 		public UsageCost Cost => UsageCost.Something;
 
 		public async Task<bool> Skip( Space space ) {
@@ -144,6 +159,14 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 					return true;
 			return false;
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "DiseaseStopsRavageInMiningLands";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new DiseaseStopsRavageInMiningLands() );
 
 	}
 
@@ -231,7 +254,9 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 			return _levelsString.Contains( 'S' ) ? Level2SansCoastal : base.SelectLevel2Cards();
 		}
 
-		
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> InvaderCardRegistry.Register( "Salt Deposits", SaltDeposits );
 
 	}
 	

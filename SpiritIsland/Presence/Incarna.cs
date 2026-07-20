@@ -5,6 +5,7 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	: IToken
 	, ITokenClass
 	, ITrackMySpaces
+	, ISerializableSpaceEntity
 {
 	static readonly FakeSpace NullSpace = new FakeSpace( "Incarna-Null-Space" ); // 1 null space for all Incarna
 
@@ -72,4 +73,26 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	readonly CountDictionary<Space> _spaceCounts = [];
 
+	// _spaceCounts isn't captured - same ITrackMySpaces cache exception as SpiritPresenceToken:
+	// it's rebuilt from normal Add/Move token-tracking as the game replays forward.
+	//
+	// Resolved via spirit index rather than reconstructed, so this always returns the *same*
+	// Incarna instance a Spirit already owns (spirit.Presence.Incarna), not a fresh one - this
+	// also matters because Incarna implements ITokenClass, and SerializeToken checks
+	// ISerializableSpaceEntity before ITokenClass, so this takes priority over (and fixes) the
+	// generic by-label fallback, which would have failed: TokenClassRegistry only scans Token/Human
+	// static holders, so a per-spirit Incarna was never resolvable that way.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( Self ), Empowered );
+
+	const string Tag = "Incarna";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, FromJson );
+
+	static object FromJson( JsonArray json, ISerializationContext ctx ) {
+		Incarna incarna = ctx.SpiritAt( (int)json[1]! ).Presence.Incarna;
+		incarna.Empowered = json[2]!.GetValue<bool>();
+		return incarna;
+	}
 }

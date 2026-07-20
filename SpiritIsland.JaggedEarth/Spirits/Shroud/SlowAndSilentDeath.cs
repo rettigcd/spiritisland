@@ -1,6 +1,6 @@
 namespace SpiritIsland.JaggedEarth;
 
-class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
+class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses, ISerializableTimePassesAction {
 
 	readonly ShroudOfSilentMist _spirit = spirit;
 
@@ -38,5 +38,13 @@ class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 
 	}
 
+	// Only state is the owning Spirit - resolvable by index.
+	JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+	const string Tag = "SlowAndSilentDeath";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new SlowAndSilentDeath( (ShroudOfSilentMist)ctx.SpiritAt( json[1]!.GetValue<int>() ) ) );
 }
 

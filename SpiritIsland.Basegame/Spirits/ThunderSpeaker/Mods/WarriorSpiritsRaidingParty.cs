@@ -12,7 +12,11 @@ class WarriorSpiritsRaidingParty : Incarna, IHandleTokenRemoved {
 
 	#region Setup Action
 
-	public class PlaceIncarna : SpiritAction {
+	// Named (rather than an anonymous `new SpiritAction(...)`) so it can implement ISerializableSelfCmd -
+	// same reasoning/pattern as PlayCardForCost. A raw SpiritAction wraps an arbitrary delegate with
+	// nothing to key a JSON round-trip off of; this one has no per-instance state, so its Tag alone
+	// resolves it.
+	public class PlaceIncarna : SpiritAction, ISerializableSelfCmd {
 
 		public PlaceIncarna() : base("Place Incarna") { }
 
@@ -21,6 +25,14 @@ class WarriorSpiritsRaidingParty : Incarna, IHandleTokenRemoved {
 			await token.Space.Dahan.AddDefault(1,AddReason.AsReplacement);
 			await token.Space.ReplaceAsync(token.Token,1,spirit.Incarna);
 		}
+
+		const string Tag = "WarriorSpiritsRaidingParty.PlaceIncarna";
+
+		JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new PlaceIncarna() );
 
 	}
 

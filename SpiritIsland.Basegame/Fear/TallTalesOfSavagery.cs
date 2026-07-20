@@ -37,6 +37,8 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 			await invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( TallTalesOfSavagery ), () => new TallTalesOfSavagery() );
 
 }

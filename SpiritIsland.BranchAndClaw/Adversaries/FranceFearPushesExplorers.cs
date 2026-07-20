@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
+public class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	// Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
 	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
@@ -22,4 +22,11 @@ public class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
 		}
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "FranceFearPushesExplorers";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new FranceFearPushesExplorers() );
 }

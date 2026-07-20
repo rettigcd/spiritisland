@@ -5,6 +5,7 @@ public class ToweringRootsIncarna( Spirit spirit )
 	, IHandleTokenAdded	// Empowers if it meets 3 vitality
 	, IAdjustDamageToInvaders_ByStoppingIt, IAdjustDamageToDahan, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
+	, ISerializableSpaceEntity
 {
 	string ISkipBuilds.Text => SpaceAbreviation;
 
@@ -34,5 +35,13 @@ public class ToweringRootsIncarna( Spirit spirit )
 	public UsageCost Cost => UsageCost.Free;
 	public Task<bool> Skip( Space space ) => Task.FromResult( Empowered );
 	#endregion
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( Self ), Empowered );
+
+	const string Tag = "ToweringRootsIncarna";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ToweringRootsIncarna( ctx.SpiritAt( (int)json[1]! ) ) { Empowered = json[2]!.GetValue<bool>() } );
 
 }

@@ -28,6 +28,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
 	, IEndWhenTimePasses // :sadface: I want this to live between rounds.
+	, ISerializableSpaceEntity
 {
 	ITokenClass IToken.Class => Token.Element;
 	string IToken.Badge => string.Empty;
@@ -69,7 +70,27 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 	string _tokenSummary = ctx.Space.Summary;
 
 	readonly ShiftingMemoryOfAges _spirit = (ShiftingMemoryOfAges)ctx.Self;
+	readonly SpaceSpec _spaceSpec = ctx.SpaceSpec; // kept only so serialization can rebuild ctx; not used at runtime otherwise
 	readonly string _key = "ObserveWorldMod-" + Guid.NewGuid().ToString();
+
+	#endregion
+
+	#region Serialization
+
+	// _key isn't captured - it's only a dedup guard scoped to the current ActionScope, so a fresh
+	// GUID on deserialize is exactly as correct as the original one.
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx )
+		=> new JsonArray( Tag, serCtx.IndexOf( _spirit ), _spaceSpec.Label, _tokenSummary );
+
+	const string Tag = "ObserveWorldMod";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+			Spirit spirit = serCtx.SpiritAt( (int)json[1]! );
+			SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+			return new ObserveWorldMod( serCtx.TargetSpace( spirit, spec ) ) { _tokenSummary = json[3]!.GetValue<string>() };
+		} );
 
 	#endregion
 

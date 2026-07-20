@@ -25,7 +25,7 @@ public class CallToTrade {
 		ctx.Space.Adjust( new ReplaceRavageWithBuild(), 1);
 	}
 
-	public class ReplaceRavageWithBuild : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
+	public class ReplaceRavageWithBuild : BaseModEntity, IEndWhenTimePasses, ISkipRavages, ISerializableSpaceEntity {
 
 		public ReplaceRavageWithBuild() : base() { }
 
@@ -44,6 +44,13 @@ public class CallToTrade {
 			return Task.FromResult(true);
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "ReplaceRavageWithBuild";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ReplaceRavageWithBuild() );
 	}
 
 }

@@ -26,7 +26,11 @@ public class Lair : IAspect {
 		spirit.ReplaceRule(EnthrallTheForeignExplorers.Name, ASingleAluringLair.Rule);
 	}
 
-	internal class InitLair : SpiritAction {
+	// Named (rather than an anonymous `new SpiritAction(...)`) so it can implement ISerializableSelfCmd -
+	// same reasoning/pattern as PlayCardForCost. A raw SpiritAction wraps an arbitrary delegate with
+	// nothing to key a JSON round-trip off of; this one has no per-instance state, so its Tag alone
+	// resolves it.
+	internal class InitLair : SpiritAction, ISerializableSelfCmd {
 
 		public InitLair() : base("Init Lair") { }
 
@@ -39,6 +43,14 @@ public class Lair : IAspect {
 			foreach(var land in spirit.Presence.Lands.ToArray())
 				land.Init(spirit.Presence.Token,0);
 		}
+
+		const string Tag = "Lair.InitLair";
+
+		JsonArray ISerializableSelfCmd.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SelfCmdRegistry.Register( Tag, ( json, ctx ) => new InitLair() );
 
 	}
 

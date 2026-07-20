@@ -29,7 +29,7 @@ public class KeepWatchForNewIncursions {
 	/// Once this turn, after Invaders are added or moved into target land,
 	/// 1 Damage per Dahan in target land, to those added/moved Invaders only
 	/// </summary>
-	public class DamageNewInvadersOnce( Spirit spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class DamageNewInvadersOnce( Spirit spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses, ISerializableSpaceEntity {
 		bool _used = false;
 		readonly Spirit _spirit = spirit;
 
@@ -54,6 +54,13 @@ public class KeepWatchForNewIncursions {
 
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ), _used );
+
+		const string Tag = "DamageNewInvadersOnce";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new DamageNewInvadersOnce( ctx.SpiritAt( (int)json[1]! ) ) { _used = json[2]!.GetValue<bool>() } );
 	}
 
 

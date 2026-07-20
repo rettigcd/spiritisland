@@ -13,6 +13,8 @@ public class PromisingFarmlands : BlightCard {
 			.To().OneLandPerBoard().Which( Has.InlandWithNoTownOrCity )
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( PromisingFarmlands ), ( json, ctx ) => new PromisingFarmlands() );
 
 }

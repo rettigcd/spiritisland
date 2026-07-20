@@ -54,7 +54,7 @@ public class AJoiningOfSwarmsAndFlocks : SpiritPresenceToken, IHandleTokenAdded 
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
 public class ManyMindsBeast(Spirit spirit)
-	: IToken, IHandleTokenAdded, IHandleTokenRemoved {
+	: IToken, IHandleTokenAdded, IHandleTokenRemoved, ISerializableSpaceEntity {
 
 	AJoiningOfSwarmsAndFlocks PresenceToken => (AJoiningOfSwarmsAndFlocks)spirit.Presence.Token;
 
@@ -92,4 +92,11 @@ public class ManyMindsBeast(Spirit spirit)
 
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	const string Tag = "ManyMindsBeast";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ManyMindsBeast( ctx.SpiritAt( (int)json[1]! ) ) );
 }

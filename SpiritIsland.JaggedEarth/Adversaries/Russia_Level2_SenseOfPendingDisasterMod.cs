@@ -3,7 +3,7 @@
 /// <summary>
 /// Pushes an explorer instead of destroying it.
 /// </summary>
-public class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingToken {
+public class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";
@@ -26,5 +26,13 @@ public class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRem
 			await move.Apply();
 		}
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "Russia_Level2_SenseOfPendingDisasterMod";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new Russia_Level2_SenseOfPendingDisasterMod() );
 
 }

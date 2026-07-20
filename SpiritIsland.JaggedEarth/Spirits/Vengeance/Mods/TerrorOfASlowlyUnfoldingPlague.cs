@@ -3,7 +3,7 @@
 /// <summary>
 /// Prevents Disease from being removed when on Spirit's lands.
 /// </summary>
-public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, IModifyRemovingToken {
+public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, IModifyRemovingToken, ISerializableSpaceEntity {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"The Terror of a Slowly Unfolding Plague",
@@ -29,4 +29,11 @@ public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, I
 		&& args.Reason == RemoveReason.UsedUp
 		&& args.Count == 1;
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _spirit ) );
+
+	const string Tag = "TerrorOfASlowlyUnfoldingPlague";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new TerrorOfASlowlyUnfoldingPlague( ctx.SpiritAt( (int)json[1]! ) ) );
 }

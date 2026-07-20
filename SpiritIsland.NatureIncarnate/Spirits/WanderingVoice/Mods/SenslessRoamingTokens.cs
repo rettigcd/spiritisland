@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class SenselessRoaming(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
+public class SenselessRoaming(Spirit spirit) : BaseModEntity, IHandleTokenAdded, ISerializableSpaceEntity {
 
 	#region Name/Rule
 	public const string Name = "Senseless Roaming";
@@ -13,5 +13,13 @@ public class SenselessRoaming(Spirit spirit) : BaseModEntity, IHandleTokenAdded 
 			? args.Added.On(space).PushAsync(spirit)
 			: Task.CompletedTask;
 	}
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( spirit ) );
+
+	const string Tag = "SenselessRoaming";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new SenselessRoaming( ctx.SpiritAt( (int)json[1]! ) ) );
 
 }

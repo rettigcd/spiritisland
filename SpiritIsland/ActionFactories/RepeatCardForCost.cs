@@ -8,7 +8,7 @@
 /// <summary>
 /// A card already in Play, may be Activated an additional time. (no new elements)
 /// </summary>
-public class RepeatCardForCost( string exclude = "" ) : IActionFactory {
+public class RepeatCardForCost( string exclude = "" ) : IActionFactory, ISerializableActionFactory {
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ )
 		=> speed == Phase.Fast || speed == Phase.Slow;
@@ -42,6 +42,17 @@ public class RepeatCardForCost( string exclude = "" ) : IActionFactory {
 
 	readonly protected string _exclude = exclude;
 
+	#region Json
+
+	protected virtual string Tag => "RepeatCardForCost";
+
+	public virtual JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag, _exclude );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> ActionFactoryRegistry.Register( "RepeatCardForCost", ( json, ctx ) => new RepeatCardForCost( json[1]!.GetValue<string>() ) );
+
+	#endregion Json
 
 }
 
@@ -55,5 +66,14 @@ public class RepeatCheapestCardForCost( string exclude = "" ) : RepeatCardForCos
 		];
 	}
 
+	#region Json
+
+	protected override string Tag => "RepeatCheapestCardForCost";
+
+	[ModuleInitializer]
+	internal static void RegisterCheapestSerialization()
+		=> ActionFactoryRegistry.Register( "RepeatCheapestCardForCost", ( json, ctx ) => new RepeatCheapestCardForCost( json[1]!.GetValue<string>() ) );
+
+	#endregion Json
 
 }

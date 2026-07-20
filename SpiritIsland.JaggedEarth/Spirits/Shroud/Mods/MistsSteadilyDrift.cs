@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class MistsSteadilyDrift : IModifyAvailableActions {
+class MistsSteadilyDrift : IModifyAvailableActions, IOwnedActionFactories {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Mists Steadily Drift",
@@ -44,6 +44,25 @@ class MistsSteadilyDrift : IModifyAvailableActions {
 	}
 	#endregion IModifyAvailableActions imp
 
+	#region Json
+
+	// _pushFast/_pushSlow are compared by reference against spirit.UsedActions - restoring them must
+	// resolve back to these exact instances (already re-added by aspect replay before RestoreFromJson
+	// runs), not fresh ones built from their own serialized content. See IOwnedActionFactories.
+	const string Tag = "MistsSteadilyDrift";
+
+	string IOwnedActionFactories.ModTag => Tag;
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory )
+		=> factory == _pushFast ? "pushFast" : factory == _pushSlow ? "pushSlow" : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key ) => key switch {
+		"pushFast" => _pushFast,
+		"pushSlow" => _pushSlow,
+		_ => throw new ArgumentException( $"Unknown key '{key}'" )
+	};
+
+	#endregion Json
 
 	#region private fields
 

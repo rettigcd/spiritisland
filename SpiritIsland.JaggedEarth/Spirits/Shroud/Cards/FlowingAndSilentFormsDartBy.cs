@@ -24,7 +24,7 @@ public class FlowingAndSilentFormsDartBy {
 	/// <summary>
 	/// Allows presence to be pushed when it normally would be destroyed.
 	/// </summary>
-	public class PushPresenceInsteadOfDestroy : ISpaceEntity, IModifyRemovingToken, IEndWhenTimePasses {
+	public class PushPresenceInsteadOfDestroy : ISpaceEntity, IModifyRemovingToken, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 		async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( !args.Reason.IsDestroyingPresence()
@@ -44,6 +44,13 @@ public class FlowingAndSilentFormsDartBy {
 			}
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "PushPresenceInsteadOfDestroy";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new PushPresenceInsteadOfDestroy() );
 	}
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {

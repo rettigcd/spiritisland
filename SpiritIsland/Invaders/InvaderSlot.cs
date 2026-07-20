@@ -36,6 +36,25 @@ public abstract class InvaderSlot( string label ) : IHaveMemento {
 
 	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
 
+	#region Json
+
+	/// <summary> Same field list as MyMemento below. Engine isn't captured - like MyMemento, it's
+	/// assumed setup-time-stable, not per-turn state. </summary>
+	public JsonArray ToJson() => new JsonArray(
+		_skipCount, _holdBackCount,
+		new JsonArray( Cards.Select( c => (JsonNode)c.ToJson() ).ToArray() )
+	);
+
+	/// <summary> Restores onto this existing slot (Explore/Build/Ravage are fixed, always-present
+	/// instances on an InvaderDeck) rather than constructing a new one - InvaderSlot is abstract and
+	/// its subclasses carry their own pluggable Engine that this doesn't try to reconstruct. </summary>
+	public void RestoreFromJson( JsonArray json ) {
+		_skipCount = json[0]!.GetValue<int>();
+		_holdBackCount = json[1]!.GetValue<int>();
+		Cards.SetItems( ( (JsonArray)json[2]! ).Select( n => InvaderCardRegistry.Deserialize( (JsonArray)n! ) ).ToArray() );
+	}
+
+	#endregion Json
 
 	object IHaveMemento.Memento {
 		get => new MyMemento(this);

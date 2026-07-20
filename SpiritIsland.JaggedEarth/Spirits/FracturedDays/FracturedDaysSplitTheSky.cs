@@ -154,6 +154,27 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	#endregion Custom Memento
 
+	/// <summary> [ randomizerPosition, time, dtnwMinor, dtnwMajor ]. The seed itself
+	/// (gs.ShuffleNumber + 2837) isn't captured - it's re-derived identically every time this Spirit is
+	/// reconstructed against the same GameState (same reasoning as GrowthTrack/InnatePowers elsewhere);
+	/// only _randomizer's read position needs to travel, since Next() lazily replays the same
+	/// deterministically-seeded Random and caches results in _history - fast-forwarding to the same
+	/// position reproduces the exact same future values. Uses OneOrTwoClass.Position directly rather
+	/// than its IHaveMemento.Memento - Mementos are slated for removal later. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => new JsonArray(
+		_randomizer!.Position, Time,
+		new JsonArray( DtnwMinor.Select( c => (JsonNode)c.ToJson() ).ToArray() ),
+		new JsonArray( DtnwMajor.Select( c => (JsonNode)c.ToJson() ).ToArray() )
+	);
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) {
+		var array = (JsonArray)json!;
+		_randomizer!.Position = array[0]!.GetValue<int>();
+		Time = array[1]!.GetValue<int>();
+		DtnwMinor.SetItems( ( (JsonArray)array[2]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+		DtnwMajor.SetItems( ( (JsonArray)array[3]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+	}
+
 	/// <summary> Randomizer with a state that can be restored. </summary>
 	class OneOrTwoClass( int seed ) : IHaveMemento {
 		public int Next() {
@@ -164,6 +185,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 		public object Memento {
 			get => _cur;
 			set => _cur = (int)value;
+		}
+		/// <summary> Same field as Memento above, exposed directly for JSON - kept independent of
+		/// IHaveMemento.Memento since Mementos are slated for removal later. </summary>
+		public int Position {
+			get => _cur;
+			set => _cur = value;
 		}
 		readonly List<int> _history = [];
 		int _cur = 0;

@@ -31,10 +31,23 @@ public class InstrumentsOfTheirOwnRuin {
 		return Task.CompletedTask;
 	}
 
-	public class DamageInvadersInAdjacentLands( TargetSpaceCtx ctx ) : IRavageSequenceStep {
+	public class DamageInvadersInAdjacentLands( TargetSpaceCtx ctx ) : IRavageSequenceStep, ISerializableSpaceEntity {
 		public Task Execute( RavageBehavior behavior, RavageData data, Func<Task> next )
 			=> RavageSequence_DamageInvadersInAdjacentLand( ctx );
 			// never calls next() - fully replaces the ravage, matching original behavior
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx )
+			=> new JsonArray( Tag, serCtx.IndexOf( ctx.Self ), ctx.SpaceSpec.Label );
+
+		const string Tag = "DamageInvadersInAdjacentLands";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+				Spirit spirit = serCtx.SpiritAt( (int)json[1]! );
+				SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+				return new DamageInvadersInAdjacentLands( serCtx.TargetSpace( spirit, spec ) );
+			} );
 	}
 
 	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx ) { 

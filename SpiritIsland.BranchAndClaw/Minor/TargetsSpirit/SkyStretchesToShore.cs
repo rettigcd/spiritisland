@@ -19,7 +19,13 @@ public class SkyStretchesToShore {
 
 class SkyStretchesToShoreApi : DefaultRangeCalculator {
 
-	public SkyStretchesToShoreApi( Spirit self ) : base( self.PowerRangeCalc ) => _self = self;
+	public SkyStretchesToShoreApi( Spirit self ) : this( self, self.PowerRangeCalc ) { }
+
+	// Used by FromJson to rebuild onto the exact recursively-resolved previous chain, rather than the
+	// convenience constructor above, which would instead capture whatever self.PowerRangeCalc happens
+	// to be *at restore time* (already-reconstructed spirit's post-setup value, not necessarily the
+	// originally-saved previous if something else was also temporarily layered on top).
+	SkyStretchesToShoreApi( Spirit self, ICalcRange previous ) : base( previous ) => _self = self;
 
 	readonly Spirit _self;
 
@@ -29,5 +35,15 @@ class SkyStretchesToShoreApi : DefaultRangeCalculator {
 			.Where(x => x.target.SpaceSpec.IsCoastal);
 		return new TargetRoutes( normal._routes.Union(shore) );
 	}
+
+	public override JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( _self ), Previous!.ToJson( ctx ) );
+
+	const string Tag = "SkyStretchesToShoreApi";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> RangeCalcRegistry.Register( Tag, ( json, ctx ) => new SkyStretchesToShoreApi(
+			ctx.SpiritAt( json[1]!.GetValue<int>() ), RangeCalcRegistry.Deserialize( (JsonArray)json[2]!, ctx )
+		) );
 
 }

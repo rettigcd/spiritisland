@@ -82,5 +82,17 @@ public class EmberEyedBehemoth : Spirit {
 		}
 	}
 
+	/// <summary> Just the group count (3 or 4) - the groups themselves are spirit-type data, identical
+	/// every time this Spirit is (re)constructed (same reasoning as GrowthTrack elsewhere); only whether
+	/// DoGrowth already truncated the 4th one is a real runtime delta. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => GrowthTrack.Groups.Length;
+
+	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) {
+		int count = json!.GetValue<int>();
+		if(count != GrowthTrack.Groups.Length)
+			GrowthTrack = new( GrowthTrack.Groups.Take( count ).ToArray() );
+		Incarna.Empowered = count == 3;
+	}
+
 }
 

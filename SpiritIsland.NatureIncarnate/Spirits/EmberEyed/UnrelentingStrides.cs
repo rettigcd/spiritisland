@@ -1,7 +1,7 @@
 ﻿
 namespace SpiritIsland.NatureIncarnate;
 
-class UnrelentingStrides : IModifyAvailableActions {
+class UnrelentingStrides : IModifyAvailableActions, IOwnedActionFactories {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Unrelenting Strides",
@@ -41,5 +41,21 @@ class UnrelentingStrides : IModifyAvailableActions {
 
 	#endregion private
 
+	#region Json
+
+	// _behemoth is compared by reference against spirit.UsedActions - restoring it must resolve back to
+	// this exact instance (already constructed by EmberEyedBehemoth's own constructor before
+	// RestoreFromJson runs), not a fresh one built from its own serialized content. See
+	// IOwnedActionFactories.
+	const string Tag = "UnrelentingStrides";
+
+	string IOwnedActionFactories.ModTag => Tag;
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory ) => factory == _behemoth ? "behemoth" : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key )
+		=> key == "behemoth" ? _behemoth : throw new ArgumentException( $"Unknown key '{key}'" );
+
+	#endregion Json
 
 }

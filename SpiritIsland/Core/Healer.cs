@@ -38,5 +38,29 @@ public sealed class Healer : IRunWhenTimePasses {
 	readonly HashSet<Space> _skipInvadersOn = [];
 	readonly HashSet<Space> _skipDahanOn = [];
 
+	#region Json
+
+	/// <summary>
+	/// [ skipInvadersOnLabels, skipDahanOnLabels ] - cleared every TimePasses(), so this only matters
+	/// for a save landing mid-round. Space compares by SpaceSpec.Label (see SpaceSpec.Equals), so a
+	/// freshly-built Space wrapper for the same label round-trips correctly through the HashSet.
+	/// </summary>
+	public JsonArray ToJson() => new JsonArray(
+		new JsonArray( _skipInvadersOn.Select( s => (JsonNode)s.SpaceSpec.Label ).ToArray() ),
+		new JsonArray( _skipDahanOn.Select( s => (JsonNode)s.SpaceSpec.Label ).ToArray() )
+	);
+
+	/// <summary> Restores onto this existing Healer (GameState owns exactly one) - see GameState.Healer. </summary>
+	public void RestoreFromJson( JsonArray json, ISerializationContext ctx ) {
+		_skipInvadersOn.Clear();
+		foreach( JsonNode? label in (JsonArray)json[0]! )
+			_skipInvadersOn.Add( ctx.Tokens[ ctx.SpaceSpecOrFakeByLabel( label!.GetValue<string>() ) ] );
+
+		_skipDahanOn.Clear();
+		foreach( JsonNode? label in (JsonArray)json[1]! )
+			_skipDahanOn.Add( ctx.Tokens[ ctx.SpaceSpecOrFakeByLabel( label!.GetValue<string>() ) ] );
+	}
+
+	#endregion
 
 }

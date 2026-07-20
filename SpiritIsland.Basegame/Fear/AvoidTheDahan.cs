@@ -18,8 +18,16 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 		}
 	);
 
-	public class StopExploreIn2DahanLands() : SkipExploreTo_Custom(true) {
+	public class StopExploreIn2DahanLands() : SkipExploreTo_Custom(true), ISerializableSpaceEntity {
 		protected override bool ShouldSkip(Space space) => 2 <= space.Dahan.CountAll;
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopExploreIn2DahanLands";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopExploreIn2DahanLands() );
 	}
 
 	[FearLevel("Invaders do not Build in lands where Dahan outnumber Town/City." )]
@@ -33,9 +41,17 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 		ctx => ctx.Space.Adjust(new StopBuildWhereDahanOutnumber(), 1 )
 	);
 
-	public class StopBuildWhereDahanOutnumber() : SkipBuild_Custom(Name, true) {
+	public class StopBuildWhereDahanOutnumber() : SkipBuild_Custom(Name, true), ISerializableSpaceEntity {
 		protected override bool ShouldSkip(Space space)
 			=> space.SumAny(Human.Town_City) < space.Dahan.CountAll;
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopBuildWhereDahanOutnumber";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopBuildWhereDahanOutnumber() );
 	}
 
 	[FearLevel("Invaders do not Build in lands with Dahan." )]
@@ -51,8 +67,20 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 		}
 	);
 
-	public class StopBuildInDahanLands() : SkipBuild_Custom(Name, true) {
+	public class StopBuildInDahanLands() : SkipBuild_Custom(Name, true), ISerializableSpaceEntity {
 		protected override bool ShouldSkip(Space space) => space.Dahan.Any;
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopBuildInDahanLands";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopBuildInDahanLands() );
 	}
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( AvoidTheDahan ), () => new AvoidTheDahan() );
 
 }

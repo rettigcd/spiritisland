@@ -29,6 +29,8 @@ public class Isolation : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Isolation ), () => new Isolation() );
 
 }

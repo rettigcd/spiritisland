@@ -37,5 +37,7 @@ public class Scapegoats : FearCardBase, IFearCard {
 			await ctx.Invaders.DestroyNOfClass( ctx.Space.Sum( Human.City ), Human.Town );
 	});
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( Scapegoats ), () => new Scapegoats() );
 }

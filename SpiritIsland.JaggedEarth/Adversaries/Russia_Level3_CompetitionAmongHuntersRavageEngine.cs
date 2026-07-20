@@ -20,7 +20,7 @@ class Russia_Level3_CompetitionAmongHuntersRavageEngine : RavageEngine {
 
 	// 1 per space, don't reuse on multiple spaces
 	// If Lure's Enthrall the Foreign Explorers, stops them from ravaging, don't do the ravage.
-	public class StopRavageIfTooFewExplorers : IConfigRavages, IEndWhenTimePasses, IRavageSequenceStep {
+	public class StopRavageIfTooFewExplorers : IConfigRavages, IEndWhenTimePasses, IRavageSequenceStep, ISerializableSpaceEntity {
 		Task IConfigRavages.Config(Space space) {
 			var steps = space.RavageBehavior.SequenceSteps;
 			if( !steps.Contains(this) )
@@ -38,6 +38,13 @@ class Russia_Level3_CompetitionAmongHuntersRavageEngine : RavageEngine {
 				: Task.CompletedTask;
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		const string Tag = "StopRavageIfTooFewExplorers";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new StopRavageIfTooFewExplorers() );
 	}
 
 }

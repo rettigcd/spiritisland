@@ -3,7 +3,7 @@
 /// <summary>
 /// Mod used by Stretch Out Coils Of Foreboding Dread
 /// </summary>
-public class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
+public class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 	public Task HandleFearAddedAsync(Space space, int fearAdded, FearType fearType) {
 
@@ -38,4 +38,11 @@ public class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePa
 
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "FearPushesInvaders";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new FearPushesInvaders() );
 }

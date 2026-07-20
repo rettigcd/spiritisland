@@ -16,6 +16,12 @@ public class MemoryFadesToDust : BlightCard, IRunBeforeInvaderPhase {
 		.ForEachSpirit()
 		.ActAsync( gameState );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( MemoryFadesToDust ), ( json, ctx ) => new MemoryFadesToDust() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
+		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( MemoryFadesToDust ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

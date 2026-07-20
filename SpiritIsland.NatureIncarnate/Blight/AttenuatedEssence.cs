@@ -19,6 +19,12 @@ public class AttenuatedEssence : BlightCard, IRunBeforeInvaderPhase {
 			.Who(Has.AtLeastNPresenceOnIsland(5))
 			.ActAsync( gameState );
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		BlightCardRegistry.Register( nameof( AttenuatedEssence ), ( json, ctx ) => new AttenuatedEssence() );
+		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
+		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		PreInvaderPhaseActionRegistry.Register( nameof( AttenuatedEssence ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
+	}
 
 }

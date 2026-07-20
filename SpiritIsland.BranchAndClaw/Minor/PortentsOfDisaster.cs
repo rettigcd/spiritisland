@@ -15,7 +15,7 @@ public class PortentsOfDisaster {
 
 	}
 
-	public class Add1FearForFirstDestroyedInvader( TargetSpaceCtx ctx ) : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
+	public class Add1FearForFirstDestroyedInvader( TargetSpaceCtx ctx ) : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved, ISerializableSpaceEntity {
 		bool _addFear = true;
 		public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 			if( _addFear
@@ -27,6 +27,18 @@ public class PortentsOfDisaster {
 			}
 		}
 
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx )
+			=> new JsonArray( Tag, serCtx.IndexOf( ctx.Self ), ctx.SpaceSpec.Label, _addFear );
+
+		const string Tag = "Add1FearForFirstDestroyedInvader";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+				Spirit spirit = serCtx.SpiritAt( (int)json[1]! );
+				SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+				return new Add1FearForFirstDestroyedInvader( serCtx.TargetSpace( spirit, spec ) ) { _addFear = json[3]!.GetValue<bool>() };
+			} );
 	}
 
 }

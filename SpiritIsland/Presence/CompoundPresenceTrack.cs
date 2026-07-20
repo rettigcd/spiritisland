@@ -57,5 +57,19 @@ public class CompoundPresenceTrack( params IPresenceTrack[] parts )
 
 	#endregion
 
+	#region Json
+
+	/// <summary> [ part0Json, part1Json, ... ], recursively - which part revealed how much matters, not
+	/// just the combined total, so each part restores itself onto the already-constructed instance
+	/// (same shape as PresenceTrack.RestoreFromJson) rather than a single combined count. </summary>
+	JsonNode IPresenceTrack.ToJson() => new JsonArray( _parts.Select( p => p.ToJson() ).ToArray() );
+
+	void IPresenceTrack.RestoreFromJson( JsonNode json ) {
+		var array = (JsonArray)json;
+		for( int i = 0; i < _parts.Length; ++i )
+			_parts[i].RestoreFromJson( array[i]! );
+	}
+
+	#endregion
 
 }

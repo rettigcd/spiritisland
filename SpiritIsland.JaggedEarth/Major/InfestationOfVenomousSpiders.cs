@@ -29,8 +29,22 @@ public class InfestationOfVenomousSpiders {
 	}
 
 	// this correctly uses Bringers ctx to do Dream damage
-	public class SkipAndDamageInvaders( string label, Spirit spirit, TargetSpaceCtx ctx ) : SkipAnyInvaderAction( label, spirit ) {
+	public class SkipAndDamageInvaders( string label, Spirit spirit, TargetSpaceCtx ctx ) : SkipAnyInvaderAction( label, spirit ), ISerializableSpaceEntity {
 		protected override Task AfterStop( Space space ) => ctx.Target(space).DamageInvaders(4);
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx )
+			=> new JsonArray( Tag, serCtx.IndexOf( spirit ), label, ctx.SpaceSpec.Label );
+
+		const string Tag = "SkipAndDamageInvaders";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+				Spirit resolvedSpirit = serCtx.SpiritAt( (int)json[1]! );
+				string resolvedLabel = json[2]!.GetValue<string>();
+				SpaceSpec spec = serCtx.SpaceSpecByLabel( json[3]!.GetValue<string>() );
+				return new SkipAndDamageInvaders( resolvedLabel, resolvedSpirit, serCtx.TargetSpace( resolvedSpirit, spec ) );
+			} );
 	}
 
 }

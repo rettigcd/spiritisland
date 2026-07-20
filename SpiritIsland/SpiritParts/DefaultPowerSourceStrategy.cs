@@ -16,5 +16,13 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};
 	}
+
+	JsonArray ITargetingSourceStrategy.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "Default";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> TargetingSourceStrategyRegistry.Register( Tag, ( json, ctx ) => new DefaultPowerSourceStrategy() );
 }
 

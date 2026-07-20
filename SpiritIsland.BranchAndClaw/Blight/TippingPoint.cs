@@ -13,6 +13,8 @@ public class TippingPoint : BlightCard {
 			Cmd.DestroyPresence(3)
 		);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( TippingPoint ), ( json, ctx ) => new TippingPoint() );
 
 }

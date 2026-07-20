@@ -69,6 +69,22 @@ public partial class FinderTrack : IPresenceTrack {
 
 #endregion
 
+	#region Json
+
+	/// <summary> [ slot0State, slot1State, ... ] in Slots' own (already-deterministic) order - restores
+	/// directly onto _lookup's existing LinkedSlot instances (same direct-assignment approach the
+	/// in-memory Memento above already uses), not through Hide()/RevealAsync()'s cascading side
+	/// effects. </summary>
+	JsonNode IPresenceTrack.ToJson() => new JsonArray( Slots.Select( s => (JsonNode)(int)_lookup[s].State ).ToArray() );
+
+	void IPresenceTrack.RestoreFromJson( JsonNode json ) {
+		var array = (JsonArray)json;
+		Track[] slots = [.. Slots];
+		for( int i = 0; i < slots.Length; ++i )
+			_lookup[slots[i]].State = (SlotState)array[i]!.GetValue<int>();
+	}
+
+	#endregion
 
 	public enum SlotState {
 		Hidden_Not_Revealable,

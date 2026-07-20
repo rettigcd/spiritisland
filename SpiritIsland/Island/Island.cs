@@ -89,6 +89,54 @@ public sealed class Island : IHaveMemento {
 		ValidateAccessibleOceans();
 	}
 
+	#region Json
+
+	/// <summary>
+	/// [ boards, terrain ] - boards: [ [name, offsetX, offsetD60, rotationSteps, invaderActionCount], ...],
+	/// following BoardInfo's exact field list; terrain: [ [spaceLabel, (int)Terrain], ... ] for
+	/// SingleSpaceSpec native-terrain overrides, following MyMemento's exact field list. No
+	/// ISerializationContext needed - unlike Tokens_ForIsland, nothing here references a Spirit or
+	/// another ISpaceEntity; boards/terrain are fully self-contained.
+	/// </summary>
+	public JsonArray ToJson() {
+		var boards = new JsonArray( Boards
+			.Select( b => (JsonNode)new JsonArray( b.Name, b.Orientation.Offset.X, b.Orientation.Offset.D60, b.Orientation.RotationSteps, b.InvaderActionCount ) )
+			.ToArray() );
+
+		var terrain = new JsonArray( Boards.SelectMany( b => b.Spaces_Unfiltered ).OfType<SingleSpaceSpec>()
+			.Select( s => (JsonNode)new JsonArray( s.Label, (int)s.NativeTerrain ) )
+			.ToArray() );
+
+		return new JsonArray( boards, terrain );
+	}
+
+	/// <remarks>
+	/// Goes through the normal constructor so cross-board connections get re-established - the same
+	/// path initial game setup already uses (GameState's ctor: `Island = new Island(boards)`).
+	/// MyMemento.Restore used to assign src.Boards directly, skipping ConnectSides() - a real bug (fixed
+	/// alongside this), not a deliberate shortcut - so both paths now behave the same way.
+	/// </remarks>
+	public static Island FromJson( JsonArray json ) {
+		Board[] boards = ((JsonArray)json[0]!).Select( node => {
+			var b = (JsonArray)node!;
+			var orientation = new BoardOrientation( new BoardCoord( b[1]!.GetValue<int>(), b[2]!.GetValue<int>() ), b[3]!.GetValue<int>() );
+			Board board = BoardFactory.Build( b[0]!.GetValue<string>(), orientation );
+			board.InvaderActionCount = b[4]!.GetValue<int>();
+			return board;
+		} ).ToArray();
+
+		var island = new Island( boards );
+
+		var spacesByLabel = island.Boards.SelectMany( b => b.Spaces_Unfiltered ).OfType<SingleSpaceSpec>().ToDictionary( s => s.Label );
+		foreach( JsonNode? node in (JsonArray)json[1]! ) {
+			var pair = (JsonArray)node!;
+			spacesByLabel[pair[0]!.GetValue<string>()].NativeTerrain = (Terrain)pair[1]!.GetValue<int>();
+		}
+
+		return island;
+	}
+
+	#endregion Json
 
 	#region Memento
 

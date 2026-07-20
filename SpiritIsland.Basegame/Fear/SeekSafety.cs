@@ -66,6 +66,8 @@ public class SeekSafety : FearCardBase, IFearCard {
 		await destCtx.GatherUpTo( 1, invadersToGatherArray );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( SeekSafety ), () => new SeekSafety() );
 
 }

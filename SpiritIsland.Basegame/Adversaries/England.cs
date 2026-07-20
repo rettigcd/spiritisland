@@ -120,7 +120,9 @@ public class England : AdversaryBuilder, IAdversaryBuilder {
 	public class HighImmegrationSlot( int level )
 		: BuildSlot(SlotLabel)
 		, IRunWhenTimePasses
-		{
+		, ISerializableInvaderSlot
+		, ISerializableTimePassesAction
+	{
 		const string SlotLabel = "High Immigration";
 
 		bool _repeatWhenNoFearResolved = level == 6;
@@ -161,6 +163,45 @@ public class England : AdversaryBuilder, IAdversaryBuilder {
 		bool _removeAfterRun = false;
 		#endregion IRunWhenTimePasses
 
+		#region Json
+
+		const string Tag = "HighImmegrationSlot";
+
+		/// <summary>
+		/// [ Tag, _repeatWhenNoFearResolved, lastCountOfFearCardsResolved, _removeAfterRun, baseJson ] -
+		/// only the original `level` int's derived effect (_repeatWhenNoFearResolved, level==6) is
+		/// captured, not `level` itself - nothing else in this class reads `level` again. Re-establishing
+		/// gameState.AddTimePassesAction(this) (only wired for level &lt; 4, per InitFunc) is the *caller's*
+		/// job (whatever restores GameState's hook lists must call AddTimePassesAction itself, same as
+		/// original setup) - once it does, ISerializableTimePassesAction.ToJson below resolves that list
+		/// entry back to this same slot instance rather than building a second, disconnected copy.
+		/// </summary>
+		JsonArray ISerializableInvaderSlot.ToJson() => new JsonArray( Tag, _repeatWhenNoFearResolved, lastCountOfFearCardsResolved, _removeAfterRun, ToJson() );
+
+		/// <summary>
+		/// Just the tag - identity is resolved by label against the deck's own already-restored
+		/// ActiveSlots (see ISerializableInvaderSlot.ToJson above, restored by InvaderDeck.FromJson before
+		/// this list is restored), not reconstructed fresh here.
+		/// </summary>
+		JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization() {
+			InvaderSlotRegistry.Register( Tag, FromJson );
+			TimePassesActionRegistry.Register( Tag, ( json, ctx ) => (IRunWhenTimePasses)ctx.InvaderSlotByLabel( SlotLabel ) );
+		}
+
+		static InvaderSlot FromJson( JsonArray json ) {
+			var slot = new HighImmegrationSlot( level: 0 ) {
+				_repeatWhenNoFearResolved = json[1]!.GetValue<bool>(),
+				lastCountOfFearCardsResolved = json[2]!.GetValue<int>(),
+				_removeAfterRun = json[3]!.GetValue<bool>(),
+			};
+			slot.RestoreFromJson( (JsonArray)json[4]! );
+			return slot;
+		}
+
+		#endregion Json
 	}
 
 	#endregion Level 3 - High Immegration

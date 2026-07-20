@@ -7,4 +7,8 @@ public class NullBlightCard : BlightCard {
 		InitBlight( 1000 );
 	}
 	public override IActOn<GameState> Immediately => new BaseCmd<GameState>("no action", (Action<GameState>)(_ => { }));
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> BlightCardRegistry.Register( nameof( NullBlightCard ), ( json, ctx ) => new NullBlightCard() );
 }

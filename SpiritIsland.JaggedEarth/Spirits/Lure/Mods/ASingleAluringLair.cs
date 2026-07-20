@@ -5,6 +5,7 @@ public class ASingleAluringLair(Spirit spirit) : Incarna(spirit, "L", Img.L_Inca
 	, IConfigRavages
 	, IModifyRemovingToken
 	, ICreateSacredSites
+	, ISerializableSpaceEntity
 {
 
 	public const string Name = "A Single Alluring Lair";
@@ -39,4 +40,19 @@ public class ASingleAluringLair(Spirit spirit) : Incarna(spirit, "L", Img.L_Inca
 
 	bool ICreateSacredSites.IsSacredSite(Space space) => Space == space;
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( Self ), Empowered );
+
+	const string Tag = "ASingleAluringLair";
+
+	// Lair.ModSpirit already constructs this spirit's own ASingleAluringLair deterministically (as its
+	// Presence.Incarna, before this reader ever runs) - reuse that instance rather than building a
+	// second, disconnected one, same "reuse the existing instance" fix already applied to GatewayToken/
+	// ToDreamAThousandDeaths.
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			var existing = (ASingleAluringLair)ctx.SpiritAt( (int)json[1]! ).Presence.Incarna;
+			existing.Empowered = json[2]!.GetValue<bool>();
+			return existing;
+		} );
 }

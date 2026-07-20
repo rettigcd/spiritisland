@@ -32,6 +32,8 @@ public class NervesFray : FearCardBase, IFearCard {
 		ctx.Fear.Add( ctx.Spirits.Length );
 	}
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( NervesFray ), () => new NervesFray() );
 
 }

@@ -27,7 +27,7 @@ public class RoilingBogAndSnaggingThorn {
 /// <summary>
 /// Set out sum # of Dahan for 1 Ravage this Round.
 /// </summary>
-public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses, ISerializableSpaceEntity {
 
 	readonly Spirit _picker = picker;
 	readonly int _countToSitOut = countToSitOut;
@@ -48,4 +48,11 @@ public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEnti
 
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, serCtx.IndexOf( _picker ), _countToSitOut );
+
+	const string Tag = "DahanSitOutRavage";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => new DahanSitOutRavage( serCtx.SpiritAt( (int)json[1]! ), json[2]!.GetValue<int>() ) );
 }

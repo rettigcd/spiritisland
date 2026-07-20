@@ -76,6 +76,19 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 		set => GameState.Current.Log(new BlightOnCardChanged((int)value)); // Space initialization will set actural blight, just use saved value to do notification
 	}
 
+	#region Json
+
+	/// <summary>
+	/// [ typeName, CardFlipped, ...subclass-specific extra state ]. Blight *count* isn't here - it's
+	/// ordinary tokens on the "BlightCard" FakeSpace, already covered by Tokens_ForIsland's container
+	/// serialization. Virtual so subclasses with extra state (e.g. SlowDissolutionOfWill's per-spirit
+	/// token choice) can append to it - call base.ToJson(ctx) and JsonArray.Add more elements.
+	/// </summary>
+	public virtual JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( GetType().Name, CardFlipped );
+
+	public static BlightCard FromJson( JsonArray json, ISerializationContext ctx ) => BlightCardRegistry.Deserialize( json, ctx );
+
+	#endregion Json
 
 	#region private/protected
 

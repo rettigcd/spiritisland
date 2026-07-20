@@ -8,6 +8,8 @@ public class ReduceHealthByStrife
 	, IModifyAddingToken
 	, IModifyRemovingToken
 	, IRunWhenTimePasses
+	, ISerializableSpaceEntity
+	, ISerializableTimePassesAction
 {
 	static public async Task Init( GameState gameState ){
 		// adjust current strifed invaders
@@ -48,5 +50,21 @@ public class ReduceHealthByStrife
 	}
 
 	#endregion IRunWhenTimePasses imp
+
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	// Same stateless identity, reused for _timePassesActions list membership - a separate concern from
+	// the island-mod placement above, hence its own interface/registry entry (see
+	// docs/GameSerialization-Roadmap.md section 10). No identity problem restoring a fresh instance
+	// here rather than reusing the one placed on the board: this type has no fields at all.
+	JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "ReduceHealthByStrife";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ReduceHealthByStrife() );
+		TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new ReduceHealthByStrife() );
+	}
 
 }

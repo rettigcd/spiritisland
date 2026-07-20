@@ -48,7 +48,9 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 	public class ReduceAttackBy6Mod : AdjustDamageFromAttackers {
 		protected override int GetAdjustment( RavageExchange ravageExchange ) => -6;
 
-		
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( nameof( ReduceAttackBy6Mod ), ( json, ctx ) => new ReduceAttackBy6Mod() );
 	}
 
 	static IActOn<GameState> DahanDefend3 => new BaseCmd<GameState>(
@@ -69,7 +71,9 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 		}
 	);
 
-	
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> FearCardRegistry.Register( nameof( DauntedByTheDahan ), () => new DauntedByTheDahan() );
 
 }
 

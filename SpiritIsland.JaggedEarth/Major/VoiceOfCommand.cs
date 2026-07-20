@@ -33,6 +33,7 @@ public class RavageConfigToken
 	: BaseModEntity
 	, IConfigRavages
 	, IEndWhenTimePasses
+	, ISerializableSpaceEntity
 {
 	Task IConfigRavages.Config( Space space ) {
 		// Explorer fights alongside Dahan (defender) during the Ravage.
@@ -58,4 +59,11 @@ public class RavageConfigToken
 		space.Init( orig, 0 );
 	}
 
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
+
+	const string Tag = "RavageConfigToken";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new RavageConfigToken() );
 }

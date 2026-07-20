@@ -23,7 +23,7 @@ public class VengeanceOfTheDead {
 	}
 
 	public class DealVengeanceDamageOnDestroy( TargetSpaceCtx ctx, List<SpaceSpec> landsWeCanApplyTheDamageTo )
-		: BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved
+		: BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved, ISerializableSpaceEntity
 	{
 		public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 			if( !args.Reason.IsDestroy() ) return;
@@ -32,6 +32,24 @@ public class VengeanceOfTheDead {
 				// 1 damage per token destroyed
 				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 		}
+
+		JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext serCtx ) => new JsonArray(
+			Tag,
+			serCtx.IndexOf( ctx.Self ),
+			ctx.SpaceSpec.Label,
+			new JsonArray( landsWeCanApplyTheDamageTo.Select( s => (JsonNode)s.Label ).ToArray() )
+		);
+
+		const string Tag = "DealVengeanceDamageOnDestroy";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> SpaceEntitySerialization.Register( Tag, ( json, serCtx ) => {
+				Spirit spirit = serCtx.SpiritAt( (int)json[1]! );
+				SpaceSpec spec = serCtx.SpaceSpecByLabel( json[2]!.GetValue<string>() );
+				List<SpaceSpec> lands = json[3]!.AsArray().Select( n => serCtx.SpaceSpecByLabel( n!.GetValue<string>() ) ).ToList();
+				return new DealVengeanceDamageOnDestroy( serCtx.TargetSpace( spirit, spec ), lands );
+			} );
 	}
 
 	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<SpaceSpec> newDamageLandSpecs, int additionalDamage ) {
