@@ -30,8 +30,7 @@
 		<Label Text="{Binding Damage}" TextColor="Red" FontSize="10" Margin="3,3,5,5" BackgroundColor="Transparent" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Start" Padding="2,0" />
 
 		<!-- Is Option-->
-		<Ellipse x:Name="OptionEllipse" StrokeThickness="2" Stroke="{Binding State,Converter={StaticResource optionState}}" 
-				 HeightRequest="10" VerticalOptions="Center" />
+		<Ellipse x:Name="OptionEllipse" StrokeThickness="2" Stroke="{Binding State,Converter={StaticResource optionState}}" />
 
 		<!-- Count -->
 		<Label Text="{Binding Count, StringFormat='x{0}'}" Padding="2,0" TextColor="Black" BackgroundColor="White" ZIndex="10"
