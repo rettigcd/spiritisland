@@ -95,7 +95,7 @@ public class SoloGame {
 			await Spirit.SelectAndResolveNextGrowthAction();
 		await Spirit.EndGrowth();
 
-		// Play Cards
+		// Play Cards - not really an action at all - no need to split it up.
 		await Spirit.SelectAndPlayCardsFromHand();
 		
 		SetPhase( Phase.Fast );

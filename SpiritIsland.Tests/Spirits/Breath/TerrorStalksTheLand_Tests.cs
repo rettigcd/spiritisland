@@ -45,7 +45,7 @@ public class TerrorStalksTheLand_Tests {
 
 		// When: doing fast
 		_gameState.Phase = Phase.Fast;
-		await _spirit.SelectAndResolveActions(_gameState).AwaitUser(user => {
+		await _spirit.SelectAndResolveActionsForTest(_gameState).AwaitUser(user => {
 			// Then: can abduct once
 			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Abduct Explorer/Town,Done").ChooseFirst();
 			user.NextDecision.HasPrompt("Select Invader to Abduct").HasOptions("E@1 on A5,T@2 on A5,Done").ChooseFirst();
@@ -65,7 +65,7 @@ public class TerrorStalksTheLand_Tests {
 		// When: doing fast
 		_gameState.Phase = Phase.Fast;
 		// Then no abduct action presented
-		await _spirit.SelectAndResolveActions(_gameState).ShouldComplete("Fast acitons");
+		await _spirit.SelectAndResolveActionsForTest(_gameState).ShouldComplete("Fast acitons");
 	}
 
 

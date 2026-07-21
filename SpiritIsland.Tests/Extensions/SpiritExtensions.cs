@@ -80,6 +80,11 @@ public static class SpiritExtensions {
 
 	#region When
 
+	/// <summary> Single call site for Spirit.SelectAndResolveActions from tests, so a future signature
+	/// change only touches this one spot. </summary>
+	internal static Task SelectAndResolveActionsForTest( this Spirit spirit, GameState gameState )
+		=> spirit.SelectAndResolveActions( gameState );
+
 	/// <summary>
 	/// Single call site for driving a Growth phase from tests, so a future change to how Spirit runs
 	/// Growth only touches this one spot. Mirrors Spirit.DoGrowthAsync's current body directly rather
@@ -246,7 +251,7 @@ public static class SpiritExtensions {
 			foreach(IHelpGrowActionFactory action2 in userRuns )
 				spirit.AddActionFactory( action2 );
 
-			await spirit.SelectAndResolveActions( gameState );
+			await spirit.SelectAndResolveActionsForTest( gameState );
 		}
 	}
 

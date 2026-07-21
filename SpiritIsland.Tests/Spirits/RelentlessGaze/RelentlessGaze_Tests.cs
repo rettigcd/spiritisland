@@ -24,7 +24,7 @@ public class RelentlessGaze_Tests {
 		gs.Phase = Phase.Slow;
 
 		//  When: spirit does slow phase
-		await spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+		await spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 			user.NextDecision.HasPrompt("Select Slow to resolve").HasOptions("Teeming Rivers $1 (Slow),Done").ChooseFirst();
 			user.NextDecision.HasPrompt("Teeming Rivers: Target Space").HasOptions("A1,A2,A5,A6").Choose("A1");
 			user.NextDecision.HasPrompt("Select Slow to resolve").HasOptions("Repeat Teeming Rivers on A1 for 2 energy.,Done").ChooseFirst();

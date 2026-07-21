@@ -21,7 +21,7 @@ public class SwallowTheLandDwellers_Tests {
 		// When: we use Swallow the Land Dwellers
 		gs.Spirit.AddActionFactory( PowerCard.ForDecorated(SwallowTheLandDwellers.ActAsync) );
 		gs.Phase = Phase.Slow;
-		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser(user => {
+		await gs.Spirit.SelectAndResolveActionsForTest( gs ).AwaitUser(user => {
 			user.NextDecision.Choose(SwallowTheLandDwellers.Name + " $0 (Slow)");
 			// Then: they can pick A2
 			user.NextDecision.Choose("A2");

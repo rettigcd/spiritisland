@@ -19,7 +19,7 @@ public class SkyStretchesToShore_Tests {
 		//   And: in fast phase
 		gs.Phase = Phase.Fast;
 
-		await gs.Spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+		await gs.Spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 
 			//  When: spirit activates SkyStreteches to Shore
 			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Sky Stretches to Shore $1 (Fast),Done").ChooseFirst();

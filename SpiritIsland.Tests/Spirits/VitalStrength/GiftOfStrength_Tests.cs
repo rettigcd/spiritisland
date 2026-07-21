@@ -27,7 +27,7 @@ public sealed class GiftOfStrength_Tests {
 		await GiftOfStrength.Option1( spirit.Target(spirit) );
 
 		//   And: chooses card to
-		await spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+		await spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Replay Card (max cost:1),Done").Choose("Replay Card (max cost:1)");
 			//  Then: Spirit can replay ONLY the Fast-1 card.
 			user.NextDecision.HasPrompt("Select card to repeat").HasOptions("Fast-1 $1 (Fast),Done").Choose("Fast-1 $1 (Fast)");
@@ -74,7 +74,7 @@ public sealed class GiftOfStrength_Tests {
 		//   And: phase is slow
 		gs.Phase = Phase.Slow;
 		
-		await spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+		await spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 
 			const string slow1 = "Slow-1 $1 (Slow)";
 

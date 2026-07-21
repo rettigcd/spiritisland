@@ -22,7 +22,7 @@ public class EmberEyed_Tests {
 		//   And: in slow phase
 		gs.Phase = Phase.Slow;
 
-		await eeb.SelectAndResolveActions(gs).AwaitUser(user => {
+		await eeb.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 
 			// And: can Stomp or Rise
 			user.NextDecision.HasPrompt(slowPrompt)
@@ -70,7 +70,7 @@ public class EmberEyed_Tests {
 
 		const string slowPrompt = "Select Slow to resolve";
 
-		await eeb.SelectAndResolveActions(gs).AwaitUser(user => {
+		await eeb.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
 			// When: Choose 1st action
 			ChoosePower(user,first);
 
