@@ -80,10 +80,11 @@ public static class SpiritExtensions {
 
 	#region When
 
-	/// <summary> Single call site for Spirit.SelectAndResolveActions from tests, so a future signature
-	/// change only touches this one spot. </summary>
-	internal static Task SelectAndResolveActionsForTest( this Spirit spirit, GameState gameState )
-		=> spirit.SelectAndResolveActions( gameState );
+	/// <summary> Single call site for resolving all remaining actions for the current phase from tests,
+	/// so a future change to Spirit.SelectAndResolveNextAction only touches this one spot. </summary>
+	internal static async Task SelectAndResolveActionsForTest( this Spirit spirit, GameState gameState ) {
+		while( await spirit.SelectAndResolveNextAction( gameState ) ) { }
+	}
 
 	/// <summary>
 	/// Single call site for driving a Growth phase from tests, so a future change to how Spirit runs

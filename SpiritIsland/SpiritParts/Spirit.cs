@@ -164,22 +164,23 @@ public abstract partial class Spirit
 
 	}
 
-	/// <summary> Resolves Action for the current phase </summary>
-	public async Task SelectAndResolveActions( GameState gs ) {
+	/// <summary>
+	/// Selects and resolves exactly one action for the phase in gs.Phase - safe to call repeatedly, one
+	/// decision at a time. Returns false once there's nothing left to do (no options remain, or the user
+	/// declined/chose "Done"), signaling the caller to stop looping.
+	/// </summary>
+	public async Task<bool> SelectAndResolveNextAction( GameState gs ) {
 		Phase phase = gs.Phase;
 		Present present = phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
 
 		IActionFactory[] options = GetAvailableActions(phase).ToArray();
-		while( 0 < options.Length ) {
-			IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
-			if( option is null ) break;
+		if( options.Length == 0 ) return false;
 
-			await ResolveActionAsync(option, phase);
+		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
+		if( option is null ) return false;
 
-			// next
-			options = GetAvailableActions(phase).ToArray();
-		}
-
+		await ResolveActionAsync(option, phase);
+		return true;
 	}
 
 	#endregion
