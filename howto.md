@@ -39,3 +39,20 @@ GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => self.Forget.
 await spaceToken.PushAsync(self);
 
 ```
+
+# Deploy to Android Device
+
+## List attached devices (to get the `-s <device-id>`)
+```
+adb devices -l
+```
+
+## Debug build
+```
+dotnet build SpiritIsland.Maui -f net10.0-android -t:Run -p:AdbTarget="-s <device-id>"
+```
+
+## Release build
+```
+dotnet build SpiritIsland.Maui -f net10.0-android -c Release -t:Run -p:AdbTarget="-s <device-id>"
+```

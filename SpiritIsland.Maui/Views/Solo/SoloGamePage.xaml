@@ -11,7 +11,6 @@
 		<si:SelectConverter x:Key="selectOne" />
 		<si:PhaseToImageSourceConverter x:Key="phaseToImage" />
 		<si:NameToBadgeImgConverter x:Key="btnImage" />
-		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 		<si:NameToBadgeImgConverter x:Key="badgeImage" />
 	</ContentPage.Resources>
 
@@ -21,10 +20,8 @@
 
 		<HorizontalStackLayout Grid.ColumnSpan="2">
 			<!-- Undo / Rewind -->
-			<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }" HorizontalOptions="Center" >
-				<ImageButton Source="undo.png" Command="{Binding RewindCommand}" Padding="0" HeightRequest="25" WidthRequest="40" />
-				<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20" />
-			</Grid>
+			<ImageButton Source="undo.png" Command="{Binding RewindCommand}" IsVisible="{Binding CanRewind}" HorizontalOptions="Center" Padding="0"
+						 HeightRequest="25" WidthRequest="40" MinimumHeightRequest="25" MinimumWidthRequest="40" />
 
 			<!-- Phase -->
 			<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Margin="10,0" Grid.Row="0" HorizontalOptions="Center" Grid.Column="1" />

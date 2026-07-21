@@ -4,8 +4,8 @@ public class GamePortal(IUserPortalPlus inner) : IGamePortal {
 
 	public IDecisionPortal DecisionPortal => _inner;
 
-	public void RewindToRound( int targetRound) {
-		_inner.IssueException(new RewindException(targetRound));
+	public void Rewind() {
+		_inner.IssueException(new RewindException());
 	}
 
 	public void CancelGame() {

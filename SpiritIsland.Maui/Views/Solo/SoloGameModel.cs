@@ -38,7 +38,7 @@ public class SoloGameModel : ObservableModel {
 
 	#region Rewind / Round
 
-	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
+	public bool CanRewind { get => _canRewind; set => SetProp(ref _canRewind, value); }
 	public Phase Phase { get => _phase; private set { SetProp(ref _phase, value); } }
 
 	#endregion Rewind / Round
@@ -148,10 +148,8 @@ public class SoloGameModel : ObservableModel {
 
 	void DoRewind() {
 		if(_game.GameState.Result is not null) return;
-		if (0 < RewindableRound) {
-			_game.UserPortal.RewindToRound(RewindableRound);
-			--RewindableRound;
-		}
+		if( CanRewind )
+			_game.UserPortal.Rewind();
 	}
 
 	#endregion constructor
@@ -166,7 +164,7 @@ public class SoloGameModel : ObservableModel {
 		UpdateButton("working...", false);
 
 		_userPortal.Choose(_nextDecision, (IOption)SelectedOption);
-		RewindableRound = _game.GameState.RoundNumber;
+		CanRewind = _game.CanRewind;
 	}
 
 	public bool AutoSelect() {
@@ -220,6 +218,10 @@ public class SoloGameModel : ObservableModel {
 		Prompt = _nextDecision.Prompt;
 		SelectedOption = null;
 
+		// Refresh here too, not just in Submit() - this also fires after a Rewind(), whose retry
+		// presents a decision without ever going through Submit().
+		CanRewind = _game.CanRewind;
+
 		// Update Options
 		Options = []; // On Android, it seems to be re-using radio buttons that are already selected.  So clear it out so it doesn't reuse a checked radio button.
 		Options = _nextDecision.Options.Select(o => new OptionModel(o)).ToArray();
@@ -253,7 +255,7 @@ public class SoloGameModel : ObservableModel {
 	IOption? _option;
 	bool _hasOptionReady;
 	string _acceptText;
-	int _rewindableRound;
+	bool _canRewind;
 	Phase _phase;
 
 	IDecision? _nextDecision;

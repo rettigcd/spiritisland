@@ -5,6 +5,6 @@
 /// </summary>
 public interface IGamePortal {
 	IDecisionPortal DecisionPortal { get; }
-	void RewindToRound( int targetRound );
+	void Rewind();
 	void CancelGame();
 }

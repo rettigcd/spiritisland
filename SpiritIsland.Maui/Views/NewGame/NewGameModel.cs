@@ -207,9 +207,6 @@ class NewGameModel : ObservableModel {
 	bool _commandBeast;
 
 	readonly GameBuilder _builder = new GameBuilder(
-#if DEBUG
-		new ManualTesting.TestGameComponentProvider(),
-#endif
 		new Basegame.GameComponentProvider(),
 		new BranchAndClaw.GameComponentProvider(),
 		new FeatherAndFlame.GameComponentProvider(),

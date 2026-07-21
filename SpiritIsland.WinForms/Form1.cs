@@ -56,17 +56,6 @@ public partial class Form1 : Form, IHaveOptions {
 
 		// Trigger Next event....
 		NewDecision?.Invoke(decision);
-
-		UpdateRewindMenu();
-	}
-
-	void UpdateRewindMenu() {
-		int rounds = _game.GameState.RoundNumber;
-		var items = rewindMenuItem.DropDownItems;
-		if (items.Count == rounds) return; // no change
-		items.Clear();
-		for (int i = rounds; 0 < i; --i)
-			items.Add(new ToolStripMenuItem("Round " + i, null, RewindClicked) { Tag = i });
 	}
 
 	#region Buttons
@@ -230,15 +219,7 @@ public partial class Form1 : Form, IHaveOptions {
 	#region Rewind
 
 	void RewindClicked(object x, EventArgs y) {
-		int targetRound = (int)((ToolStripMenuItem)x).Tag;
-
-		// This block is not necessary, but if something is wrong with the Memento, a hard-reset might be nice.
-		if (targetRound == 1) {
-			ReplaySameGameToolStripMenuItem_Click(null, null);
-			return;
-		}
-
-		_game.UserPortal.RewindToRound(targetRound);
+		_game.UserPortal.Rewind();
 	}
 
 	void ReplaySameGameToolStripMenuItem_Click(object _, EventArgs _1) {

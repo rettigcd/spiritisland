@@ -38,6 +38,13 @@ public class SoloGame {
 
 	public Task? EngineTask { get; private set; }
 
+	/// <summary>
+	/// Whether Rewind() has something real to undo. Exactly 1 entry means it's the state from before the
+	/// very first decision of the round - rewinding from there is a no-op (nothing earlier exists to
+	/// distinguish it from), so it doesn't count as "can rewind" even though the stack isn't empty.
+	/// </summary>
+	public bool CanRewind => 1 < _stateStack.Count;
+
 	public async Task StartAsync() {
 
 		UserGateway.UsePreselect.Value = EnablePreselects;
@@ -47,12 +54,11 @@ public class SoloGame {
 			while( await Spirit.SelectAndResolveNextAction( GameState ) ) { }
 
 			while(true) {
-				SaveGameState();
 				try {
-					while( await Do1Action() ) { }
+					await Do1Action();
 				}
 				catch( RewindException rewind ) {
-					RewindGameTo( rewind );
+					RewindOneAction( rewind );
 				}
 			}
 		}
@@ -66,21 +72,27 @@ public class SoloGame {
 
 	}
 
-	void SaveGameState() {
-		_savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
-	}
+	/// <summary>
+	/// Undoes the action that just threw: discards the snapshot taken at its start (the last one pushed;
+	/// guarded, since if it's the only entry we still need to read it below), then consumes (restores
+	/// from, and always also pops - a fresh replacement is about to be pushed immediately by the retry,
+	/// so there's never a reason to leave the old one behind as a dead duplicate) the snapshot from
+	/// before that - the state as of the last successfully-completed undo-able step - so the next
+	/// Do1Action() call retries fresh from there. If only one snapshot exists (the very first action of
+	/// the game), the first discard is skipped so there's still something to restore from - it's reload
+	/// (not discard) that makes it a no-op, not leaving the entry behind afterward.
+	/// </summary>
+	void RewindOneAction( RewindException rex ) {
+		if( 1 < _stateStack.Count )
+			_stateStack.RemoveAt( _stateStack.Count - 1 );
 
-	void RewindGameTo( RewindException rex ) {
-		if( !_savedGameStates.TryGetValue(rex.TargetRound, out object? memento) ) return;
+		JsonObject snapshot = _stateStack[^1];
+		_step = (RoundStep)snapshot["RoundStep"]!.GetValue<int>();
+		GameState.RestoreFromJson( snapshot, new GameStateSerializationContext( GameState ) );
 
-		// Restore
-		((IHaveMemento)GameState).Memento = memento;
+		_stateStack.RemoveAt( _stateStack.Count - 1 );
 
-		// Clear later rounds
-		foreach( int laterRounds in _savedGameStates.Keys.Where(k => rex.TargetRound < k ).ToArray())
-			_savedGameStates.Remove(laterRounds);
-
-		// Do this last so anything that anything that triggers off of this, has new games state.
+		// Do this last so anything that triggers off of this, has new game state.
 		GameState.Log(rex);
 	}
 
@@ -90,15 +102,19 @@ public class SoloGame {
 
 	/// <summary>
 	/// Advances the round by exactly one action - safe to call repeatedly in a loop. Growth/Fast/Slow
-	/// resolve one decision per call each (via Spirit's own granular step methods); RoundStart/EndGrowth/
-	/// PlayCards/Invaders/TimePasses are each a single coarse step since Spirit/InvaderPhase don't (yet)
-	/// expose anything more granular for them. Returns false exactly once, when TimePasses completes and
-	/// the round is done; true otherwise.
+	/// resolve one decision per call each (via Spirit's own granular step methods); PlayCards is a single
+	/// coarse step since Spirit doesn't (yet) expose anything more granular for it. Only steps that can
+	/// actually show the user something call PushGameState() - RoundStart/EndGrowth/Invaders/TimePasses
+	/// never do (nothing to undo back to), and Fast/Slow additionally discard their own snapshot when
+	/// Spirit.HadNextActionOptions comes back false, so a rewind always lands on the state as of the
+	/// user's last real decision, however many silent steps ran since. Returns false exactly once, when
+	/// TimePasses completes and the round is done; true otherwise.
 	/// </summary>
 	public async Task<bool> Do1Action() {
 		switch( _step ) {
 
 			case RoundStep.RoundStart:
+				// Never has anything for the user to undo back to - no PushGameState().
 				LogRound();
 				SetPhase( Phase.Growth );
 				Spirit.GrowthTrack.Reset();
@@ -106,44 +122,58 @@ public class SoloGame {
 				return true;
 
 			case RoundStep.Growth:
+				PushGameState();
 				if( Spirit.HasMoreGrowthActions )
 					await Spirit.SelectAndResolveNextGrowthAction();
-				else
+				else {
+					PopGameState(); // nothing was presented - not an undo-able step
 					_step = RoundStep.EndGrowth;
+				}
 				return true;
 
 			case RoundStep.EndGrowth:
+				// Never has anything for the user to undo back to - no PushGameState().
 				await Spirit.EndGrowth();
 				_step = RoundStep.PlayCards;
 				return true;
 
 			case RoundStep.PlayCards:
 				// not really an action at all - no need to split it up.
+				PushGameState();
 				await Spirit.SelectAndPlayCardsFromHand();
 				SetPhase( Phase.Fast );
 				_step = RoundStep.Fast;
 				return true;
 
 			case RoundStep.Fast:
+				PushGameState();
 				if( !await Spirit.SelectAndResolveNextAction(GameState) ) {
+					if( !Spirit.HadNextActionOptions )
+						PopGameState(); // nothing was presented - not an undo-able step
 					SetPhase(Phase.Invaders);
 					_step = RoundStep.Invaders;
 				}
 				return true;
 
 			case RoundStep.Invaders:
+				// Never has anything for the user to undo back to - no PushGameState().
 				await InvaderPhase.ActAsync( GameState );
 				SetPhase( Phase.Slow );
 				_step = RoundStep.Slow;
 				return true;
 
 			case RoundStep.Slow:
-				if( !await Spirit.SelectAndResolveNextAction(GameState) )
+				PushGameState();
+				if( !await Spirit.SelectAndResolveNextAction(GameState) ) {
+					if( !Spirit.HadNextActionOptions )
+						PopGameState(); // nothing was presented - not an undo-able step
 					_step = RoundStep.TimePasses;
+				}
 
 				return true;
 
 			case RoundStep.TimePasses:
+				// Never has anything for the user to undo back to - no PushGameState().
 				await GameState.TriggerTimePasses();
 				_step = RoundStep.RoundStart;
 				return false;
@@ -153,6 +183,14 @@ public class SoloGame {
 		}
 	}
 
+	void PushGameState() {
+		JsonObject snapshot = GameState.ToJson( new GameStateSerializationContext( GameState ) );
+		snapshot["RoundStep"] = (int)_step;
+		_stateStack.Add( snapshot );
+	}
+
+	void PopGameState() => _stateStack.RemoveAt( _stateStack.Count - 1 );
+
 	void SetPhase(Phase phase ) {
 		GameState.Phase = phase;
 		GameState.Log( new Log.Phase( GameState.Phase ) );
@@ -160,6 +198,6 @@ public class SoloGame {
 
 	void LogRound() => GameState.Log( new Log.Round( GameState.RoundNumber ) );
 
-	readonly Dictionary<int, object> _savedGameStates = [];
+	readonly List<JsonObject> _stateStack = [];
 
 }

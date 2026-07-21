@@ -170,18 +170,22 @@ public abstract partial class Spirit
 	/// declined/chose "Done"), signaling the caller to stop looping.
 	/// </summary>
 	public async Task<bool> SelectAndResolveNextAction( GameState gs ) {
-		Phase phase = gs.Phase;
-		Present present = phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
 
-		IActionFactory[] options = GetAvailableActions(phase).ToArray();
+		IActionFactory[] options = GetAvailableActions(gs.Phase).ToArray();
+		HadNextActionOptions = 0 < options.Length; // Side effect for tracking if user was presented with anything.
 		if( options.Length == 0 ) return false;
 
-		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
+		Present present = gs.Phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
+		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + gs.Phase + " to resolve", options, present));
 		if( option is null ) return false;
 
-		await ResolveActionAsync(option, phase);
+		await ResolveActionAsync(option, gs.Phase);
 		return true;
 	}
+
+	// Set as a side effect of calling SelectAndResolveNextAction - does not need serialized.
+	// Only valid immediately after calling SelectAndResolveNextAction
+	public bool HadNextActionOptions { get; private set; }
 
 	#endregion
 

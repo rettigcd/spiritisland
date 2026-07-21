@@ -113,7 +113,8 @@ namespace SpiritIsland.WinForms {
 			// 
 			rewindMenuItem.Name = "rewindMenuItem";
 			rewindMenuItem.Size = new System.Drawing.Size(128, 22);
-			rewindMenuItem.Text = "Re&wind To";
+			rewindMenuItem.Text = "&Undo Last Action";
+			rewindMenuItem.Click += RewindClicked;
 			// 
 			// recentToolStripMenuItem
 			// 

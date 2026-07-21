@@ -179,14 +179,23 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 	}
 
 	/// <summary>
-	/// Restores onto an existing `target` rather than building a fresh instance - wipes `_tokenCounts`
-	/// (and `_islandMods`, re-seeding the "Island-Mods" bucket the constructor would've) first, so
-	/// whatever tokens/mods were on `target` before this call (e.g. an Adversary's `Init`/`Adjust`
-	/// mutating a normally-constructed board before restore - see docs/GameSerialization-Roadmap.md
-	/// section 9) are discarded rather than double-applied; JSON is the sole source of truth for
-	/// everything `_tokenCounts` covers afterward. Static (not an instance method) so the target reads as
-	/// an explicit parameter rather than an implicit `this` - same shape callers already reason about for
-	/// "restore JSON onto a specific object."
+	/// Restores onto an existing `target` rather than building a fresh instance - clears every existing
+	/// per-space `CountDictionary`'s *contents* in place (including `_islandMods`) rather than replacing
+	/// the dictionary objects themselves (previously done via `target._tokenCounts.Clear()`, which
+	/// discards the Space->CountDictionary mapping entirely and forces `GetTokensCounts` to fabricate
+	/// brand-new CountDictionary instances below): a `Space` built earlier via `Tokens_ForIsland`'s
+	/// indexer (e.g. a UI SpaceModel, which captures one permanently at construction) holds a `readonly`
+	/// reference straight to one of these dictionaries, so swapping the dictionary out from under it
+	/// would silently and permanently disconnect it from live data on every future restore - the exact
+	/// bug this once was (board token displays freezing at whatever they showed just before the first
+	/// rewind, since only rewinds ever call this). Clearing in place means every existing reference
+	/// keeps observing the same objects, correctly emptied. Whatever tokens/mods were on `target` before
+	/// this call (e.g. an Adversary's `Init`/`Adjust` mutating a normally-constructed board before
+	/// restore - see docs/GameSerialization-Roadmap.md section 9) are discarded rather than
+	/// double-applied; JSON is the sole source of truth for everything `_tokenCounts` covers afterward.
+	/// Static (not an instance method) so the target reads as an explicit parameter rather than an
+	/// implicit `this` - same shape callers already reason about for "restore JSON onto a specific
+	/// object."
 	/// Known caveat, not addressed here: `SpaceSpec.DoesExists` lives on the shared live `SpaceSpec`
 	/// object, not inside `_tokenCounts` - if something mutated it before this call for a space this JSON
 	/// doesn't mention at all, that mutation isn't undone by the wipe.
@@ -197,9 +206,10 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 		// its short key.
 		ctx.LoadLookupTable( (JsonObject)json["EntityLookup"]! );
 
-		target._tokenCounts.Clear();
-		target._islandMods.Clear();
-		target._tokenCounts.Add( new FakeSpace( "Island-Mods" ), target._islandMods );
+		// _islandMods is itself one of these values (inserted under "Island-Mods" in the constructor),
+		// so this clears it too - no separate _islandMods.Clear() needed.
+		foreach( var counts in target._tokenCounts.Values )
+			counts.Clear();
 
 		foreach( var (label, node) in (JsonObject)json["TokenDefaults"]! ) {
 			var tokenClass = (HumanTokenClass)ctx.TokenClassByLabel( label );
