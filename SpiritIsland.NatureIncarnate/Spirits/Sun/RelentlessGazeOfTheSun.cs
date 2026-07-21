@@ -19,7 +19,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 		// Growth Track
 		, new GrowthTrack(
 			new GrowthGroup( new PlacePresence( 2 ) )
-		).Add( new GrowthPickGroups( 1,
+		).Add( new PickGroups( 1,
 			new GrowthGroup(
 				new ReclaimAll(),
 				new AddDestroyedPresence( 1 ).SetNumToPlace( 3, Present.Done )

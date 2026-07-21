@@ -12,7 +12,7 @@ public class LureOfTheDeepWilderness : Spirit {
 			new GrowthGroup( new ReclaimAll(), new GainEnergy( 1 ) ),
 			new GrowthGroup( new PlacePresence( 4, Filter.Inland ) )
 		).Add(
-			new GrowthPickGroups(
+			new PickGroups( 1,
 				new GrowthGroup( new Gain1Element( Element.Moon, Element.Air, Element.Plant ), new GainEnergy( 2 ) ),
 				new GrowthGroup( new GainPowerCard() )
 			)

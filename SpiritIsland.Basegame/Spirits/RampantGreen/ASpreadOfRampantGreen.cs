@@ -10,7 +10,7 @@ public class ASpreadOfRampantGreen : Spirit {
 		spirit => new SteadyRegeneration( spirit ),
 		new GrowthTrack(
 			new GrowthGroup( new PlacePresence( 2, Filter.Jungle, Filter.Wetland ) )
-		).Add( new GrowthPickGroups( 1,
+		).Add( new PickGroups( 1,
 			// reclaim, +1 power card
 			new GrowthGroup(
 				new ReclaimAll(),

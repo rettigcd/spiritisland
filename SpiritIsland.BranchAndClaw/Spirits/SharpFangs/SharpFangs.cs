@@ -20,7 +20,7 @@ public class SharpFangs : Spirit {
 			new GrowthGroup( new GainPowerCard(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
 			new GrowthGroup( new GainEnergy( 3 ) ) { GainEnergy = 3 }
 		).Add(
-			new GrowthPickGroups(new GrowthGroup(new CallForthPredators()))
+			new PickGroups(1, new GrowthGroup(new CallForthPredators()))
 		),
 		PowerCard.ForDecorated(PreyOnTheBuilders.ActAsync),
 		PowerCard.ForDecorated(TeethGleamFromDarkness.ActAsync),

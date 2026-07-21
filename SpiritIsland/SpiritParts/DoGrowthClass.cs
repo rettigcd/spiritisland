@@ -6,7 +6,7 @@ public abstract partial class Spirit {
 
 		public DoGrowthClass(Spirit spirit,GameState _) {
 			_spirit = spirit;
-			_inst = _spirit.GrowthTrack.GetInstance();
+			_spirit.GrowthTrack.Reset();
 		}
 
 		public async Task Execute() {
@@ -36,7 +36,7 @@ public abstract partial class Spirit {
 			GrowthGroup? option = _growthOptions?.SingleOrDefault( o => o.GrowthActionFactories.Contains( selectedAction ) );
 			if(option is null) return; // not one the Growth Actions, but came from somewhere else - may Behemoth Rise
 
-			_inst.MarkAsUsed( option );
+			_spirit.GrowthTrack.MarkAsUsed( option );
 
 			// Add Action to spirit
 			foreach(IHelpGrowActionFactory action in option.GrowthActionFactories)
@@ -52,7 +52,7 @@ public abstract partial class Spirit {
 		}
 
 		void AllowUserToSelectNewGrowthOptions() {
-			_growthOptions = _inst.RemainingOptions( _spirit.Energy );
+			_growthOptions = _spirit.GrowthTrack.RemainingOptions( _spirit.Energy );
 			_availableNewGrowthOptions = _growthOptions
 				.SelectMany( opt => opt.GrowthActionFactories )
 				.ToArray();
@@ -75,7 +75,6 @@ public abstract partial class Spirit {
 		bool _shouldInitNewGrowthOption;
 
 		readonly Spirit _spirit;
-		readonly IGrowthPhaseInstance _inst;
 
 		#endregion
 

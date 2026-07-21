@@ -1,13 +1,12 @@
 ﻿namespace SpiritIsland.Maui;
 
+/// <summary>
+/// The view model for a GrowthGroup
+/// </summary>
 public class GrowthGroupModel( GrowthGroup gg ) : ObservableModel {
 
-	public GrowthActionModel[] Actions { 
-		get => _actions; 
-		private set => SetProp(ref _actions,value);
-	}
+	public GrowthActionModel[] Actions => _actions;
 
-	GrowthActionModel[] _actions = gg.GrowthActionFactories
-			.Select(a => new GrowthActionModel((GrowthAction)a))
-			.ToArray();
+	readonly GrowthActionModel[] _actions = [.. gg.GrowthActionFactories.Select(a => new GrowthActionModel((GrowthAction)a))];
+
 }
