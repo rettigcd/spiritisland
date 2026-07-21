@@ -49,7 +49,7 @@ public class SoloGame {
 			while(true) {
 				SaveGameState();
 				try {
-					await Do1Round();
+					while( await Do1Action() ) { }
 				}
 				catch( RewindException rewind ) {
 					RewindGameTo( rewind );
@@ -84,30 +84,73 @@ public class SoloGame {
 		GameState.Log(rex);
 	}
 
-	async Task Do1Round() {
-		LogRound();
+	enum RoundStep { RoundStart, Growth, EndGrowth, PlayCards, Fast, Invaders, Slow, TimePasses }
 
-		SetPhase( Phase.Growth );
+	RoundStep _step = RoundStep.RoundStart;
 
-		// Growth
-		Spirit.GrowthTrack.Reset();
-		while( Spirit.HasMoreGrowthActions )
-			await Spirit.SelectAndResolveNextGrowthAction();
-		await Spirit.EndGrowth();
+	/// <summary>
+	/// Advances the round by exactly one action - safe to call repeatedly in a loop. Growth/Fast/Slow
+	/// resolve one decision per call each (via Spirit's own granular step methods); RoundStart/EndGrowth/
+	/// PlayCards/Invaders/TimePasses are each a single coarse step since Spirit/InvaderPhase don't (yet)
+	/// expose anything more granular for them. Returns false exactly once, when TimePasses completes and
+	/// the round is done; true otherwise.
+	/// </summary>
+	public async Task<bool> Do1Action() {
+		switch( _step ) {
 
-		// Play Cards - not really an action at all - no need to split it up.
-		await Spirit.SelectAndPlayCardsFromHand();
-		
-		SetPhase( Phase.Fast );
-		while( await Spirit.SelectAndResolveNextAction( GameState ) ) { }
+			case RoundStep.RoundStart:
+				LogRound();
+				SetPhase( Phase.Growth );
+				Spirit.GrowthTrack.Reset();
+				_step = RoundStep.Growth;
+				return true;
 
-		SetPhase( Phase.Invaders );
-		await InvaderPhase.ActAsync( GameState );
+			case RoundStep.Growth:
+				if( Spirit.HasMoreGrowthActions )
+					await Spirit.SelectAndResolveNextGrowthAction();
+				else
+					_step = RoundStep.EndGrowth;
+				return true;
 
-		SetPhase( Phase.Slow );
-		while( await Spirit.SelectAndResolveNextAction( GameState ) ) { }
+			case RoundStep.EndGrowth:
+				await Spirit.EndGrowth();
+				_step = RoundStep.PlayCards;
+				return true;
 
-		await GameState.TriggerTimePasses();
+			case RoundStep.PlayCards:
+				// not really an action at all - no need to split it up.
+				await Spirit.SelectAndPlayCardsFromHand();
+				SetPhase( Phase.Fast );
+				_step = RoundStep.Fast;
+				return true;
+
+			case RoundStep.Fast:
+				if( !await Spirit.SelectAndResolveNextAction(GameState) ) {
+					SetPhase(Phase.Invaders);
+					_step = RoundStep.Invaders;
+				}
+				return true;
+
+			case RoundStep.Invaders:
+				await InvaderPhase.ActAsync( GameState );
+				SetPhase( Phase.Slow );
+				_step = RoundStep.Slow;
+				return true;
+
+			case RoundStep.Slow:
+				if( !await Spirit.SelectAndResolveNextAction(GameState) )
+					_step = RoundStep.TimePasses;
+
+				return true;
+
+			case RoundStep.TimePasses:
+				await GameState.TriggerTimePasses();
+				_step = RoundStep.RoundStart;
+				return false;
+
+			default:
+				throw new InvalidOperationException( $"Unhandled RoundStep {_step}" );
+		}
 	}
 
 	void SetPhase(Phase phase ) {
