@@ -182,8 +182,8 @@ public partial class IslandControl : Control {
 
 		// Hotspots
 		// !! we are assuming minor is first...
-		_optionRects.Add( decision_DeckToDrawFrom.PowerTypes[0], minorRect );
-		_optionRects.Add( decision_DeckToDrawFrom.PowerTypes[1], majorRect );
+		_optionRects.Add( decision_DeckToDrawFrom.Options[0], minorRect );
+		_optionRects.Add( decision_DeckToDrawFrom.Options[1], majorRect );
 
 		graphics.FillRectangle( PopupBackgroundBrush, bounds );
 		using var minorImage = Image.FromFile( ".\\images\\minor.png" );
@@ -321,7 +321,7 @@ public partial class IslandControl : Control {
 	void SetupNewMove( ref IDecision decision ) {
 
 		_moveOptions = null;
-		if(decision is not A.Move) return;
+		if(decision is not A.MoveDecision) return;
 
 		_moveOptions = decision.Options.OfType<Move>().ToArray();
 		_moveIsOptional = decision.Options.Any( x => x == TextOption.Done );
@@ -330,10 +330,10 @@ public partial class IslandControl : Control {
 		// Swap out Move for Part 1:Select-Source
 		var st = new A.SpaceTokenDecision(
 			decision.Prompt,
-			_moveOptions.Select( s => s.Source ).Distinct(),
+			_moveOptions.Select( s => (SpaceToken)s.Source ).Distinct(),
 			_moveIsOptional ? Present.Done : Present.Always
 		);
-		var destinations = _moveOptions.Select(s=>s.Destination).Distinct().ToArray();
+		var destinations = _moveOptions.Select(s=>(Space)s.Destination).Distinct().ToArray();
 		if(destinations.Length==1)
 			st.PointArrowTo( destinations[0].SpaceSpec );
 		decision = st;
@@ -347,7 +347,7 @@ public partial class IslandControl : Control {
 		// Is Part 1 => Setup Part 2
 		if(option is SpaceToken source) {
 			// If only 1 destination - Auto-select it now (can't use Present.AutoSelectSingle because that is Engine-Side)
-			Space[] destinationOptions = _moveOptions.Where( s => s.Source == source ).Select( s => s.Destination ).Distinct().ToArray();
+			Space[] destinationOptions = _moveOptions.Where( s => s.Source == source ).Select( s => (Space)s.Destination ).Distinct().ToArray();
 			if(destinationOptions.Length == 1) {
 				option = _moveOptions.Single( s => s.Source == source && s.Destination == destinationOptions[0] );
 				return false;
@@ -362,7 +362,7 @@ public partial class IslandControl : Control {
 					destinationOptions, 
 					Present.AutoSelectSingle // Is they selected a source, make don't let them cancel.  (this will be different when dragging)
 				)
-				.ComingFrom(source.Space.SpaceSpec)
+				.ComingFrom(source.Space)
 				.ShowTokenLocation(source.Token)
 			);
 			_moveOptions = saveMoves; // restore
@@ -372,7 +372,7 @@ public partial class IslandControl : Control {
 
 		// Is Part 2 => return Move
 		if(option is SpaceSpec destination)
-			option = _moveOptions.Single( s => s.Source == _moveSource && s.Destination.SpaceSpec == destination );
+			option = _moveOptions.Single( s => s.Source == _moveSource && ((Space)s.Destination).SpaceSpec == destination );
 
 		return false;
 	}
@@ -404,7 +404,7 @@ public partial class IslandControl : Control {
 		// !!! ADD Adversary Button click - BTN needs to handle its own Click event
 
 		// Dialog Style Popup where multiple buttons are on a common background, and only draw when active.
-		decision_DeckToDrawFrom = decision as A.DeckToDrawFrom;
+		decision_DeckToDrawFrom = decision as A.TypedDecision<PowerType>;
 		decision_Element = decision as An.Element;
 
 		Invalidate();
@@ -441,7 +441,7 @@ public partial class IslandControl : Control {
 	IPanel _growthPanel = new NullPanel();
 	IPanel _statusPanel = new NullPanel();
 
-	A.DeckToDrawFrom decision_DeckToDrawFrom;
+	A.TypedDecision<PowerType> decision_DeckToDrawFrom;
 	An.Element decision_Element;
 
 	#endregion
@@ -454,6 +454,7 @@ public partial class IslandControl : Control {
 
 	#endregion
 
+	[System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Visible)]
 	public bool Debug {
 		get { return _ctx._debug; }
 		set { _ctx._debug = value; Invalidate(); }

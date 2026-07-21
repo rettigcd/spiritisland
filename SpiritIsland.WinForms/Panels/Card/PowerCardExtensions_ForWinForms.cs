@@ -11,7 +11,7 @@ static public class PowerCardExtensions_ForWinForms {
 			.Replace( "-", "" )
 			.ToLower();
 		string cardType = card.PowerType.Name;
-		string ns = card.MethodType.Namespace;
+		string ns = card.DeclaringType.Namespace;
 		string edition = ns.Contains( "Basegame" ) ? "basegame"
 			: ns.Contains( "BranchAndClaw" ) ? "bac"
 			: ns.Contains( "FeatherAndFlame" ) ? "faf"

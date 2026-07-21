@@ -7,7 +7,7 @@ namespace SpiritIsland;
 public static class GrowthActionBuilder {
 
 	public static IPaintableRect GetGrowthPaintable( IActOn<Spirit> action ) {
-		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory
+		if(action is FracturedDaysSplitTheSky.RepeatableSelfCmd repeatableActionFactory
 					&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
 				)
 			action = repeatableActionFactory.Inner;
@@ -132,7 +132,7 @@ public static class GrowthActionBuilder {
 			.Float( new TextRect( "/" ), .2f, .2f, .6f, .6f )
 			.Float( PlacePresenceRect( new PlacePresence( 2 ) ), 0f, 0f, .5f, .5f )
 			.Float( new ImgRect( Img.GainCard ), .5f, .5f, .5f, .5f )
-			.Float( new ImgRect( Img.Icon_Major ), .55f, .5f, .2f, .2f );
+			.Float( new ImgRect( Img.Deck_Major ), .55f, .5f, .2f, .2f );
 	}
 
 	static PoolRect AccelerateOrDelay() {
@@ -251,7 +251,8 @@ public static class GrowthActionBuilder {
 
 		var (presImg, range, filterEnum, addOnIcon, num) = growth switch {
 			PlaceInOcean            => (Img.Icon_Presence, null, Filter.Ocean, Img.None, 1),
-			PlacePresenceAndBeast   => (Img.Icon_Presence, (int?)3, Filter.Any, Img.Beast, 1), // add an icon
+			BranchAndClaw.AddBagPresenceToBeastLand
+									=> (Img.Icon_Presence, (int?)3, Filter.Any, Img.Beast, 1), // add an icon
 			{ Description: string n } when n == "Add a Presence or Disease"
 									=> (Img.Icon_Presence, (int?)1, Filter.Any, Img.Disease, 1),
 			AddDestroyedPresence { Range: int r, NumToPlace: int ntp }

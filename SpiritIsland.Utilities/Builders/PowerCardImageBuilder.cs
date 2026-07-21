@@ -81,7 +81,7 @@ public partial class PowerCardImageBuilder {
 		// Cost
 		Rectangle costRect = new Rectangle( innerRect.X - 7, innerRect.Y - 7, 60, 60 );
 
-		using(Bitmap costImg = resources.GetPhaseCost(card.DisplaySpeed))
+		using(Bitmap costImg = resources.GetPhaseCost(card.Speed))
 			graphics.DrawImage( costImg, costRect );
 
 		costRect.Offset( 0, 3 );

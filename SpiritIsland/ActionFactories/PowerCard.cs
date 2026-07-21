@@ -61,6 +61,7 @@ public sealed class PowerCard : IPowerActionFactory {
 	// These are only used for drawing the cards.
 	public string Instructions { get; }
 	public string Artist { get; }
+	public Type DeclaringType => _methodBase.DeclaringType!;
 	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke(null, [ctx])!;
 
 	public string TargetFilter => _targetCtxFactory.TargetFilterName;

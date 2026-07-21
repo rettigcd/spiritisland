@@ -24,7 +24,7 @@ public static class PowerHeaderDrawer {
 		static string TargetTitle( InnatePower power ) => power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET";
 	}
 
-	static public RowRect AttributeValuesRow( IFlexibleSpeedActionFactory power ) {
+	static public RowRect AttributeValuesRow( IPowerActionFactory power ) {
 
 		return new RowRect(
 			Col1_Speed( power ).FloatSelf(), // remove Width so they distribute evenly
@@ -36,8 +36,8 @@ public static class PowerHeaderDrawer {
 		};
 	}
 
-	static public IPaintableRect Col1_Speed( IFlexibleSpeedActionFactory power ) {
-		var imgRect = new ImgRect( power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast );
+	static public IPaintableRect Col1_Speed( IPowerActionFactory power ) {
+		var imgRect = new ImgRect( power.Speed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast );
 		return new PoolRect{ WidthRatio = imgRect.WidthRatio }
 			.Float(imgRect,.1f,.1f,.8f,.8f);
 	}

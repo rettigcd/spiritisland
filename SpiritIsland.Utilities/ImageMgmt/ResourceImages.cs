@@ -444,7 +444,7 @@ public partial class ResourceImages
 		Img.ReclaimAll => "icons.ReclaimAll.png",
 		Img.ReclaimHalf => "icons.Reclaim_Half.png",
 		Img.PlusOneRange => "icons.PlusOneRange.png",
-		Img.Icon_Major => "icons.major.png",
+		Img.Deck_Major => "icons.major.png",
 		Img.MovePresence => "icons.MovePresence.png",
 
 		Img.Pushfromocean => "icons.Pushfromocean.png",
@@ -565,7 +565,7 @@ public partial class ResourceImages
 		Img.L_Incarna                => "incarna.L.png",
 		Img.S_Incarna                => "incarna.S.png",
 		Img.S_Incarna_Empowered      => "incarna.S+.png",
-		Img.T_Incarna                => "incarna.T.png",
+		Img.Ts_Incarna               => "incarna.T.png",
 		Img.TRotJ_Incarna            => "incarna.TRotJ.png",
 		Img.TRotJ_Incarna_Empowered  => "incarna.TRotJ+.png",
 		Img.WVKD_Incarna             => "incarna.WVKD.png",

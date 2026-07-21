@@ -158,7 +158,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 	readonly List<Button> _optionButtons = [];
 	GameConfigPlusToken _gameConfiguration;
-	SinglePlayerGame _game;
+	SoloGame _game;
 
 	void GameNewStripMenuItem_Click(object sender, EventArgs e) {
 		var gameConfigDialog = new ConfigureGameDialog();
@@ -187,7 +187,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 		GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame(gc);
 
-		_game = new SinglePlayerGame(gameState) {
+		_game = new SoloGame(gameState) {
 			LogExceptions = true,
 			EnablePreselects = true,
 		};

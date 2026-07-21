@@ -46,7 +46,7 @@ public class IconDrawer {
 
 		// -- Main - Background
 		if(iconDescriptor.BackgroundImg != default)
-			DrawImageFitBoth( iconDescriptor.BackgroundImg, mainBounds );
+			DrawImageFitBoth( iconDescriptor.BackgroundImg.Value, mainBounds );
 
 		// -- Main - Content --
 		if(iconDescriptor.Text != null || iconDescriptor.ContentImg != default) {
@@ -63,10 +63,10 @@ public class IconDrawer {
 				if(iconDescriptor.ContentImg2 != default) {
 					const float scale = .75f;
 					float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
-					DrawImageFitBoth( iconDescriptor.ContentImg, new RectangleF( contentBounds.X, contentBounds.Y, w, h ) );
-					DrawImageFitBoth( iconDescriptor.ContentImg2, new RectangleF( contentBounds.X + contentBounds.Width * (1f - scale), contentBounds.Y + contentBounds.Height * (1f - scale), w, h ) );
+					DrawImageFitBoth( iconDescriptor.ContentImg.Value, new RectangleF( contentBounds.X, contentBounds.Y, w, h ) );
+					DrawImageFitBoth( iconDescriptor.ContentImg2.Value, new RectangleF( contentBounds.X + contentBounds.Width * (1f - scale), contentBounds.Y + contentBounds.Height * (1f - scale), w, h ) );
 				} else
-					DrawImageFitBoth( iconDescriptor.ContentImg, contentBounds );
+					DrawImageFitBoth( iconDescriptor.ContentImg.Value, contentBounds );
 			}
 
 			// Content - Text

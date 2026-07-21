@@ -24,8 +24,8 @@ public sealed partial class GrowthPanel : IPanel , IDisposable {
 	// Growth-Option
 	RowRect_WithPadding BuildPaintable( GrowthGroup group ) {
 		return new RowRect_WithPadding([ 
-			..group.GrowthActions.Cast<SpiritGrowthAction>()
-				.Select( BuildPaintable ) 
+			..group.GrowthActionFactories.Cast<GrowthAction>()
+				.Select( BuildPaintable )
 		]) {
 			Background = Color.FromArgb( 255, 255, 220 ),
 			Border = Color.FromArgb( 230, 230, 198 ),
@@ -35,7 +35,7 @@ public sealed partial class GrowthPanel : IPanel , IDisposable {
 	}
 
 	// Growth-Action
-	PaintableGrowthAction BuildPaintable( SpiritGrowthAction action ) {
+	PaintableGrowthAction BuildPaintable( GrowthAction action ) {
 		var paintable = new PaintableGrowthAction( action, _ctx );
 		_cc.RegisterOption(action,paintable);
 		return paintable;
