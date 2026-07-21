@@ -60,8 +60,8 @@ public class EmberEyedBehemoth : Spirit {
 		start.Setup(Incarna,1);
 	}
 
-	public override async Task DoGrowth( GameState gameState ) {
-		await base.DoGrowth( gameState );
+	protected override async Task EndGrowth_Inner( Spirit self ) {
+		await base.EndGrowth_Inner( self );
 
 		// Remove 4th growth after it has been used
 		if(GrowthTrack.Groups.Length == 4 && Incarna.Empowered) {

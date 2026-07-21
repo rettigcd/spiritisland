@@ -137,11 +137,11 @@ public class DancesUpEarthquakes : Spirit {
 	public List<PowerCard> Impending = [];
 	public CountDictionary<string> ImpendingEnergy = [];
 
-	protected override async Task ApplyRevealedPresenceTracks_Inner( Spirit self ) {
+	protected override async Task EndGrowth_Inner( Spirit self ) {
 		ImpendingEnergyPerRound = 0;
 		BonusImpendingPlays = 0;
 
-		await base.ApplyRevealedPresenceTracks_Inner( self );
+		await base.EndGrowth_Inner( self );
 
 		// Add energy
 		foreach(PowerCard card in Impending)  // don't use CountDictionary keys because they will be empty for count=0
