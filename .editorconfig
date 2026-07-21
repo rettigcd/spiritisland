@@ -19,6 +19,15 @@ dotnet_diagnostic.CA1016.severity = none
 # so core code never needs a hardcoded list of every type defined in every expansion project.
 dotnet_diagnostic.CA2255.severity = none
 
+# CS9107/CS9124: primary-constructor parameter is captured into the state of the enclosing type and
+# is also passed to the base constructor / used to initialize a field.
+# Used intentionally throughout - a value (e.g. badge/label) is passed to a base class for its own use
+# while also being kept by the derived class for its own logic/serialization. Primary constructors are
+# the preferred style here (csharp_style_prefer_primary_constructors above), so this dual-use pattern
+# is expected rather than an oversight.
+dotnet_diagnostic.CS9107.severity = none
+dotnet_diagnostic.CS9124.severity = none
+
 #### Indentation ####
 
 # Indentation and spacing

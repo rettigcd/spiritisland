@@ -46,6 +46,13 @@
 
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
+		<!-- Bare net10.0 is a compile-only stub (TEST_STUB) with no target platform, not a runnable app,
+		     so platform-guarded MAUI APIs (e.g. UseMauiCommunityToolkit) always look "reachable on all
+		     platforms" here - not a real bug. -->
+		<NoWarn>$(NoWarn);CA1416</NoWarn>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<EnableAOTCompilation>False</EnableAOTCompilation>

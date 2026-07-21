@@ -14,7 +14,7 @@ public class RangeExtender( int extension, ICalcRange originalApi ) : DefaultRan
 	const string Tag = "RangeExtender";
 
 	[ModuleInitializer]
-	internal static void RegisterSerialization()
+	internal static new void RegisterSerialization()
 		=> RangeCalcRegistry.Register( Tag, ( json, ctx ) => new RangeExtender(
 			json[1]!.GetValue<int>(), RangeCalcRegistry.Deserialize( (JsonArray)json[2]!, ctx )
 		) );

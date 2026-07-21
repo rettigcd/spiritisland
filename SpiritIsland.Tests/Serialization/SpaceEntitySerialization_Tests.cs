@@ -557,7 +557,7 @@ public class SpaceEntitySerialization_Tests {
 	}
 
 	[Fact]
-	public void SkipExploreTo_RoundTrips_PreservesSkipAllFlag() {
+	public async Task SkipExploreTo_RoundTrips_PreservesSkipAllFlag() {
 		var gs = new SoloGameState();
 		var serCtx = new GameStateSerializationContext(gs);
 
@@ -572,7 +572,7 @@ public class SpaceEntitySerialization_Tests {
 		// remove the token (space.Adjust(this,-1)); true leaves it alone
 		var space = gs.Board[2].ScopeSpace;
 		space.Init(restored, 1);
-		restored.Skip(space).Result.ShouldBeTrue();
+		(await restored.Skip(space)).ShouldBeTrue();
 		space[restored].ShouldBe(1);
 	}
 

@@ -1,3 +1,4 @@
+#nullable enable
 using System.Reflection;
 
 namespace SpiritIsland.Tests.Serialization;
