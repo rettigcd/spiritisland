@@ -88,7 +88,14 @@ public class SoloGame {
 		LogRound();
 
 		SetPhase( Phase.Growth );
-		await Spirit.DoGrowthAsync( GameState ); // !
+
+		// Growth
+		Spirit.GrowthTrack.Reset();
+		while( Spirit.HasMoreGrowthActions )
+			await Spirit.SelectAndResolveNextGrowthAction();
+		await Spirit.EndGrowth();
+
+		// Play Cards
 		await Spirit.SelectAndPlayCardsFromHand();
 		
 		SetPhase( Phase.Fast );

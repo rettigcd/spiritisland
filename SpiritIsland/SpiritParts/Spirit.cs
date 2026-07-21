@@ -141,14 +141,6 @@ public abstract partial class Spirit
 		await ResolveActionAsync( selectedAction, Phase.Growth );
 	}
 
-	/// <remarks>So we can init stuff at beginning of turn if we need to.</remarks>
-	public async Task DoGrowthAsync(GameState gameState) {
-		GrowthTrack.Reset();
-		while( HasMoreGrowthActions )
-			await SelectAndResolveNextGrowthAction();
-		await EndGrowth();
-	}
-
 	/// <summary>
 	/// Called once growth is complete.
 	/// </summary>
