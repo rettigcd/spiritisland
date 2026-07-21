@@ -5,10 +5,12 @@ namespace SpiritIsland.Tests.Serialization;
 /// Round-trips for Spirit.ToJson/RestoreFromJson and SpiritPresence.ToJson/RestoreFromJson -
 /// docs/GameSerialization-Roadmap.md section 2. RestoreFromJson always overlays onto a *freshly
 /// reconstructed* Spirit of the same concrete type/config as the original (mirroring "construct
-/// through the normal path, then overwrite fields" from Fear/Island/BlightCard) - GrowthTrack,
-/// InnatePowers, and Mods are assumed identical from reconstruction alone and aren't part of the
-/// JSON at all. See the doc comment on Spirit.ToJson for the full list of what's deliberately not
-/// captured and the known gaps (non-default TargetingSourceStrategy/PowerRangeCalc, non-Card/Innate/
+/// through the normal path, then overwrite fields" from Fear/Island/BlightCard) - GrowthTrack's
+/// Groups/PickGroups structure, InnatePowers, and Mods are assumed identical from reconstruction
+/// alone and aren't part of the JSON. GrowthTrack.Used *is* captured (see
+/// RoundTrips_GrowthTrackUsedProgress below) - it's real per-round runtime state, not spirit-type
+/// data. See the doc comment on Spirit.ToJson for the full list of what's deliberately not captured
+/// and the known gaps (non-default TargetingSourceStrategy/PowerRangeCalc, non-Card/Innate/
 /// GrowthAction action factories, CustomMementoValue).
 /// </summary>
 public class Spirit_Tests {
@@ -216,6 +218,42 @@ public class Spirit_Tests {
 		target.UsedActions.Select( a => a.Title ).ShouldBe( [ card.Title ] );
 		target.AllActions.Select( a => a.Title ).ShouldContain( growthAction.Title );
 		target.AllActions.OfType<PowerCard>().ShouldBeEmpty(); // the card was used, not left available
+	}
+
+	/// <summary>
+	/// GrowthTrack.Used is genuine per-round runtime state (which GrowthGroups a spirit has already
+	/// picked this Growth phase) - unlike Groups/PickGroups structure, it doesn't come back "for free"
+	/// from reconstruction, so it needs its own JSON capture (GrowthTrack.ToJson/RestoreFromJson).
+	/// Exercises 2 PickGroups so the [pickGroupIndex, groupIndex] position pairs aren't accidentally
+	/// right due to only ever testing index 0.
+	/// </summary>
+	[Fact]
+	public void RoundTrips_GrowthTrackUsedProgress() {
+		var gs = new SoloGameState();
+		var ctx = CtxFor( gs );
+
+		var original = new TestSpirit();
+		original.GrowthTrack = new GrowthTrack(
+			new GrowthGroup( new ReclaimAll() ),
+			new GrowthGroup( new GainEnergy( 2 ) )
+		).Add( new PickGroups( 1, new GrowthGroup( new GainPowerCard() ) ) );
+		original.GrowthTrack.PickGroups[0].Groups[1].Used = true; // 2nd group of the 1st PickGroups
+		original.GrowthTrack.PickGroups[1].Groups[0].Used = true; // only group of the 2nd PickGroups
+
+		JsonObject json = original.ToJson( ctx );
+
+		var target = new TestSpirit();
+		target.GrowthTrack = new GrowthTrack(
+			new GrowthGroup( new ReclaimAll() ),
+			new GrowthGroup( new GainEnergy( 2 ) )
+		).Add( new PickGroups( 1, new GrowthGroup( new GainPowerCard() ) ) );
+		target.GrowthTrack.PickGroups[0].Groups[0].Used = true; // should be cleared by RestoreFromJson
+
+		target.RestoreFromJson( json, ctx );
+
+		target.GrowthTrack.PickGroups[0].Groups[0].Used.ShouldBeFalse();
+		target.GrowthTrack.PickGroups[0].Groups[1].Used.ShouldBeTrue();
+		target.GrowthTrack.PickGroups[1].Groups[0].Used.ShouldBeTrue();
 	}
 
 	[Fact]

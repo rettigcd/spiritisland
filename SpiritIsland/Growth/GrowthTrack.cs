@@ -48,6 +48,34 @@ public class GrowthTrack {
 
 	#endregion Growth - Instance tracking
 
+	#region Json
+
+	/// <summary>
+	/// Only which GrowthGroups are Used this round - [p,g] position pairs, same identity scheme
+	/// Spirit.SerializeGrowthAction already uses (PickGroups[p].Groups[g]). The Groups/PickGroups
+	/// structure itself is still spirit-type data, identical every time this Spirit's aspect setup is
+	/// replayed - not captured here (see Spirit.ToJson's remarks).
+	/// </summary>
+	public JsonArray ToJson( ISerializationContext ctx ) => new JsonArray(
+		_pickGroups.SelectMany( (pg, p) => pg.Groups
+			.Select( (g, gi) => (p, gi, g) )
+			.Where( t => t.g.Used )
+			.Select( t => (JsonNode)new JsonArray( t.p, t.gi ) ) )
+		.ToArray() );
+
+	/// <summary> Restores onto an already-(re)constructed GrowthTrack - see Spirit.RestoreFromJson. </summary>
+	public void RestoreFromJson( JsonArray json, ISerializationContext ctx ) {
+		foreach( var pg in _pickGroups )
+			foreach( var g in pg.Groups )
+				g.Used = false;
+		foreach( JsonNode? n in json ) {
+			var pair = (JsonArray)n!;
+			_pickGroups[ pair[0]!.GetValue<int>() ].Groups[ pair[1]!.GetValue<int>() ].Used = true;
+		}
+	}
+
+	#endregion Json
+
 	#region private
 
 	readonly List<PickGroups> _pickGroups = [];

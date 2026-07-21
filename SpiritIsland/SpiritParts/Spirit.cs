@@ -102,9 +102,50 @@ public abstract partial class Spirit
 
 	public GrowthTrack GrowthTrack { get; set; }
 
+	public bool HasMoreGrowthActions => GetAvailableActions( Phase.Growth ).OfType<IHelpGrowActionFactory>().Any()
+		|| GrowthTrack.RemainingOptions( Energy ).SelectMany( o => o.GrowthActionFactories ).Any();
+
+	/// <summary>
+	/// Selects and resolves exactly one Growth action - safe to call repeatedly, one decision at a time,
+	/// with a JSON save/restore in between each call (see docs/GameSerialization-Roadmap.md's mid-action
+	/// note - this is the one boundary-safe unit of work for the Growth phase). GrowthTrack.Reset() must
+	/// have already run once for the round (DoGrowth below does this for the common "run the whole phase"
+	/// case).
+	/// </summary>
+	public async Task SelectAndResolveNextGrowthAction() {
+		bool isNewPick = !GetAvailableActions( Phase.Growth ).Any();
+
+		// Mid-group (not isNewPick), only the already-committed remainder should be offered - not other
+		// candidate groups - so remainingOptions stays empty until the current group is fully resolved.
+		GrowthGroup[] remainingGroupOptions = isNewPick ? GrowthTrack.RemainingOptions( Energy ) : [];
+		IActionFactory[] consolidated = remainingGroupOptions.SelectMany( grp => grp.GrowthActionFactories )
+			.Union( GetAvailableActions( Phase.Growth ) ).ToArray();
+
+		IActionFactory selectedAction = await SelectAlways( new A.GrowthDecision( "Select Growth", consolidated, Present.Always ) );
+
+		GrowthGroup? newGroup = isNewPick
+			? remainingGroupOptions.SingleOrDefault( grp => grp.GrowthActionFactories.Contains( selectedAction ) )
+			: null;
+
+		if( newGroup is not null ) {
+			// Mark as used and queue up its GrowthActions
+			GrowthTrack.MarkAsUsed( newGroup );
+			foreach( IHelpGrowActionFactory action in newGroup.GrowthActionFactories )
+				_availableActions.Add( action );
+			// Run any other Auto-actions
+			foreach( var autoAction in newGroup.GrowthActionFactories.Where( x => x.AutoRun && x != selectedAction ) )
+				await ResolveActionAsync( autoAction, Phase.Growth );
+		}
+
+		// Run selected action
+		await ResolveActionAsync( selectedAction, Phase.Growth );
+	}
+
 	/// <remarks>So we can init stuff at beginning of turn if we need to.</remarks>
 	public virtual async Task DoGrowth(GameState gameState) {
-		await new DoGrowthClass(this,gameState).Execute();
+		GrowthTrack.Reset();
+		while( HasMoreGrowthActions )
+			await SelectAndResolveNextGrowthAction();
 		await ApplyRevealedPresenceTrack();
 	}
 
@@ -515,9 +556,11 @@ public abstract partial class Spirit
 	///
 	/// Deliberately NOT captured, because they're spirit-type/aspect data - identical every time the
 	/// same concrete Spirit subtype + aspect selection is (re)constructed, not a runtime delta:
-	/// - GrowthTrack / InnatePowers: aspects mutate these once during ModSpirit (e.g. Tactician,
-	///   SpreadingHostility, Pandemonium's innate swap) - re-running that setup reproduces them, same
-	///   "re-run setup" approach Mods (below) also relies on for its Low tier.
+	/// - GrowthTrack's Groups/PickGroups structure / InnatePowers: aspects mutate these once during
+	///   ModSpirit (e.g. Tactician, SpreadingHostility, Pandemonium's innate swap) - re-running that setup
+	///   reproduces them, same "re-run setup" approach Mods (below) also relies on for its Low tier.
+	///   GrowthTrack.Used *is* a real per-round runtime delta though (which GrowthGroups have already
+	///   been picked) - captured separately below via GrowthTrack.ToJson/RestoreFromJson.
 	/// - EnergyCollected / SelectionMade - wiring, not state (section 11); re-subscribed by replaying
 	///   InitSpirit/InitAspect, not serialized.
 	///
@@ -583,6 +626,7 @@ public abstract partial class Spirit
 		["DiscardPile"] = SerializeCards( DiscardPile ),
 		["TargetingSource"] = TargetingSourceStrategy.ToJson( ctx ),
 		["PowerRangeCalc"] = PowerRangeCalc.ToJson( ctx ),
+		["GrowthUsed"] = GrowthTrack.ToJson( ctx ),
 		["AvailableActions"] = SerializeActionFactories( _availableActions, ctx ),
 		["UsedActions"] = SerializeActionFactories( _usedActions, ctx ),
 		["UsedInnates"] = new JsonArray( _usedInnates.Select( ip => (JsonNode)ip.ToJson() ).ToArray() ),
@@ -604,6 +648,7 @@ public abstract partial class Spirit
 
 		TargetingSourceStrategy = TargetingSourceStrategyRegistry.Deserialize( (JsonArray)json["TargetingSource"]!, ctx );
 		PowerRangeCalc = RangeCalcRegistry.Deserialize( (JsonArray)json["PowerRangeCalc"]!, ctx );
+		GrowthTrack.RestoreFromJson( (JsonArray)json["GrowthUsed"]!, ctx );
 
 		_availableActions.SetItems( DeserializeActionFactories( (JsonArray)json["AvailableActions"]!, this, ctx ) );
 		_usedActions.SetItems( DeserializeActionFactories( (JsonArray)json["UsedActions"]!, this, ctx ) );
