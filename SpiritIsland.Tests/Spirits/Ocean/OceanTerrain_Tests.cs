@@ -226,7 +226,7 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: placing precense
-		await _primarySpirit.DoGrowth( _gameState).AwaitUser(user => {
+		await _primarySpirit.DoGrowthForTestsAsync( _gameState).AwaitUser(user => {
 			user.NextDecision.Choose("Place Presence(1)");
 			// Then: ocean is not in option list
 			user.NextDecision.ChooseFrom("2 cardplay").HasToOptions("A1,A2,A3,A4").ChooseTo("A1");

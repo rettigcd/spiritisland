@@ -14,7 +14,7 @@ public class Stone_Growth_Tests {
 		await spirit.Presence.Energy.Given_RevealedNextAsync();
 	
 		// When: user places precence during growth.
-		await spirit.DoGrowth(gs).AwaitUser(u => {
+		await spirit.DoGrowthForTestsAsync(gs).AwaitUser(u => {
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(2)");
 			u.NextDecision.HasPrompt("Select Presence to place").ChooseFrom("Energy+DrawMinor+CardPlay").ChooseTo("A1");
 			// Then: user draws power card

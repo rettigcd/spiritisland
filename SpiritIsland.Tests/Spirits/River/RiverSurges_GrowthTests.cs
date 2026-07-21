@@ -219,7 +219,7 @@ public class RiverSurges_GrowthTests2 {
 		gs.Spirit.Hand.RemoveAll(x=>x.Speed == Phase.Slow);
 		gs.Spirit.DiscardPile.AddRange(slow);
 
-		await gs.Spirit.DoGrowth(gs).AwaitUser(user => {
+		await gs.Spirit.DoGrowthForTestsAsync(gs).AwaitUser(user => {
 
 			// When: User reveals Reclaim 1
 			user.SelectsGrowthB_2PP("cardplays>A5", "cardplays>A5");

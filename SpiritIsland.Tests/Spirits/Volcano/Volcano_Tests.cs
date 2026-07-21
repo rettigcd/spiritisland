@@ -62,7 +62,7 @@ public class Volcano_Tests {
 		spirit.Given_IsOn( gameState.Tokens[a6], 3 );
 
 		// When: Activating Growth Range-0 presence
-		await spirit.DoGrowth(gameState).AwaitUser(user => {
+		await spirit.DoGrowthForTestsAsync(gameState).AwaitUser(user => {
 			user.NextDecision.HasPrompt("select growth").ChooseFirst("Place Presence(0,Mountain)");
 			// Then only option available is A6 (range-0)
 			user.NextDecision.HasPrompt("Select Presence to place").ChooseFrom("2 energy").HasToOptions(a6.Label);

@@ -39,7 +39,7 @@ public class Finder_Tests : BoardAGame {
 	}
 
 	async Task Do_Growth2( string fromTrack, string destination ){
-		await _spirit.DoGrowth(_gameState).AwaitUser( u=>{
+		await _spirit.DoGrowthForTestsAsync(_gameState).AwaitUser( u=>{
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(1)");
 			u.NextDecision.HasPrompt("Select Presence to place")
 				.Choose($"{fromTrack} => {destination}");

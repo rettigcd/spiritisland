@@ -80,10 +80,22 @@ public static class SpiritExtensions {
 
 	#region When
 
+	/// <summary>
+	/// Single call site for driving a Growth phase from tests, so a future change to how Spirit runs
+	/// Growth only touches this one spot. Mirrors Spirit.DoGrowthAsync's current body directly rather
+	/// than calling it.
+	/// </summary>
+	internal static async Task DoGrowthForTestsAsync( this Spirit spirit, GameState gameState ) {
+		spirit.GrowthTrack.Reset();
+		while( spirit.HasMoreGrowthActions )
+			await spirit.SelectAndResolveNextGrowthAction();
+		await spirit.EndGrowth();
+	}
+
 	internal static Task When_Growing( this Spirit spirit, Action<VirtualUser> userActions ) {
 		GameState gs = GameState.Current;
 		gs.Phase = Phase.Growth;
-		return spirit.DoGrowth( gs ).AwaitUser( userActions ).ShouldComplete("Growth");
+		return spirit.DoGrowthForTestsAsync( gs ).AwaitUser( userActions ).ShouldComplete("Growth");
 	}
 
 	internal static Task When_Growing( this Spirit spirit, int option, Action<VirtualUser> userActions ) {

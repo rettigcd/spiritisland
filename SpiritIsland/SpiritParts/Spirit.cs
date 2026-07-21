@@ -142,14 +142,18 @@ public abstract partial class Spirit
 	}
 
 	/// <remarks>So we can init stuff at beginning of turn if we need to.</remarks>
-	public async Task DoGrowth(GameState gameState) {
+	public async Task DoGrowthAsync(GameState gameState) {
 		GrowthTrack.Reset();
 		while( HasMoreGrowthActions )
 			await SelectAndResolveNextGrowthAction();
 		await EndGrowth();
 	}
 
-	async Task EndGrowth() {
+	/// <summary>
+	/// Called once growth is complete.
+	/// </summary>
+	/// <returns></returns>
+	public async Task EndGrowth() {
 		await using ActionScope action2 = await ActionScope.StartSpiritAction( ActionCategory.Spirit_PresenceTrackIcon, this );
 		await EndGrowth_Inner( this );
 	}
