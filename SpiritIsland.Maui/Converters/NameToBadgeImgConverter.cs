@@ -13,5 +13,14 @@ public class NameToBadgeImgConverter : IValueConverter {
 		throw new NotImplementedException();
 	}
 
-	static public ImageSource NameToImage(string name) => ImageCache.FromFile($"bdg_{name.ToResourceName()}.png");
+	static public ImageSource NameToImage(string name) {
+		string filename = $"bdg_{name.ToResourceName()}.png";
+#if WINDOWS
+		// Unpackaged Windows apps can't resolve MauiImage resources via ms-appx:// at runtime,
+		// so badge images are also embedded as plain assembly resources - read those instead.
+		return ImageSource.FromStream(() => typeof(NameToBadgeImgConverter).Assembly.GetManifestResourceStream(filename)!);
+#else
+		return ImageCache.FromFile(filename);
+#endif
+	}
 }

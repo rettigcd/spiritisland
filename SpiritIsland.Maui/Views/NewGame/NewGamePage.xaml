@@ -163,9 +163,9 @@
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding Select}" />
 								</Grid.GestureRecognizers>
-								<Label Text="{Binding LevelText}" Grid.Column="0" FontAttributes="Bold" />
-								<Label Text="{Binding Title}" Grid.Column="1" FontAttributes="Bold" />
-								<Label Text="{Binding Description}" Grid.Row="1" Grid.ColumnSpan="2" FontSize="12" />
+								<Label Text="{Binding LevelText}" Grid.Column="0" FontAttributes="Bold" BackgroundColor="Transparent" />
+								<Label Text="{Binding Title}" Grid.Column="1" FontAttributes="Bold" BackgroundColor="Transparent" />
+								<Label Text="{Binding Description}" Grid.Row="1" Grid.ColumnSpan="2" FontSize="12" BackgroundColor="Transparent" />
 							</Grid>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
