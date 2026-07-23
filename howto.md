@@ -40,6 +40,18 @@ await spaceToken.PushAsync(self);
 
 ```
 
+# Run Windows Build
+
+## Debug build
+```
+dotnet build SpiritIsland.Maui -f net10.0-windows10.0.19041.0 -t:Run
+```
+
+## Release build
+```
+dotnet build SpiritIsland.Maui -f net10.0-windows10.0.19041.0 -c Release -t:Run
+```
+
 # Deploy to Android Device
 
 ## List attached devices (to get the `-s <device-id>`)
