@@ -191,16 +191,27 @@ public class SpaceEntitySerialization_Tests {
 
 	[Fact]
 	public void ToweringRootsIncarna_RoundTrips_PreservesEmpowered() {
-		var spirit = new TestSpirit();
+		// Uses the real spirit type (not TestSpirit) so spirit.Presence.Incarna is genuinely a
+		// ToweringRootsIncarna - proving restore resolves back to that *same* instance, same as
+		// the base Incarna class does for every other Incarna-bearing spirit. A previous version of
+		// ToweringRootsIncarna registered its own serialization tag that constructed a brand-new,
+		// disconnected instance on every restore instead: spirit.Presence.Incarna's own space-tracking
+		// cache never got told about the restored placement, leaving it "unplaced" while an orphaned
+		// duplicate sat on the board - the root cause of Incarna ending up "in 2 places at the same
+		// time" after a rewind (Towering Roots' 3rd growth, ReplacePresenceWithIncarna).
+		var spirit = new SpiritIsland.NatureIncarnate.ToweringRootsOfTheJungle();
 		var gs = new SoloGameState(spirit);
 		var serCtx = new GameStateSerializationContext(gs);
 
-		var original = new SpiritIsland.NatureIncarnate.ToweringRootsIncarna(spirit) { Empowered = true };
+		var original = spirit.Presence.Incarna;
+		original.Empowered = true;
 
 		JsonArray json = SpaceEntitySerialization.Serialize(original, serCtx);
+		json[0]!.GetValue<string>().ShouldBe("Incarna"); // uniform base tag, not a subclass-specific one
 		json[2]!.GetValue<bool>().ShouldBeTrue(); // extra field beyond the spirit index
 
 		var restored = (SpiritIsland.NatureIncarnate.ToweringRootsIncarna)SpaceEntitySerialization.Deserialize(json, serCtx);
+		restored.ShouldBeSameAs(original); // same instance spirit.Presence.Incarna already owns
 		restored.Empowered.ShouldBeTrue();
 		restored.Self.ShouldBeSameAs(spirit);
 	}

@@ -183,6 +183,43 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	}
 
 	[Fact]
+	public async Task RestoreFromJson_AfterIncarnaMoved_ResyncsIncarnasSpaceCache() {
+		// Reproduces the "Incarna is in 2 places at the same time!" bug seen on Towering Roots' 3rd
+		// growth (ReplacePresenceWithIncarna): Incarna caches its own space via ITrackMySpaces, kept in
+		// sync only through Space.Adjust. A Rewind restores the board by writing straight into the
+		// token-count dictionaries (Tokens_ForIsland.FromJson), bypassing Adjust - so before the fix,
+		// Incarna's cache kept pointing at wherever it was *before* the restore instead of where the
+		// JSON actually puts it. A later move then read the stale cached space, leaving 2 entries in
+		// Incarna's cache and throwing.
+		Given_IncarnaOn( _board[2] ); // A2
+
+		var serCtx = new GameStateSerializationContext( _gs );
+		JsonObject snapshotAtA2 = _gs.Tokens.ToJson( serCtx );
+
+		// Move Incarna the normal way (Adjust keeps the cache correctly in sync at A5).
+		await _board[2].ScopeSpace.RemoveAsync( _presence.Incarna, 1 );
+		await _board[5].ScopeSpace.AddAsync( _presence.Incarna, 1 );
+		_presence.Incarna.Space.SpaceSpec.ShouldBe( (SpaceSpec)_board[5] );
+
+		// Rewind: restore the earlier snapshot (Incarna back on A2) onto the SAME live instance, via a
+		// fresh serialization context - exactly what SoloGame.RewindOneAction does.
+		Tokens_ForIsland.FromJson( _gs.Tokens, snapshotAtA2, new GameStateSerializationContext( _gs ) );
+
+		// The board itself is correctly restored...
+		_board[2].ScopeSpace[_presence.Incarna].ShouldBe( 1 );
+		_board[5].ScopeSpace[_presence.Incarna].ShouldBe( 0 );
+
+		// ...and Incarna's own cached Space must agree, not still point at the pre-rewind A5.
+		_presence.Incarna.Space.SpaceSpec.ShouldBe( (SpaceSpec)_board[2] );
+		_presence.Incarna.IsPlaced.ShouldBeTrue();
+
+		// A subsequent move must not throw "Incarna is in 2 places at the same time!"
+		await _presence.Incarna.MoveTo( _board[3].ScopeSpace, allowAdd: false );
+		_board[2].ScopeSpace[_presence.Incarna].ShouldBe( 0 );
+		_board[3].ScopeSpace[_presence.Incarna].ShouldBe( 1 );
+	}
+
+	[Fact]
 	public void SpaceDoestRepeat() {
 		// Given: Presence & Incarna on A2
 		_board[2].ScopeSpace.Init( _spirit.Presence.Token, 1 );

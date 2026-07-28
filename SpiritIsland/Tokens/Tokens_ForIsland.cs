@@ -206,6 +206,19 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 		// its short key.
 		ctx.LoadLookupTable( (JsonObject)json["EntityLookup"]! );
 
+		// Tokens like Incarna/SpiritPresenceToken cache their own space(s) via ITrackMySpaces,
+		// kept in sync only through Space.Adjust's TrackAdjust calls. The direct counts[...] =
+		// writes below bypass Adjust entirely, so without this, a token's cache would keep
+		// pointing at wherever it was *before* this restore (e.g. before a Rewind) instead of
+		// where the JSON below actually places it - which is how Incarna ends up thinking it's
+		// in 2 places at once after a rewind. Clear every cache found on the (pre-restore) live
+		// board here; each one gets rebuilt via TrackAdjust as its entries are set below.
+		var trackable = target._tokenCounts.Values
+			.SelectMany( counts => counts.Keys.OfType<ITrackMySpaces>() )
+			.Distinct()
+			.ToArray();
+		foreach( ITrackMySpaces t in trackable ) t.Clear();
+
 		// _islandMods is itself one of these values (inserted under "Island-Mods" in the constructor),
 		// so this clears it too - no separate _islandMods.Clear() needed.
 		foreach( var counts in target._tokenCounts.Values )
@@ -221,9 +234,15 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 			SpaceSpec spec = ctx.SpaceSpecOrFakeByLabel( label );
 			spec.DoesExists = spaceEntry["DoesExist"]!.GetValue<bool>();
 
+			Space space = target[spec];
 			CountDictionary<ISpaceEntity> counts = target.GetTokensCounts( spec );
-			foreach( var (key, countNode) in (JsonObject)spaceEntry["Tokens"]! )
-				counts[ctx.ResolveSpaceEntity( key )] = countNode!.GetValue<int>();
+			foreach( var (key, countNode) in (JsonObject)spaceEntry["Tokens"]! ) {
+				ISpaceEntity entity = ctx.ResolveSpaceEntity( key );
+				int count = countNode!.GetValue<int>();
+				counts[entity] = count;
+				if( entity is ITrackMySpaces tracked && count != 0 )
+					tracked.TrackAdjust( space, count );
+			}
 		}
 	}
 

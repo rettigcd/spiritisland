@@ -5,7 +5,6 @@ public class ToweringRootsIncarna( Spirit spirit )
 	, IHandleTokenAdded	// Empowers if it meets 3 vitality
 	, IAdjustDamageToInvaders_ByStoppingIt, IAdjustDamageToDahan, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
-	, ISerializableSpaceEntity
 {
 	string ISkipBuilds.Text => SpaceAbreviation;
 
@@ -36,12 +35,12 @@ public class ToweringRootsIncarna( Spirit spirit )
 	public Task<bool> Skip( Space space ) => Task.FromResult( Empowered );
 	#endregion
 
-	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, ctx.IndexOf( Self ), Empowered );
-
-	const string Tag = "ToweringRootsIncarna";
-
-	[ModuleInitializer]
-	internal static void RegisterSerialization()
-		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => new ToweringRootsIncarna( ctx.SpiritAt( (int)json[1]! ) ) { Empowered = json[2]!.GetValue<bool>() } );
+	// Serialization (ISerializableSpaceEntity) is inherited from Incarna as-is: it already tags
+	// uniformly as "Incarna" and resolves back to ctx.SpiritAt(idx).Presence.Incarna - the spirit's
+	// one true Incarna instance, whatever its concrete subclass. This class previously registered
+	// its own "ToweringRootsIncarna" tag that constructed a brand-new instance on every restore
+	// instead of reusing that singleton, silently orphaning the real spirit.Presence.Incarna (empty,
+	// untracked) while a disconnected duplicate sat on the board - the root cause of Incarna ending
+	// up "in 2 places at the same time" after a rewind.
 
 }
