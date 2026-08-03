@@ -44,8 +44,6 @@ public sealed class InvaderCard : IOption {
 
 	#region Matching Terrain
 
-	public bool MatchesCard( SpaceSpec space ) => Filter.Matches( space.ScopeSpace ); // used only in tests
-
 	public bool MatchesCard( Space space ) => Filter.Matches( space );
 
 	#endregion

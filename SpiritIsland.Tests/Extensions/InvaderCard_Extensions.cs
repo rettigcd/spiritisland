@@ -2,6 +2,8 @@
 
 static class InvaderCard_Extensions {
 
+	internal static bool MatchesCard( this InvaderCard invaderCard, SpaceSpec space ) => invaderCard.MatchesCard( space.ScopeSpace );
+
 	internal static Task When_Ravaging( this InvaderCard invaderCard )
 		=> new RavageEngine().ActivateCard( invaderCard ).ShouldComplete( "Ravage" );
 
