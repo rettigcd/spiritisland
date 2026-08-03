@@ -6,7 +6,7 @@ public class ExploreSlot : InvaderSlot {
 	/// <summary>
 	/// Sinlge Entry point for Exploring a card.
 	/// </summary>
-	public async override Task ActivateCard( InvaderCard card, GameState gameState ) {
+	protected async override Task ActivateCard_Internal( InvaderCard card, GameState gameState ) {
 		card.Flip();
 		await Engine.ActivateCard( card, gameState );
 	}

@@ -2,7 +2,7 @@
 
 public class RavageSlot : InvaderSlot {
 	public RavageSlot() : base( "Ravage" ) { }
-	public override Task ActivateCard( InvaderCard card, GameState _ ) => Engine.ActivateCard( card );
+	protected override Task ActivateCard_Internal( InvaderCard card, GameState _ ) => Engine.ActivateCard( card );
 	public RavageEngine Engine = new RavageEngine();
 
 	public override List<InvaderCard> GetCardsToAdvance() {

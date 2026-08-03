@@ -9,7 +9,7 @@
 /// <param name="label"></param>
 public class BuildSlot( string label = "Build" ) : InvaderSlot( label ) {
 
-	public override async Task ActivateCard( InvaderCard card, GameState _ ) {
+	protected override async Task ActivateCard_Internal( InvaderCard card, GameState _ ) {
 		await Engine.ActivateCard( card );
 	}
 

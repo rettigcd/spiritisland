@@ -33,7 +33,7 @@ public class CommandBeasts( string title )
 		var cards = gameState.InvaderDeck.UnrevealedCards;
 
 		// Stage 2
-		int i =0; while(cards[i].InvaderStage != 2) ++i;
+		int i = 0; while(cards[i].InvaderStage != 2) ++i;
 		if(0<i && cards[i-1].InvaderStage==3) --i; // Brandenburg Prussia
 		cards[i].CardRevealed += new CommandBeasts(Stage2).OnCardRevealed;
 

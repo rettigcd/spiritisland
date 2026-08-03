@@ -32,6 +32,6 @@ public enum ActionCategory {
 	//	Actions written on the scenario panel.
 
 	Special
-    // Command the Beasts
+	// Command the Beasts
 
 }

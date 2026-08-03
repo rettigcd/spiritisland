@@ -9,12 +9,20 @@ public abstract class InvaderSlot( string label ) : IHaveMemento {
 	public void HoldNextBack() { _holdBackCount++; }
 	public void SkipNextNormal() { _skipCount++; }
 	public virtual async Task Execute( GameState gs ) {
-		foreach(var card in Cards)
-			if(0 < _skipCount)
-				_skipCount--;
-			else
-				await ActivateCard(card,gs);
+		foreach( var card in Cards )
+			await ActivateCard(card, gs );
 		await ActionComplete.InvokeAsync(gs);
+	}
+
+	/// <summary>
+	/// The normal Activate-Card action.
+	/// May be skipped if Skip-next-N-actions has been called on slot.
+	/// </summary>
+	public async Task ActivateCard(InvaderCard card, GameState gs) {
+		if( 0 < _skipCount )
+			_skipCount--;
+		else
+			await ActivateCard_Internal(card, gs);
 	}
 
 	/// <summary>
@@ -34,7 +42,7 @@ public abstract class InvaderSlot( string label ) : IHaveMemento {
 		return result;
 	}
 
-	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
+	protected abstract Task ActivateCard_Internal( InvaderCard card, GameState gameState);
 
 	#region Json
 
