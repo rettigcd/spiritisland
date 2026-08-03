@@ -18,13 +18,6 @@ public sealed class InvaderCard : IOption {
 		Flipped = true;
 	}
 
-	public async Task OnReveal() {
-		if(CardRevealed is not null)
-			await CardRevealed( GameState.Current );
-	}
-
-	public event Func<GameState,Task>? CardRevealed;
-
 	public int InvaderStage { get; }
 
 	string IOption.Text => Code;

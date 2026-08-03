@@ -59,15 +59,15 @@ public class InvaderDeck : IHaveMemento {
 	/// <summary>
 	/// Moves 1 (or more) cards from the unrealed deck to the Explore deck.
 	/// </summary>
-	public async Task InitExploreSlotAsync() {
-		if(UnrevealedCards.Count == 0) return; // !!! Should this throw a GameOver(Loss) exception?
+	public Task InitExploreSlotAsync() {
+		if(UnrevealedCards.Count == 0) return Task.CompletedTask; // !!! Should this throw a GameOver(Loss) exception?
 		int count = _drawCount[0]; _drawCount.RemoveAt( 0 );
 		while(0 < count--) {
 			var unrevealedCard = UnrevealedCards[0];
 			UnrevealedCards.RemoveAt( 0 );
 			Explore.Cards.Add( unrevealedCard );
-			await unrevealedCard.OnReveal();
 		}
+		return Task.CompletedTask;
 	}
 
 	#region private fields
@@ -82,10 +82,9 @@ public class InvaderDeck : IHaveMemento {
 	#region Json
 
 	/// <summary>
-	/// Named keys - same field list as MyMemento below. _leftOverCards isn't captured - like the
-	/// CardRevealed event subscriptions InvaderCard doesn't serialize, it's consumed only during
-	/// adversary setup (Russia's TakeNextUnused), fully drained before the game becomes interactively
-	/// playable, and isn't captured by MyMemento either.
+	/// Named keys - same field list as MyMemento below. _leftOverCards isn't captured - it's consumed
+	/// only during adversary setup (Russia's TakeNextUnused), fully drained before the game becomes
+	/// interactively playable, and isn't captured by MyMemento either.
 	///
 	/// ActiveSlots is [ [ "Fixed", label ] | [ "Extra", extraSlotJson ], ... ] - Explore/Build/
 	/// Ravage resolve by label against this deck's own always-present instances (as before); anything
