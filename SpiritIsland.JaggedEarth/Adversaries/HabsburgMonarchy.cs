@@ -59,9 +59,9 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 		},
 
 		// Level 5
-		new AdversaryLevel(5, 9, 4,6,3, "Wave of Immigration", 
-			"Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ){ 
-			InitFunc = (gameState,_) => gameState.InvaderDeck.UnrevealedCards[4].CardRevealed += HabsburgReminderCard_Revealed
+		new AdversaryLevel(5, 9, 4,6,3, "Wave of Immigration",
+			"Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ){
+			InitFunc = (gameState,_) => gameState.AddPostInvaderPhase( new HabsburgReminderCardTrigger( gameState.InvaderDeck.UnrevealedCards[4].Code ) )
 		},
 
 		// Level 6
@@ -130,6 +130,34 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 
 
 	#region Level-5
+
+	/// <summary>
+	/// Watches for the Invader card whose Code was recorded at Init (the one at UnrevealedCards[4], right
+	/// where the un-modeled Habsburg Reminder Card sits in the deck) to reach the Build slot - meaning it
+	/// just advanced off of Explore, i.e. it was revealed last round. Checking the Build slot (rather than
+	/// subscribing to that card's CardRevealed event) avoids holding an event subscription on a live
+	/// InvaderCard, whose identity doesn't survive JSON restore/rewind - same pattern/rationale as
+	/// CommandBeasts.
+	/// </summary>
+	internal class HabsburgReminderCardTrigger( string triggerCardCode ) : IRunAfterInvaderPhase {
+
+		Task IRunAfterInvaderPhase.AfterInvaderPhase( GameState gameState ) {
+			_triggered = gameState.InvaderDeck.Build.Cards.Any( c => c.Code == triggerCardCode );
+			return _triggered ? HabsburgReminderCard_Revealed( gameState ) : Task.CompletedTask;
+		}
+
+		bool IRunAfterInvaderPhase.RemoveAfterRun => _triggered;
+		bool _triggered;
+
+		JsonArray IRunAfterInvaderPhase.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, triggerCardCode );
+
+		const string Tag = "HabsburgReminderCardTrigger";
+
+		[ModuleInitializer]
+		internal static void RegisterSerialization()
+			=> PostInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => new HabsburgReminderCardTrigger( json[1]!.GetValue<string>() ) );
+
+	}
 
 	static async Task HabsburgReminderCard_Revealed( GameState gameState ) {
 		// Level 5
