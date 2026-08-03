@@ -3,16 +3,16 @@
 namespace SpiritIsland;
 
 /// <summary>
-/// Starts as an event Handler on the Invader cards
-/// Moves to an action that runs when TimePasses
-/// Added to 1st Spirits ActionFactory list until they use it.
+/// Watches for the Invader card whose Code was recorded at Setup to reach the Build slot - meaning it just advanced off of Explore, i.e. it was revealed and explored last round.
+/// 	=> once triggered, adds itself to the 1st Spirit's Mods bucket as an IModifyAvailableActions,
+/// 	   offering itself as a Fast action each round until used, then removes itself from Mods.
 /// </summary>
-public class CommandBeasts( string title )
+public class CommandBeasts( string title, string triggerCardCode = "" )
 	: IActionFactory
-	, IRunWhenTimePasses
-	, IHaveMemento
+	, IModifyAvailableActions
+	, IRunAfterInvaderPhase
 	, ILogEntry
-	, ISerializableTimePassesAction
+	, ISerializableSpiritMod
 {
 
 	#region ILogEntry
@@ -35,13 +35,13 @@ public class CommandBeasts( string title )
 		// Stage 2
 		int i = 0; while(cards[i].InvaderStage != 2) ++i;
 		if(0<i && cards[i-1].InvaderStage==3) --i; // Brandenburg Prussia
-		cards[i].CardRevealed += new CommandBeasts(Stage2).OnCardRevealed;
+		gameState.AddPostInvaderPhase( new CommandBeasts( Stage2, cards[i].Code ) );
 
 		// Stage 3 - Find 1st card of last Level-3 group
 		i = cards.Count;
 		while(cards[i - 1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
 		while(cards[i - 1].InvaderStage == 3) --i; // While prev is level 3, backup - ends on 1st level 3 card in last group
-		cards[i].CardRevealed += new CommandBeasts( Stage3 ).OnCardRevealed;
+		gameState.AddPostInvaderPhase( new CommandBeasts( Stage3, cards[i].Code ) );
 	}
 
 	#endregion Static Setup
@@ -49,8 +49,8 @@ public class CommandBeasts( string title )
 	string IOption.Text => Title;
 	public string Title { get; } = title;
 
-	public async Task ActivateAsync( Spirit _ ) {
-		_used = true;
+	public async Task ActivateAsync( Spirit spirit ) {
+		spirit.Mods.Remove( this );
 		GameState gs = GameState.Current;
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
 		await new CommandBeastsOn1Space().In().EachActiveLand().ActAsync( gs );
@@ -59,64 +59,61 @@ public class CommandBeasts( string title )
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 
-	#region IRunWhenTimePasses
+	#region IRunAfterInvaderPhase
 
-	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
-		if(!_used)
-			gameState.Spirits[0].AddActionFactory( this );
+	/// <summary>
+	/// Card just advanced off of Explore into Build => it was revealed and explored last round, so this
+	/// is the round to swap in for the missing Event card.
+	/// </summary>
+	Task IRunAfterInvaderPhase.AfterInvaderPhase( GameState gameState ) {
+		_triggered = gameState.InvaderDeck.Build.Cards.Any( c => c.Code == triggerCardCode );
+		if(_triggered) {
+			gameState.Log( this );
+			gameState.ReminderCards.Add( this );
+			gameState.Spirits[0].Mods.Add( this );
+		}
 		return Task.CompletedTask;
 	}
 
-	bool IRunWhenTimePasses.RemoveAfterRun => _used;
+	bool IRunAfterInvaderPhase.RemoveAfterRun => _triggered;
+	bool _triggered;
 
-	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Late;
+	JsonArray IRunAfterInvaderPhase.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title, triggerCardCode );
 
-	#endregion
+	#endregion IRunAfterInvaderPhase
 
-	#region IHaveMemento
+	#region IModifyAvailableActions
 
-	object IHaveMemento.Memento {
-		get => _used;
-		set => _used = (bool)value;
+	/// <summary>
+	/// Presence in Mods IS the "not yet used" signal - ActivateAsync removes this from Mods once used,
+	/// so there's no separate used-flag to check here.
+	/// </summary>
+	void IModifyAvailableActions.Modify( List<IActionFactory> orig, Phase phase ) {
+		if(phase == Phase.Fast)
+			orig.Add( this );
 	}
 
-	#endregion IHaveMemento
+	#endregion IModifyAvailableActions
 
 	#region Json
 
 	/// <summary>
-	/// [ Tag, Title, _used ]. Covers this object's own _timePassesActions membership only - the
-	/// gameState.ReminderCards entry (added alongside this in OnCardRevealed) round-trips separately via
-	/// GameState.ReminderCardsToJson/RestoreReminderCardsFromJson, which resolves back to this same
-	/// restored instance by Title rather than constructing a disconnected duplicate.
+	/// [ Tag, Title ]. Covers this object's own Mods membership only - the gameState.ReminderCards entry
+	/// (added alongside this once triggered) round-trips separately via GameState.ReminderCardsToJson/
+	/// RestoreReminderCardsFromJson, which resolves back to this same restored instance by Title rather
+	/// than constructing a disconnected duplicate.
 	/// </summary>
-	JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title, _used );
+	JsonArray ISerializableSpiritMod.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title );
 
 	const string Tag = "CommandBeasts";
 
 	[ModuleInitializer]
-	internal static void RegisterSerialization()
-		=> TimePassesActionRegistry.Register( Tag, ( json, ctx ) => new CommandBeasts( json[1]!.GetValue<string>() ) { _used = json[2]!.GetValue<bool>() } );
+	internal static void RegisterSerialization() {
+		SpiritModRegistry.Register( Tag, ( spirit, json, ctx ) => spirit.Mods.Add( new CommandBeasts( json[1]!.GetValue<string>() ) ) );
+		PostInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => new CommandBeasts( json[1]!.GetValue<string>(), json[2]!.GetValue<string>() ) );
+	}
 
 	#endregion Json
-
-	#region private
-
-	/// <summary>
-	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
-	/// </summary>
-	Task OnCardRevealed( GameState gameState ) {
-		// Memento only called when in TimePasses collection
-		_used = false; // this is needed but I can't figure out why
-		gameState.Log( this );
-
-		gameState.ReminderCards.Add(this);
-		gameState.AddTimePassesAction( this );
-		return Task.CompletedTask;
-	}
-	bool _used;
-
-	#endregion private
 }
 
 /// <summary>

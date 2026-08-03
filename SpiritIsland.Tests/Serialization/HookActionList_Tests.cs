@@ -113,17 +113,40 @@ public class HookActionList_Tests {
 	}
 
 	[Fact]
-	public void TimePassesActionRegistry_ResolvesCommandBeasts_WithUsedFlag() {
+	public void SpiritModRegistry_ResolvesCommandBeasts() {
 		var gs = new SoloGameState();
 		var ctx = CtxFor( gs );
 		var original = new CommandBeasts( CommandBeasts.Stage2 );
-		( (IHaveMemento)original ).Memento = true; // sets _used, same mechanism undo already relies on
+		gs.Spirit.Mods.Add( original );
 
-		JsonArray json = TimePassesActionRegistry.Serialize( original, ctx );
-		var restored = (CommandBeasts)TimePassesActionRegistry.Deserialize( json, ctx );
+		JsonArray json = ( (ISerializableSpiritMod)original ).ToJson( ctx );
+
+		var target = new SoloGameState();
+		var targetCtx = CtxFor( target );
+		SpiritModRegistry.Restore( target.Spirit, json, targetCtx );
+
+		var restored = target.Spirit.Mods.OfType<CommandBeasts>().Single();
+		restored.Title.ShouldBe( CommandBeasts.Stage2 );
+	}
+
+	[Fact]
+	public async Task PostInvaderPhaseActionRegistry_ResolvesCommandBeasts_ReconstructingTriggerCode() {
+		var gs = new SoloGameState();
+		var ctx = CtxFor( gs );
+		var original = new CommandBeasts( CommandBeasts.Stage2, "J" );
+
+		JsonArray json = ( (IRunAfterInvaderPhase)original ).ToJson( ctx );
+		var restored = (CommandBeasts)PostInvaderPhaseActionRegistry.Deserialize( json, ctx );
 
 		restored.Title.ShouldBe( CommandBeasts.Stage2 );
-		( (IRunWhenTimePasses)restored ).RemoveAfterRun.ShouldBeTrue(); // RemoveAfterRun => _used
+
+		// Build slot now holds a card whose Code matches the recorded trigger code - as if the target
+		// card just advanced off of Explore into Build.
+		gs.InvaderDeck.Build.Cards.Add( InvaderCard.Stage1( Terrain.Jungle ) ); // Code "J"
+		await ( (IRunAfterInvaderPhase)restored ).AfterInvaderPhase( gs );
+
+		( (IRunAfterInvaderPhase)restored ).RemoveAfterRun.ShouldBeTrue();
+		gs.ReminderCards.ShouldContain( restored );
 	}
 
 	[Fact]
@@ -488,29 +511,32 @@ public class HookActionList_Tests {
 	}
 
 	[Fact]
-	public void GameState_RoundTrips_ReminderCards_ResolvingCommandBeasts_ToLiveTimePassesActionsInstance() {
-		// Mirrors what CommandBeasts.OnCardRevealed does: added to both _timePassesActions and
-		// ReminderCards together. RestoreReminderCardsFromJson must run after
-		// RestoreTimePassesActionsFromJson so it resolves against the already-restored list.
+	public void GameState_RoundTrips_ReminderCards_ResolvingCommandBeasts_ToLiveModsInstance() {
+		// Mirrors what CommandBeasts.AfterInvaderPhase does once triggered: added to both the 1st
+		// Spirit's Mods bucket and ReminderCards together. RestoreReminderCardsFromJson resolves by
+		// Title against Spirits[0].Mods, so it must run after that bucket is already restored - Mods
+		// restoration itself is covered separately by SpiritModRegistry_ResolvesCommandBeasts above, so
+		// here it's simulated directly rather than repeating a full GameState.ToJson round trip.
 		var gs = new SoloGameState();
 		var ctx = CtxFor( gs );
 		var commandBeasts = new CommandBeasts( CommandBeasts.Stage3 );
-		gs.AddTimePassesAction( commandBeasts );
+		gs.Spirit.Mods.Add( commandBeasts );
 		gs.ReminderCards.Add( commandBeasts );
 
-		JsonArray timePassesJson = gs.TimePassesActionsToJson( ctx );
 		JsonArray reminderCardsJson = gs.ReminderCardsToJson( ctx );
 
 		var target = new SoloGameState();
 		var targetCtx = CtxFor( target );
-		target.RestoreTimePassesActionsFromJson( timePassesJson, targetCtx );
+		var restoredCommandBeasts = new CommandBeasts( CommandBeasts.Stage3 );
+		target.Spirit.Mods.Add( restoredCommandBeasts ); // stand-in for SpiritModRegistry's own restore
+
 		target.RestoreReminderCardsFromJson( reminderCardsJson, targetCtx );
 
-		var restoredCommandBeasts = target.ReminderCards.Single();
-		restoredCommandBeasts.ShouldBeOfType<CommandBeasts>();
-		// Not a fresh, disconnected CommandBeasts - the same instance _timePassesActions restored, so
+		var resolved = target.ReminderCards.Single();
+		resolved.ShouldBeOfType<CommandBeasts>();
+		// Not a fresh, disconnected CommandBeasts - the same instance already in Mods, so
 		// ActivateAsync's gs.ReminderCards.Remove(this) will actually find and remove it later.
-		restoredCommandBeasts.ShouldBeSameAs( TimePassesActions( target ).OfType<CommandBeasts>().Single() );
+		resolved.ShouldBeSameAs( restoredCommandBeasts );
 	}
 
 	static IReadOnlyList<IRunWhenTimePasses> TimePassesActions( GameState gs ) => ( (ActionList<IRunWhenTimePasses>)

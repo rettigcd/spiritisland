@@ -330,14 +330,14 @@ public class GameState : IHaveMemento {
 	/// <summary>
 	/// ReminderCards is pure UI state (StatusPanel reminder-icon list, see docs/GameSerialization-
 	/// Roadmap.md section 10) - its only real producer is CommandBeasts, which is independently restored
-	/// into _timePassesActions via TimePassesActionRegistry. Resolving by Title against that
-	/// already-restored list, rather than constructing a second, disconnected CommandBeasts, matters
-	/// because ActivateAsync calls gs.ReminderCards.Remove(this) on the live _timePassesActions instance -
-	/// a mismatched duplicate would silently fail to remove itself (List&lt;object&gt;.Remove uses
-	/// reference equality; CommandBeasts has no Equals override), leaving a stale icon after the card is
-	/// used. Same recurring identity-resolution shape as InvaderSlotByLabel/BlightCard/
+	/// into Spirits[0].Mods via SpiritModRegistry (it's an ISerializableSpiritMod). Resolving by Title
+	/// against that already-restored Mods bucket, rather than constructing a second, disconnected
+	/// CommandBeasts, matters because ActivateAsync calls gs.ReminderCards.Remove(this) on the live Mods
+	/// instance - a mismatched duplicate would silently fail to remove itself (List&lt;object&gt;.Remove
+	/// uses reference equality; CommandBeasts has no Equals override), leaving a stale icon after the
+	/// card is used. Same recurring identity-resolution shape as InvaderSlotByLabel/BlightCard/
 	/// ExistingSpaceEntity&lt;T&gt;. Restore ordering matters: RestoreReminderCardsFromJson must run after
-	/// RestoreTimePassesActionsFromJson.
+	/// each Spirit's own RestoreFromJson (which restores Mods).
 	/// </summary>
 	public JsonArray ReminderCardsToJson( ISerializationContext ctx ) => new JsonArray(
 		ReminderCards.Select( r => r switch {
@@ -349,7 +349,7 @@ public class GameState : IHaveMemento {
 	public void RestoreReminderCardsFromJson( JsonArray json, ISerializationContext ctx ) => ReminderCards = json.Select( n => {
 		var entry = (JsonArray)n!;
 		return entry[0]!.GetValue<string>() switch {
-			"CommandBeasts" => (object)_timePassesActions.Actions.OfType<CommandBeasts>().First( cb => cb.Title == entry[1]!.GetValue<string>() ),
+			"CommandBeasts" => (object)Spirits[0].Mods.OfType<CommandBeasts>().First( cb => cb.Title == entry[1]!.GetValue<string>() ),
 			var kind => throw new NotSupportedException( $"Unknown ReminderCard kind '{kind}'" )
 		};
 	} ).ToList();
