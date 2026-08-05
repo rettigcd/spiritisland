@@ -229,14 +229,18 @@ public class SoloGameModel : ObservableModel {
 		// Spirit
 		SpiritSummary.SyncModelToGameState(_ovm);
 
-		_ovm.SyncOptionStatesToDecision(decision);
-
 		// Board
 		if (ActionScope.Current == null)
 			ActionScope.Initialize(GameState.RootScope);
 
 		// Spaces = Spaces == "1" ? "0" : "1"; // IV.SyncTokensToGameState();
 		Island.SyncTokens();
+
+		// Must run after Island.SyncTokens(): OptionLookup is keyed by SpaceToken, whose equality is
+		// structural on the token's mutable stats (HumanToken.Equals) - looking up decision.Options
+		// (built from the live GameState) against a stale pre-sync OptionLookup silently drops the
+		// hotspot for any token whose stats changed since the last sync.
+		_ovm.SyncOptionStatesToDecision(decision);
 
 		if (AutoSelect()) return;
 
