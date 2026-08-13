@@ -598,9 +598,12 @@ public abstract partial class Spirit
 	///   AddActionFactory - RepeatCardForCost, RepeatCheapestCardForCost, RepeatSpecificCardForCost
 	///   (JaggedEarth, wraps a PowerCard resolved via the existing PowerCardRegistry), RepeatCardForFree,
 	///   RelentlessRepeater (NatureIncarnate, wraps a PowerCard + a live Space resolved via
-	///   ISerializationContext.Tokens/SpaceSpecByLabel), and EmpoweredAbduct (NatureIncarnate, stateless -
+	///   ISerializationContext.Tokens/SpaceSpecByLabel), EmpoweredAbduct (NatureIncarnate, stateless -
 	///   resolves to its own shared static Singleton, not a fresh instance, since
-	///   EnableEmpoweredAbductMod's Mods entry compares spirit.UsedActions against that exact reference)
+	///   EnableEmpoweredAbductMod's Mods entry compares spirit.UsedActions against that exact reference),
+	///   and CommandBeasts (injected via IModifyAvailableActions like the "harder bucket" below, but
+	///   removes itself from Mods the instant it's used - see its own Json region remarks for why a fresh,
+	///   reference-distinct instance is fine there unlike MarkedBeastMover/PourDownPower/UnrelentingStrides)
 	///   all implement it.
 	///   ResolveSlowDuringFast/ResolveSlowDuringFast_OrViseVersa/SharpFangs's setup action are the
 	///   remaining AddActionFactory-based holdouts - still throw, but are all trivially name-resolvable

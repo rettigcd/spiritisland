@@ -150,6 +150,29 @@ public class HookActionList_Tests {
 	}
 
 	[Fact]
+	public void RoundTrips_UsedAction_CommandBeasts_AfterActivation() {
+		// Reproduces the production crash: ResolveActionAsync calls Spirit.MarkAsResolved (adding the
+		// factory to _usedActions) *before* CommandBeasts.ActivateAsync removes itself from Mods, so a
+		// save taken any time after activation has a CommandBeasts sitting in _usedActions with no
+		// matching Mods entry left to resolve back through - ISerializableActionFactory (not
+		// IOwnedActionFactories) is what has to cover it. See CommandBeasts' own Json region remarks.
+		var gs = new SoloGameState();
+		var ctx = CtxFor( gs );
+
+		var original = new TestSpirit();
+		original.MarkAsResolved( new CommandBeasts( CommandBeasts.Stage2 ) );
+
+		JsonObject json = original.ToJson( ctx );
+
+		var target = new TestSpirit();
+		target.RestoreFromJson( json, ctx );
+
+		var restored = target.UsedActions.Single();
+		restored.ShouldBeOfType<CommandBeasts>();
+		( (CommandBeasts)restored ).Title.ShouldBe( CommandBeasts.Stage2 );
+	}
+
+	[Fact]
 	public void TimePassesActionRegistry_ResolvesSlowAndSilentDeath_ViaShroudSpiritInit() {
 		// SlowAndSilentDeath is internal to SpiritIsland.JaggedEarth - exercised through the real
 		// ShroudOfSilentMist.InitializeInternal path (which always adds one) rather than constructing

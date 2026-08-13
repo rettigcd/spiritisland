@@ -13,6 +13,7 @@ public class CommandBeasts( string title, string triggerCardCode = "" )
 	, IRunAfterInvaderPhase
 	, ILogEntry
 	, ISerializableSpiritMod
+	, ISerializableActionFactory
 {
 
 	#region ILogEntry
@@ -105,12 +106,24 @@ public class CommandBeasts( string title, string triggerCardCode = "" )
 	/// </summary>
 	JsonArray ISerializableSpiritMod.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title );
 
+	/// <summary>
+	/// [ Tag, Title ]. Covers this instance once it's landed in Spirit._usedActions - ActivateAsync
+	/// removes it from Mods (via IOwnedActionFactories-style reference resolution) before MarkAsResolved's
+	/// caller even returns, so by the time a save happens post-use there's no live Mods entry left to
+	/// resolve back through. A fresh instance is fine here (unlike the IOwnedActionFactories mods)
+	/// because nothing compares this factory by reference once used - "not yet used" is Mods membership
+	/// alone (see the IModifyAvailableActions remark below), not a UsedActions.Contains(sameInstance)
+	/// check like PourDownPower/UnrelentingStrides/MarkedBeastMover rely on.
+	/// </summary>
+	JsonArray ISerializableActionFactory.ToJson( ISerializationContext ctx ) => new JsonArray( Tag, Title );
+
 	const string Tag = "CommandBeasts";
 
 	[ModuleInitializer]
 	internal static void RegisterSerialization() {
 		SpiritModRegistry.Register( Tag, ( spirit, json, ctx ) => spirit.Mods.Add( new CommandBeasts( json[1]!.GetValue<string>() ) ) );
 		PostInvaderPhaseActionRegistry.Register( Tag, ( json, ctx ) => new CommandBeasts( json[1]!.GetValue<string>(), json[2]!.GetValue<string>() ) );
+		ActionFactoryRegistry.Register( Tag, ( json, ctx ) => new CommandBeasts( json[1]!.GetValue<string>() ) );
 	}
 
 	#endregion Json
