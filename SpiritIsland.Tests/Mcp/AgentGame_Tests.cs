@@ -95,6 +95,39 @@ public class AgentGame_Tests {
 	}
 
 	[Fact]
+	public void EarnedButUnresolvedFearCard_OnlyItsCountIsVisible() {
+		var game = new AgentGame( Req() );
+		game.GetDecision();
+		var gs = game.GameState;
+
+		// Earn a card the way the engine does: it sits face down until the Invader Phase flips it.
+		IFearCard earned = gs.Fear.Deck.Pop();
+		gs.Fear.ActivatedCards.Push( earned );
+
+		var fear = PlayerObservation.Build( game )["fear"]!.AsObject();
+		fear["earnedFearCardsPending"]!.GetValue<int>().ShouldBe( 1 );
+		fear.ContainsKey( "revealedCards" ).ShouldBeFalse();
+		fear.ToJsonString().ShouldNotContain( ((IOption)earned).Text );
+	}
+
+	[Fact]
+	public void UnflippedBlightCard_NameAndEffectAreHidden() {
+		var game = new AgentGame( Req() );
+		DecisionSnapshot d = game.GetDecision()!;
+		BlightCard card = game.GameState.BlightCard;
+		card.CardFlipped.ShouldBeFalse();
+
+		var blight = PlayerObservation.Build( game )["blight"]!.AsObject();
+		blight["card"].ShouldBeNull();
+		blight["blightedIslandEffect"].ShouldBeNull();
+		blight["blightRemainingOnCard"]!.GetValue<int>().ShouldBeGreaterThan( 0 ); // the printed count stays visible
+
+		// ...and not leaked through the observation as a whole or through the alerts either
+		PlayerObservation.Build( game ).ToJsonString().ShouldNotContain( card.Name );
+		d.Alerts.ShouldAllBe( a => !a.Text.Contains( card.Name ) );
+	}
+
+	[Fact]
 	public void Observation_ReportsSpiritAndIsland() {
 		var game = new AgentGame( Req() );
 		game.GetDecision();

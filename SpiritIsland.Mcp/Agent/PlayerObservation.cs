@@ -39,16 +39,23 @@ public static class PlayerObservation {
 		["fearPool"] = gs.Fear.EarnedFear,
 		["fearPoolMax"] = gs.Fear.PoolMax,
 		["facedownCardsRemaining"] = gs.Fear.Deck.Count, // count only; identities are hidden
-		["revealedCards"] = new JsonArray( [.. gs.Fear.ActivatedCards.Select( c => (JsonNode)c.Text )] ),
+		// Earned cards lie face down until the next Invader Phase flips them, so only how many are waiting is public.
+		// Each card's name and effect arrive as an alert when it resolves.
+		["earnedFearCardsPending"] = gs.Fear.ActivatedCards.Count,
 	};
 
-	static JsonObject BlightJson( GameState gs ) => new() {
-		["card"] = gs.BlightCard.Name,
-		["cardFlipped"] = gs.BlightCard.CardFlipped,
-		["blightedIslandEffect"] = gs.BlightCard.Description, // what happens when the card flips (the Blighted Island side)
-		["blightRemainingOnCard"] = (int)gs.BlightCard.Memento, // only public accessor of the count
-		["blightCardsRemaining"] = gs.BlightCards.Count,
-	};
+	static JsonObject BlightJson( GameState gs ) {
+		BlightCard card = gs.BlightCard;
+		// The card is set up Healthy side up without looking at the back, so its name and Blighted Island effect are
+		// hidden until it flips. Only the blight count (printed on the front) is public before then.
+		return new() {
+			["cardFlipped"] = card.CardFlipped,
+			["card"] = card.CardFlipped ? card.Name : null,
+			["blightedIslandEffect"] = card.CardFlipped ? card.Description : null,
+			["blightRemainingOnCard"] = (int)card.Memento, // only public accessor of the count
+			["blightCardsRemaining"] = gs.BlightCards.Count,
+		};
+	}
 
 	static JsonObject InvadersJson( GameState gs ) {
 		InvaderDeck deck = gs.InvaderDeck;
@@ -57,7 +64,8 @@ public static class PlayerObservation {
 			["build"] = Cards( deck.Build.Cards ),
 			["ravage"] = Cards( deck.Ravage.Cards ),
 			["discards"] = Cards( deck.Discards ),
-			["unrevealedCount"] = deck.UnrevealedCards.Count, // order/contents hidden			// Lands whose terrain the card in each slot matches (what that action looks at). Not a prediction of what the action will do,
+			["unrevealedCount"] = deck.UnrevealedCards.Count, // order/contents hidden
+			// Lands whose terrain the card in each slot matches (what that action looks at). Not a prediction of what the action will do,
 			// and an adversary or power can still change it.
 			["matchedLands"] = new JsonObject {
 				["explore"] = MatchedLands( deck.Explore.Cards ),
