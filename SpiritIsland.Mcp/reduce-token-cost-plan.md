@@ -55,7 +55,7 @@ When two or more powers are waiting in "Select Fast/Slow to resolve", the order 
 
 So the server must never pick a resolve order.
 
-Even the last remaining power, when nothing is left but it and "Done", is not always mechanical. Occasionally you don't want it to resolve (see step 2 below). Counting those 3 calls as real decisions, only 6 of the 39 calls (about 15%) are always mechanical.
+Even the last remaining power, when nothing is left but it and "Done", is not always mechanical. Occasionally you don't want it to resolve (see Done, item 5). Counting those 3 calls as real decisions, only 6 of the 39 calls (about 15%) are always mechanical.
 
 ## Done
 
@@ -76,49 +76,38 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
    - Measured on Lightning, A, seed 1, round 1: the observation went from 3,399 to 1,250 characters (-63%). `get_static_info` is 3,559 characters once, so it pays for itself after 2 observations.
    - Tests: `StaticInfo_HoldsLayoutSpiritRulesAndStartingCards`, `StaticVersion_MatchesObservation_AndStaysTheSameWhilePlaying`, `StaticInfo_DoesNotRevealHiddenCards`.
 
+4. **Batch actions (`select_actions`).**
+   - `select_actions(version, actions)`: each action is `{"option": "...", "prompt": "optional start of the prompt"}`. Steps are applied in order, starting with the decision of that version (a stale version is rejected, as with `select_action`).
+   - The batch stops early, without error, at the first step whose option isn't offered or whose `prompt` doesn't match the start of the actual prompt. That way an unexpected prompt, such as a fear card's, is never answered by mistake. The response includes `batch: {applied, requested, stoppedBecause}` and the decision where it stopped.
+   - A step naming an option the server just auto-selected counts as done, so the model doesn't need to know which steps will be auto-picked.
+   - The returned alerts cover every decision passed through, in order, with one `batch` alert per step: `Selected 'A8' for 'Shatter Homesteads: Target Space'`.
+   - Measured on Lightning, A, seed 1: all of round 1 (growth, presence, 2 cards, both resolved with targets) took **1 call instead of 10**. The response was 2,460 characters.
+   - Tests: `Batch_PlaysTheSameGameAsOneAtATime_IncludingStepsThatWereAutoSelected`, `Batch_ReportsEachStep_AndKeepsTheAlertsOfDecisionsItPassedThrough`, `Batch_StopsAtAPromptThatDoesNotMatch_WithoutAnsweringIt`, `Batch_StopsAtAnOptionThatIsNotOffered_AfterApplyingTheStepsBefore`, `Batch_RejectsAStaleVersion`.
+
+5. **Warn when "Done" skips powers (no auto-resolve).**
+   - The server can't resolve powers for the model: most powers start their own decisions (targets, what to push or gather), and occasionally skipping one is right, e.g. a forced Remove Blight another spirit may need, or a Stop Ravage on a land you need to ravage. So resolving stays the model's decision, and `select_actions` is how to save calls on it.
+   - Instead, choosing "Done" on "Select Fast/Slow to resolve" adds a `skipped` alert naming the powers that won't resolve this turn. In the Fast phase, a power that can still resolve in the Slow phase (e.g. a Slow card offered early by Lightning's Swiftness) isn't listed. A deliberate skip still works; an accidental one is no longer silent. This doesn't save tokens; it helps the model notice a mistake.
+   - Test: `Done_ThatDropsPlayedPowers_IsReportedAsSkipped_ButNotWhenTheyComeBackInTheSlowPhase`.
+
 ## Next steps, in order of payoff
 
-### 1. Batch actions: `select_actions([...])`
-
-- Apply a list of option texts in sequence, stopping at the first one that isn't offered. Return the decision where it stopped, plus how many were applied.
-- The model still chooses the resolve order and the targets, but sends them in one call. For example: `["Harbingers of the Lightning $0 (Slow)", "A7", "D@2 on A7 => A8", "Done", "Shatter Homesteads $2 (Slow)", "A8"]`.
-- The model can only plan as far as it can predict the prompts. When the prompts it expects don't appear, for example a fear card interrupts with a prompt of its own, the batch stops there and returns that decision. The model looks at it and continues.
-- Matching by option text alone isn't safe. An unexpected prompt can offer the same text, for example `A8` on a fear card's "Isolate" prompt, and the batch would answer the wrong question. So let each entry name the prompt it expects, e.g. `{"prompt": "Shatter Homesteads: Target Space", "option": "A8"}`, or a prompt prefix. The batch stops when the prompt doesn't match.
-- Expected effect: a round shrinks from about 13 calls to 3–5.
-
-### 2. Warn when "Done" skips played powers (no auto-resolve)
-
-The server can't resolve powers for the model. Most powers start their own decisions when they resolve: targets, what to push or gather, and so on. Those choices belong to the model. Resolving the last power is also not always wanted. Rare but real exceptions:
-
-- **A forced effect that hurts.** For example, a forced Remove Blight when another spirit might need that blight removal later.
-- **A Stop Ravage you don't want.** For example, you need the land to ravage.
-
-So resolving stays a decision, and batching (step 1) is how to save calls here. The model lists each power with its target choices in one `select_actions` call.
-
-What the server can still do:
-
-- When "Done" in "Select Fast/Slow to resolve" leaves played powers unresolved, add an alert that names them, for example `Done skipped: Flash Floods`.
-- A deliberate skip is still allowed. An accidental one gets noticed rather than going silent, which has cost games before.
-
-### 3. `predict_invader_phase`
+### 1. `predict_invader_phase`
 
 - Clone the state and run the coming Ravage, Build and Explore using only the revealed Invader cards. Return a short report, for example: `A4: ravage 5 damage vs 2 Dahan -> blight (cascade risk); A6: build town; blight on card 3 -> 1`.
 - This uses only information a player could see, so it's fair.
 - Choices inside the simulation, such as cascade targets, need a simple default, or the report should list the possible outcomes.
 - This replaces the most expensive and most error-prone reasoning, and should also improve play.
 
-### 4. A smaller observation, further
+### 2. A smaller observation, further
 
-- `get_static_info` is done (see Done, item 3).
 - `get_observation(sinceVersion)`: only the lands and fields that changed.
 - Optionally a compact text format instead of JSON, for example `A4 Sands: 2E 1T 1B | D2 | P1`.
-- Update PLAYING.md so it no longer says to call `get_observation` before every decision. Once per round, plus after anything unexpected, should be enough.
 
-### 5. Targeting helper: `get_card_targets(card)`
+### 3. Targeting helper: `get_card_targets(card)`
 
 - Return the lands a power can legally target, given range and sacred sites, so the model doesn't work it out by hand.
 
-### 6. `evaluate_options` (later)
+### 4. `evaluate_options` (later)
 
 - For each option, branch from the saved state, play forward with a heuristic agent, and score the result.
 - Each rollout must reshuffle the cards the player hasn't seen (fear deck, Invader deck, power decks). Otherwise the rollouts use hidden information.

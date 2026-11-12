@@ -65,6 +65,108 @@ public class AgentGame_Tests {
 	}
 
 	[Fact]
+	public void Batch_PlaysTheSameGameAsOneAtATime_IncludingStepsThatWereAutoSelected() {
+		// One at a time, random choices. History also records the auto-selected choices.
+		var a = new AgentGame( Req( 8 ) );
+		var rnd = new Random( 8 );
+		int autoCount = 0;
+		for( int i = 0; i < 40; ++i ) {
+			DecisionSnapshot? d = a.GetDecision();
+			if( d is null ) break;
+			autoCount += d.Alerts.Count( x => x.Kind == "auto" );
+			a.Select( d.Version, d.Options[rnd.Next( d.Options.Length )] );
+		}
+		autoCount.ShouldBeGreaterThan( 0 );
+
+		// The same choices as one batch - including the ones the server picks by itself.
+		var b = new AgentGame( Req( 8 ) );
+		BatchResult r = b.SelectBatch( b.GetDecision()!.Version, [.. a.History.Select( o => new BatchStep( o ) )] );
+
+		r.StoppedBecause.ShouldBeNull();
+		r.Applied.ShouldBe( a.History.Count );
+		b.History.ShouldBe( a.History );
+		b.GetDecision()?.Prompt.ShouldBe( a.GetDecision()?.Prompt );
+	}
+
+	[Fact]
+	public void Batch_ReportsEachStep_AndKeepsTheAlertsOfDecisionsItPassedThrough() {
+		var game = new AgentGame( Req() );
+		var steps = new List<BatchStep>();
+		var a = new AgentGame( Req() ); // find a few valid steps, with their prompts
+		var expectedAlerts = new List<string>();
+		for( int i = 0; i < 6; ++i ) {
+			DecisionSnapshot d = a.GetDecision()!;
+			steps.Add( new BatchStep( d.Options[0], d.Prompt ) );
+			a.Select( d.Version, d.Options[0] );
+			expectedAlerts.AddRange( a.GetDecision()!.Alerts.Select( x => x.Text ) );
+		}
+
+		game.SelectBatch( game.GetDecision()!.Version, steps ).Applied.ShouldBe( 6 );
+		Alert[] alerts = game.GetDecision()!.Alerts;
+
+		alerts.Count( x => x.Kind == "batch" ).ShouldBe( 6 );
+		alerts.Where( x => x.Kind != "batch" ).Select( x => x.Text ).ShouldBe( expectedAlerts );
+		game.GetDecision()!.Alerts.ShouldBe( alerts ); // repeated reads show the same alerts
+	}
+
+	[Fact]
+	public void Batch_StopsAtAPromptThatDoesNotMatch_WithoutAnsweringIt() {
+		var game = new AgentGame( Req() );
+		DecisionSnapshot d = game.GetDecision()!;
+
+		BatchResult r = game.SelectBatch( d.Version, [new BatchStep( d.Options[0], "Some other prompt" )] );
+
+		r.Applied.ShouldBe( 0 );
+		r.StoppedBecause!.ShouldContain( "Some other prompt" );
+		game.History.ShouldBeEmpty();
+		game.GetDecision()!.Version.ShouldBe( d.Version );
+		game.GetDecision()!.Alerts.ShouldBe( d.Alerts ); // untouched
+	}
+
+	[Fact]
+	public void Batch_StopsAtAnOptionThatIsNotOffered_AfterApplyingTheStepsBefore() {
+		var game = new AgentGame( Req() );
+		DecisionSnapshot d = game.GetDecision()!;
+
+		BatchResult r = game.SelectBatch( d.Version, [new BatchStep( d.Options[0] ), new BatchStep( "not an option" )] );
+
+		r.Applied.ShouldBe( 1 );
+		r.Requested.ShouldBe( 2 );
+		r.StoppedBecause!.ShouldContain( "not an option" );
+		game.GetDecision()!.Version.ShouldBeGreaterThan( d.Version );
+	}
+
+	[Fact]
+	public void Batch_RejectsAStaleVersion() {
+		var game = new AgentGame( Req() );
+		DecisionSnapshot d = game.GetDecision()!;
+		Should.Throw<ArgumentException>( () => game.SelectBatch( d.Version + 1, [new BatchStep( d.Options[0] )] ) );
+		game.History.ShouldBeEmpty();
+	}
+
+	[Fact]
+	public void Done_ThatDropsPlayedPowers_IsReportedAsSkipped_ButNotWhenTheyComeBackInTheSlowPhase() {
+		var game = new AgentGame( new NewGameRequest( "Lightning's Swift Strike", "A", 1 ) );
+		BatchResult r = game.SelectBatch( game.GetDecision()!.Version, [
+			new( "Gain 3 Energy (group: Gain 3 Energy / Place Presence(1))" ),
+			new( "1 energy => A8", "Select Presence" ),
+			new( "Shatter Homesteads $2 (Slow)", "Play power card" ),
+			new( "Harbingers of the Lightning $0 (Slow)", "Play power card" ),
+			new( "Done", "Select Fast to resolve" ), // both are Slow: offered early by Swiftness, they come back in the Slow phase
+		] );
+		r.StoppedBecause.ShouldBeNull();
+		DecisionSnapshot d = game.GetDecision()!;
+		d.Alerts.ShouldNotContain( a => a.Kind == "skipped" );
+		d.Prompt.ShouldStartWith( "Select Slow to resolve" );
+
+		game.Select( d.Version, "Done" ); // now they are gone for the turn
+
+		Alert skipped = game.GetDecision()!.Alerts.Single( a => a.Kind == "skipped" );
+		skipped.Text.ShouldContain( "Shatter Homesteads" );
+		skipped.Text.ShouldContain( "Harbingers of the Lightning" );
+	}
+
+	[Fact]
 	public void StaleVersion_IsRejected_AndGameDoesNotAdvance() {
 		var game = new AgentGame( Req() );
 		DecisionSnapshot d = game.GetDecision()!;
