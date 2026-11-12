@@ -85,7 +85,7 @@ public class AgentGame_Tests {
 
 		// Invader deck: only revealed slot cards and a count are present
 		var invaders = PlayerObservation.Build( game )["invaders"]!.AsObject();
-		invaders.Select( kv => kv.Key ).Order().ShouldBe( ["build", "discards", "explore", "ravage", "unrevealedCount"] );
+		invaders.Select( kv => kv.Key ).Order().ShouldBe( ["build", "discards", "explore", "matchedLands", "ravage", "unrevealedCount"] );
 		invaders["unrevealedCount"]!.GetValue<int>().ShouldBe( gs.InvaderDeck.UnrevealedCards.Count );
 
 		// Fear: only a count of face-down cards, no identities
@@ -103,6 +103,29 @@ public class AgentGame_Tests {
 		obs["spirit"]!["name"]!.GetValue<string>().ShouldBe( RiverSurges.Name );
 		obs["spirit"]!["hand"]!.AsArray().Count.ShouldBeGreaterThan( 0 );
 		obs["spaces"]!.AsArray().Count.ShouldBe( 9 ); // ocean + 8 lands
+	}
+
+	[Fact]
+	public void PlayPrompt_SpellsOutEnergyAndCardPlays() {
+		var game = new AgentGame( Req() );
+
+		// Growth first, then the engine asks which card to play.
+		DecisionSnapshot d = game.GetDecision()!;
+		for( int i = 0; i < 10 && !d.Prompt.StartsWith( "Play power card" ); ++i ) {
+			game.Select( d.Version, d.Options[0] );
+			d = game.GetDecision()!;
+		}
+
+		d.Prompt.ShouldStartWith( "Play power card" ); // if the engine's wording changes, fix PromptDetails and this fails first
+		Spirit spirit = game.GameState.Spirits.Single();
+		d.PromptDetails.ShouldBe( $"Energy: {spirit.Energy}. Card plays left: {spirit.Presence.CardPlayPerTurn}." );
+	}
+
+	[Fact]
+	public void PromptDetails_IsNullForPromptsWithNothingToSpellOut() {
+		PromptDetails.For( "Select Growth" ).ShouldBeNull();
+		PromptDetails.For( "Select Fast to resolve (Slow as Fast: 1 of 2 left)" ).ShouldBeNull();
+		PromptDetails.For( "Play power card ($6 / 4)" ).ShouldBe( "Energy: 6. Card plays left: 4." );
 	}
 
 	[Fact]

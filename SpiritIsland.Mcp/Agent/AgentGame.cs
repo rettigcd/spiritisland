@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Agent;
@@ -19,6 +20,7 @@ public sealed class AgentGame {
 			EnablePreselects = false, // keep each decision a plain list of options
 			LogExceptions = true,
 		};
+		_game.GameState.NewLogEntry += _alertBuffer.Add; // before Start, so setup entries aren't missed
 		_game.Start();
 	}
 
@@ -37,11 +39,46 @@ public sealed class AgentGame {
 			if( _pending is null && portal.WaitForNext( 20 ) ) {
 				_pending = portal.Next;
 				_version++;
+				_pendingAlerts = _alertBuffer.Drain(); // kept with the decision so repeated reads show the same alerts
 			}
 			if( _pending is not null )
-				return new DecisionSnapshot( _version, _pending.Prompt, OptionIds( _pending ) );
+				return Snapshot( _pending );
 			if( IsOver ) return null;
 		}
+	}
+
+	/// <summary>
+	/// Cards the player has legitimately seen: hand, cards in play, discard pile, and the cards offered by the pending decision.
+	/// Deliberately not the power decks (hidden information).
+	/// </summary>
+	public IEnumerable<(string Location, PowerCard Card)> KnownCards() {
+		Spirit spirit = GameState.Spirits.Single();
+		foreach( PowerCard c in spirit.Hand ) yield return ("hand", c);
+		foreach( PowerCard c in spirit.InPlay ) yield return ("inPlay", c);
+		foreach( PowerCard c in spirit.DiscardPile ) yield return ("discard", c);
+		if( _pending is not null )
+			foreach( PowerCard c in _pending.Options.OfType<PowerCard>() ) yield return ("offered", c);
+	}
+
+	DecisionSnapshot Snapshot( IDecision decision ) {
+		string[] ids = OptionIds( decision );
+		return new DecisionSnapshot( _version, decision.Prompt, ids, _pendingAlerts, OptionDetails( decision, ids ), PromptDetails.For( decision.Prompt ) );
+	}
+
+	/// <summary>
+	/// Choosing between cards: describe each one (elements, range, target, instructions) and what happens to the chosen card.
+	/// Not for choosing which hand card to play - those are already in the observation, and the prompt repeats every card played.
+	/// </summary>
+	static Dictionary<string, JsonObject> OptionDetails( IDecision decision, string[] ids ) {
+		var details = new Dictionary<string, JsonObject>();
+		if( decision is not A.PowerCard cardDecision ) return details;
+		for( int i = 0; i < ids.Length; ++i )
+			if( decision.Options[i] is PowerCard card && cardDecision.Use( card ) != CardUse.Play ) {
+				JsonObject json = PlayerObservation.CardJson( card );
+				json["use"] = cardDecision.Use( card ).ToString();
+				details[ids[i]] = json;
+			}
+		return details;
 	}
 
 	/// <summary> Applies the option with the given text to the decision with the given version. </summary>
@@ -82,6 +119,8 @@ public sealed class AgentGame {
 	}
 
 	IDecision? _pending;
+	Alert[] _pendingAlerts = [];
 	int _version;
+	readonly AlertBuffer _alertBuffer = new();
 	readonly SoloGame _game;
 }
