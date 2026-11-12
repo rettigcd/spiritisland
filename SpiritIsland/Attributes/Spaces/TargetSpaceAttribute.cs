@@ -42,6 +42,13 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 		return target;
 	}
 
+	/// <summary>
+	/// The lands this power could target right now - the options GetTargetCtx would offer - without asking which one.
+	/// For previews. Note it may still ask an element-threshold question if the power's range/target depends on one.
+	/// </summary>
+	public async Task<Space[]> GetTargetOptions( Spirit self )
+		=> self.Targetter.GetPowerTargetOptions( _sourceCriteria, await ApplySpiritModsToGetTargetCriteria( self ) ).Targets;
+
 	#region protected fields
 
 	protected TargetingSourceCriteria _sourceCriteria => new TargetingSourceCriteria(from, _restrictFrom);

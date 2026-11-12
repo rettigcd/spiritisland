@@ -102,6 +102,20 @@ public sealed class GameTools {
 		}
 	}
 
+	[McpServerTool( Name = "get_power_targets", ReadOnly = true )]
+	[Description( "Returns the lands each of your powers could target right now, worked out by the engine's own rules (range, from presence or sacred site, target filter, your spirit's special rules), e.g. {\"targets\":{\"Shatter Homesteads\":[\"A1\",\"A5\"],\"Lightning's Boon\":\"a Spirit (yourself)\"}}. "
+		+ "With no name: every card in hand and in play, and every innate. An empty list means the power has no legal target now (e.g. a sacred-site range with no sacred site). "
+		+ "Based on the current board, presence and elements: placing presence, or gaining elements that extend a range, changes the answer. Worked out on a copy of the game; if a range bonus asked an element-threshold question, 'choicesMade' says what was assumed." )]
+	public static string GetPowerTargets(
+		[Description( "Optional: one card's or innate's name (a card's option text also works). Leave out for all of them." )] string? name = null ) {
+		lock( _lock ) {
+			AgentGame g = Game;
+			if( g.GetDecision() is null ) throw new McpException( "The game is over." );
+			try { return PowerTargets.Get( g, name ).ToJsonString( Pretty ); }
+			catch( ArgumentException ex ) { throw new McpException( ex.Message ); }
+		}
+	}
+
 	[McpServerTool( Name = "select_action" )]
 	[Description( "Chooses one option of the pending decision and advances the game to the next decision. Rejected if the version is stale or the option text isn't offered." )]
 	public static string SelectAction(
