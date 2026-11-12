@@ -5,13 +5,22 @@ Notes for an agent playing via `create_game` / `get_observation` / `get_decision
 **These notes were written while playing only Lightning's Swift Strike** on board A with no adversary (two losses: round 4, a blight cascade; round 10, Blighted Island). So the file has two parts:
 
 - **Part 1 applies to every spirit:** the rules, the tools and general lessons.
-- **Part 2 applies only to Lightning's Swift Strike.** It includes its special rule, its cards and what worked for it.
+- **Part 2 applies only to River Surges in Sunlight** (one lost game; first impressions).
+- **Part 3 applies only to Lightning's Swift Strike.** It includes its special rule, its cards and what worked for it (including a win).
 
-When you play a different spirit, don't carry Part 2 over. Read that spirit's `specialRules`, `innatePowers[].tiers` and growth options from the observation, and add a new section for it here once you've learned what applies. Anything in Part 1 that I only saw with Lightning is marked "(seen with Lightning)".
+When you play a different spirit, don't carry a spirit's part over. Read that spirit's `specialRules`, `innatePowers[].tiers` and growth options from the observation, and add a new section for it here once you've learned what applies. Anything in Part 1 that I only saw with Lightning is marked "(seen with Lightning)".
 
 ---
 
 # Part 1: All spirits
+
+## Keep a game log of growth and Presence track choices
+
+Which growth to take and which Presence track to focus on (energy vs card plays) is a key part of playing a spirit well, and the answer needs data. For every game, add a section to [GAMELOG.md](GAMELOG.md) with, for each round, the growth group chosen and the track each Presence came from (energy slot, card-play slot, or a power's reclaim slot), plus the income and card plays at the time and what the round achieved. Update the summary table and the "what the data suggests" notes. Don't draw conclusions from one game; compare spirits and seeds first.
+
+## Play only from what the tools show
+
+Don't open the game's source code to find out what a card, fear card or blight card does while you are playing. A player only knows what's on the table: your own cards, revealed Invader cards, and what the alerts report when a fear or blight card resolves. Reading `NervesFray.cs` or the fear card list during game 2 and the River game was using information a player wouldn't have. If the tools don't show something you need, treat it as a gap to report, not something to look up in the code. (Reading source is fine when you're building or fixing the tools themselves.)
 
 ## Before every decision
 
@@ -31,8 +40,8 @@ When you play a different spirit, don't carry Part 2 over. Read that spirit's `s
 - `promptDetails`: spells out the `Play power card ($E / N)` prompt as `Energy: E. Card plays left: N.` (matched by regex in `PromptDetails.cs`; null for other prompts).
 
 **Observation** (`get_observation`):
-- `fear`: `terrorLevel`, `victoryCondition` for that level, `fearPool` / `fearPoolMax`, `facedownCardsRemaining`, `revealedCards` (the card's name is listed as soon as it's earned, even before it resolves in the Invader Phase; its effect text arrives in the alerts when it resolves).
-- `blight`: `blightedIslandEffect` is what happens when the card flips (it's the same text before and after the flip), `blightRemainingOnCard`. The other side's blight count isn't visible until the card flips.
+- `fear`: `terrorLevel`, `victoryCondition` for that level, `fearPool` / `fearPoolMax`, `facedownCardsRemaining`, `earnedFearCardsPending` (how many earned fear cards are waiting face down; their names are hidden until the next Invader Phase flips them). Each card's name and its effect at the current Terror Level arrive in the decision's `alerts` when it resolves.
+- `blight`: `cardFlipped`, `blightRemainingOnCard` and `blightCardsRemaining` are always shown. The card's `card` name and `blightedIslandEffect` (what happens when it flips) are **hidden until the card flips** (the card is set up without looking at its back), so before then both are null. The other side's blight count isn't visible until it flips either. Plan for an unknown effect: when `blightRemainingOnCard` gets low, assume something bad happens at 0.
 - `invaders`: the three slots, `discards`, `unrevealedCount` (reveals left; running out loses, see `docs/rules.md`), `matchedLands` per action (lands matching the card's terrain; an adversary can change what an action really does).
 - `spirit`: `specialRules` (title and description), `elements` (gained so far this turn; empty until cards are paid), `presence` (tracks, `sacredSites`), `growth`, `hand`, `inPlay`, `discard` (name, cost, speed), and `innatePowers` with `tiers` (`threshold`, `effect`, `elementStatus`).
 - `spaces`: terrain, adjacency, tokens. Defend and Isolate show as tokens with a count (e.g. `"Defend":2`, `"Isolate":1`; seen live while Roiling Bog and Snagging Thorn's effects were active, and gone by the next round). Strife should show as `^` after an Invader's text (from the code; not yet seen live).
@@ -62,6 +71,8 @@ All of these were confirmed in a live game: `alerts`, `optionDetails`, `promptDe
 - The Invader deck runs out: with Stage I-III (3+4+5 cards less setup) the game ends in a loss around round 11. Plan to win before the Explore that has no card.
 - Range: "1:ss" means range 1 *starting from* a **Sacred Site** (2+ Presence in a land; see `presence.sacredSites`). With no sacred site such a power has no origin and so no targets at all, so build sacred sites early and check `sacredSites` before paying for one.
 - Song of Sanctity pushes Explorers whenever the target land has any; it only removes blight if the land has no Explorers.
+- Range for powers **without** a sacred-site origin (for example "range 1") is measured from **any** of your Presence. A land more than that many lands from all your Presence can't be targeted. Check this against where the dangerous lands are before relying on a power (seen with River: Flash Floods couldn't reach A3).
+- **The Blighted Island card changes the blight rules once it flips**, and which card you have is hidden until then. Examples seen: All Things Weaken (Invaders -1 Health, lands blight on 1 less damage than usual, and adding blight destroys all Presence and beasts in that land plus 1 Presence in an adjacent land), Disintegrating Ecosystem (a beast is destroyed and blight is added each time), Power Corrodes the Spirit (a Presence is lost if you have 3+ cards in play or one costing 4+). After it flips, check the alert for its effect and what it does to ravage thresholds before planning the next round.
 - Minor powers that helped defend (seen with Lightning, but they aren't spirit specific): Terror Turns to Madness (strife), Nature's Resilience (Defend 6), Renewing Rain (removes blight in Jungle/Sands), Portents of Disaster and Visions of Fiery Doom (Fear).
 
 ## Strategy (general)
@@ -83,11 +94,61 @@ All of these were confirmed in a live game: `alerts`, `optionDetails`, `promptDe
 ## Open questions (all spirits)
 
 - Whether strife shows as `^` on an Invader's token text (Defend and Isolate were confirmed as tokens).
+- **Destroyed Presence alert (added, not yet seen in a live game).** In the River game blight destroyed my Presence at A7 and nothing was reported. The engine now logs a `PresenceDestroyed` entry (kind `bad`), e.g. `River Surges in Sunlight: 1 Presence destroyed from A7.` It also covers Presence removed or replaced by an effect. Until it's confirmed live, still check `presence.destroyed` and your Presence tokens after any blight.
 - Whether "Place Presence" growth can be taken together with another group in one round (for Lightning the three groups looked mutually exclusive).
 
 ---
 
-# Part 2: Lightning's Swift Strike only
+# Part 2: River Surges in Sunlight only
+
+Seen in one game (board A, seed 1, no adversary), which I stopped in round 5 when it was lost: the blight card had 1 left and two lands I couldn't protect were about to ravage. Treat this as first impressions, not a tested plan.
+
+## How to play River (a "solved" spirit: one growth pattern beats all the others)
+
+The user says River is *solved*: one growth **pattern** is better than every alternative, and once it's found you use it in every game and never anything else. The pattern is a **sequence of growth choices across the rounds of a game** (with the track each Presence comes from), and it is the same in every game. It is **not** one group repeated every round. I haven't found it yet. My games varied the growth from round to round without any plan, which can't show which sequence is best. Compare whole sequences on the same seed and log them (see GAMELOG.md). (Earlier versions of this note called River a "slow" spirit and then a "pure group every round" spirit; both were my misreadings of the hint.)
+
+**A growth sequence that won (game 6 in GAMELOG.md, seed 2, round 8):** Presence, Reclaim, Presence, Reclaim, Presence, Reclaim, Reclaim, Reclaim. Take the two-Presence group early, putting almost every Presence on the **card-play track** (one on the energy track first for income 2), until 4 plays and the "reclaim 1" slot are uncovered, and take Reclaim All in between so the unique cards are back in hand. This isn't proven to be *the* best sequence: only one seed was tried, and I don't know whether a different order or more energy would do better.
+
+**Confirmed in play:** Boon of Vigor + Flash Floods + Sunset's Fire (a drawn minor with sun and water) + Wash Away gave 3 sun, 4 water, 1 earth, and Massive Flooding **tier 3 killed a City and a Town in one land** (with 1 damage from Flash Floods first). River's own cards did most of the work: Flash Floods is 2 damage on a Coastal land and is Fast, so it can kill the last Town **before the Invader Phase builds**; River's Bounty gives +1 Dahan and +1 Energy each time it has 2 Dahan in a land; Massive Flooding is range 1 from a *sacred site* (any Wetland with Presence), so A2 (a Wetland) is only reachable if I have Presence there.
+
+The following was my earlier inference from the observation's element numbers:
+
+- River's four unique cards (Boon of Vigor, Flash Floods, River's Bounty, Wash Away) add up to **3 sun, 4 water, 1 earth**, which is exactly Massive Flooding's top tier ("2 damage to each Invader"). Playing all four costs only $3 (Boon 0, Flash Floods 2, River's Bounty 0, Wash Away 1) but needs **4 card plays**, so the plan is to push the **card-play track** (River has to uncover its slots: 1, 2, 2, 3, reclaim 1, 4, 5), then play the full kit each turn and keep the unique cards in hand (don't forget River's Bounty or any other unique card).
+- Massive Flooding is Slow and has range 1 from a sacred site, so it lands after the ravage. Sacred sites matter: every Wetland counts, plus any land with 2 Presence. Use the Fast cards (Flash Floods, Boon of Vigor) and Defend cards for the ravage, and Massive Flooding for the cleanup.
+- Understand a spirit through **its own unique cards and innate**, not through whatever minors happen to be drawn. In games 4 and 5 I leaned on drawn minors for defence and fear, and learned little about River itself.
+
+## What differs from Lightning
+
+- **Special rule "Rivers Domain":** "Your presense in wetlands count as sacred." `sacredSites` reflects it: A5 (a Wetland) is listed with only 1 Presence. This game's wetlands were A2 and A5.
+- **No Slow-as-Fast.** The Fast prompt is the plain `Select Fast to resolve`, and Slow powers really are Slow (they resolve after the Invader Phase). Only Fast cards can stop a ravage.
+- **Start:** 1 Presence (in A5), 1 Energy per turn, 1 card play per turn. The tracks grow to 5 plays and 5 energy, with a "reclaim 1" slot on the card play track. Two Presence placements (the "Place Presence(1)" x 2 group) uncover a slot on each track.
+- **Growth groups:** (1) Reclaim All + Gain Power Card + Gain 1 Energy; (2) Place Presence(1) twice (range 1 each, so options are labelled `... [2]`); (3) Gain Power Card + Place Presence(2). Presence tokens are labelled `RSiS` in `spaces` (Lightning's are `LSS`), so a spirit's tokens are named by its initials.
+- **Starting hand:** Boon of Vigor (Fast, free, +1 Energy if you target yourself), Flash Floods ($2 Fast, 1 damage, +1 if the land is Coastal), River's Bounty (Slow, gather Dahan), Wash Away ($1 Slow, push up to 3 Explorers/Towns).
+- **Innate Massive Flooding** (Slow, range 1 from a sacred site; tiers use sun, water, earth): 1 sun 2 water pushes 1 Explorer/Town; 2 sun 3 water does 2 damage and pushes up to 3; 3 sun 4 water 1 earth does 2 damage to each Invader. Boon plus Flash Floods give 2 sun and 2 water, so tier 1 is easy, tier 2 needs a third water.
+
+## Second River game (board A, seed 2): defence worked, offence didn't
+
+Stopped in round 9 with no way to win in time: no blight lost beyond the card's flip (the first game lost in round 5), Terror Level 2 reached in round 6 and 5 fear cards earned, but the island held 3 Cities and 7 Towns and River couldn't clear them before the Invader deck ran out.
+
+- **Defend is River's survival tool, and it came from drawn cards.** Haunted by Primal Memories ($1 Fast, range 2 from a sacred site, Defend 3, 1 Fear) cancelled ravage damage from a land with up to 3 damage and often let the Dahan there kill the Town afterward. **Indomitable Claim** (a major, $4 Fast, range 1, **Defend 20**, and it adds a Presence, so it can take the next track slot, e.g. the "reclaim 1" slot) fully protected a land with a City. Each round, I pair a Defend with each ravaged land that already has blight or that would otherwise blight.
+- **After a Defend card is played, it's in the discard.** Reclaim All is needed the next round to play it again; once I skipped it (took a major instead) and had no Defend card for the next ravage. The "reclaim 1" slot (uncovered by Indomitable Claim here) returns one played card at will.
+- **Energy piles up (10-12) while card plays stay at 2-3.** Use growth for the extra Presence slots that raise card plays, and spend the surplus on a major.
+- **Fear came from drawn minors again** (Portents of Disaster, Terror Turns to Madness, Haunted's 1 Fear), plus Town kills by Dahan. That got me 5 fear cards by round 9, so the win has to come from the Terror Level: at Level 3 (6 cards) only Cities need to die. Plan the City kills from the start, not at the end.
+- **River has little damage.** Cities (3 health) were out of reach. Massive Flooding tier 2 (2 sun 3 water) does 2 damage; Flash Floods does 2 only in a Coastal land; Pact of the Joined Hunt (gathers Dahan, 1 damage per Dahan in the land) was drawn too late. To kill Cities, aim for those damage sources and 3 plays a turn well before round 8.
+- **The island fills fast.** Builds added a Town or City nearly every land each round; by round 9 there were 10 Towns/Cities. Kill or push Towns early (Prowling Panthers with a Beast, Scour the Land, Wash Away) so they don't need clearing at the end.
+- Fear card effects seen this game (names arrive in alerts): Supply Chains Abandoned, Too Many Monsters (remove an Explorer/Town from a land with a Beast), Distracted by Local Troubles (Terror Level 2: 1 damage to up to 2 Invaders in a ravage land), Dahan Raid (1 damage per Dahan in a land: it killed a Town where 2 Dahan stood), Emigration Accelerates (remove an Explorer/Town from a Coastal land).
+- Blighted Island card this time was Disintegrating Ecosystem: destroys a Beast and adds blight to a land with a Town/City, once, when it flips. After the flip the card held 4.
+
+## What I learned (first game)
+
+- **Range for non-sacred-site powers is measured from any Presence.** Flash Floods (range 1) couldn't reach A3, because none of my Presence was within one land of it. Plan Presence placement around where the ravages will land.
+- River has almost no Fast damage and no Defend in the starting hand, so it can't stop big ravages. Ravage-proofing has to come from drawn cards: Entrancing Apparitions (Fast, Defend 2), Confounding Mists (Fast, Defend 4), Isolate/Disease effects, or pushing Invaders away before the ravage.
+- **Fear came from drawn minors, not the starting hand:** Tormenting Rotflies ($1, Slow, range 2, Sands/Wetland: 2 Fear, +1 with Blight, +1 with Disease) and Sucking Ooze ($0, Fast, 2 Fear if Invaders are present, and Isolate). With those I earned 3 fear cards by round 4 and reached Terror Level 2.
+- Gift of Constancy again gave +2 Energy and a free reclaim, which matters more for River's low energy.
+- **The blight went too fast:** 3 blights by round 3, and the card flipped in round 4 to All Things Weaken (Invaders -1 Health; lands blight on 1 less damage; adding blight destroys all Presence and beasts in that land and 1 Presence in an adjacent land). With 1 blight left on that side, any further blight loses the game. Deal with the lands that will ravage before the blight card is low.
+- Fear card effects that matter (alerts name them): Supply Chains Abandoned (isolate a land), Seek Company (gather an Explorer into a land with 2+ Invaders; skip the move if it would add to a ravaging land), Nerves Fray (Strife in a land that does not match a Ravage card, so it can't protect a ravage land).
+
+# Part 3: Lightning's Swift Strike only
 
 Nothing in this part is known to apply to any other spirit.
 
