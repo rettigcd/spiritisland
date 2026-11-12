@@ -8,5 +8,9 @@ builder.Logging.AddConsole( o => o.LogToStandardErrorThreshold = LogLevel.Trace 
 builder.Services
 	.AddMcpServer()
 	.WithStdioServerTransport()
-	.WithTools<SpiritIsland.Mcp.GameTools>();
-await builder.Build().RunAsync();
+	.WithTools<SpiritIsland.Mcp.GameTools>()
+	.WithRequestFilters( f => f.AddCallToolFilter( SpiritIsland.Mcp.ToolCallLog.Filter ) );
+var app = builder.Build();
+app.Services.GetRequiredService<ILogger<Program>>()
+	.LogInformation( "Logging tool-call sizes to {Path}", SpiritIsland.Mcp.ToolCallLog.FilePath );
+await app.RunAsync();

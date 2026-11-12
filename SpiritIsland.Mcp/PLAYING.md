@@ -1,6 +1,6 @@
 # Playing Spirit Island through the MCP tools
 
-Notes for an agent playing via `create_game` / `get_observation` / `get_decision` / `select_action` / `get_card_details`. Read `docs/rules.md` first and don't play from memory.
+Notes for an agent playing via `create_game` / `get_static_info` / `get_observation` / `get_decision` / `select_action` / `get_card_details`. Read `docs/rules.md` first and don't play from memory.
 
 **These notes were written while playing only Lightning's Swift Strike** on board A with no adversary (two losses: round 4, a blight cascade; round 10, Blighted Island). So the file has two parts:
 
@@ -8,7 +8,7 @@ Notes for an agent playing via `create_game` / `get_observation` / `get_decision
 - **Part 2 applies only to River Surges in Sunlight** (one lost game; first impressions).
 - **Part 3 applies only to Lightning's Swift Strike.** It includes its special rule, its cards and what worked for it (including a win).
 
-When you play a different spirit, don't carry a spirit's part over. Read that spirit's `specialRules`, `innatePowers[].tiers` and growth options from the observation, and add a new section for it here once you've learned what applies. Anything in Part 1 that I only saw with Lightning is marked "(seen with Lightning)".
+When you play a different spirit, don't carry a spirit's part over. Read that spirit's `specialRules`, `innatePowers[].tiers` and growth groups from `get_static_info`, and add a new section for it here once you've learned what applies. Anything in Part 1 that I only saw with Lightning is marked "(seen with Lightning)".
 
 ---
 
@@ -17,6 +17,8 @@ When you play a different spirit, don't carry a spirit's part over. Read that sp
 ## If you played a card, or activated an innate, always resolve it
 
 The user's general rule: if you played a card, always resolve it (in the Fast or Slow phase it belongs to), even if it would do nothing useful. The same goes for an **innate power**: you don't have to activate it, but once it is activated (its Elements are met, so it appears in the resolve list, e.g. River's "Massive Flooding"), make sure you use it. It does **not** mean "play as many cards as you can".
+
+Rare exceptions: skipping a played power is right when its effect is forced and hurts you. Examples are a forced Remove Blight that another spirit may need later, and a Stop Ravage on a land you need to ravage. Skip only for a reason like these, and say why when you do.
 
 After "Done" on the card-play list, the "Select Fast / Slow to resolve" prompt lists the powers you played and any innate that is active, plus "Done". Resolve each one; saying "Done" there skips them all (this cost me Flash Floods in game 9 and every Slow power in an earlier attempt). Only say "Done" when none are left.
 
@@ -30,36 +32,47 @@ Don't open the game's source code to find out what a card, fear card or blight c
 
 ## Before every decision
 
-1. Call `get_observation`. Do it every round, and after anything unexpected. In the first game it was called twice and the game was lost by round 4.
-2. Read the **Invader cards** in order: the card in `ravage` hits this turn's Invader Phase, `build` next, `explore` after. `matchedLands` lists the lands each card's terrain matches.
-3. Work out which lands will take blight (2+ damage; Explorer 1, Town 2, City 3) and which already have blight (cascade, so two blights from one ravage). Nothing predicts this for you: read the tokens and apply the rules. Mods (strife, Defend, Isolate) can change the outcome.
-4. Check `blightRemainingOnCard`. If a ravage can take it to 0 you lose, so that ravage must be stopped before the Invader Phase.
-5. Read the `alerts` on the decision, which say what happened since your last choice.
-6. Read your spirit's `specialRules` and the `tiers` of its `innatePowers`. They differ per spirit.
-7. If a prompt isn't understood, stop and ask the user instead of guessing.
+1. Once per game, call `get_static_info` (layout, spirit rules, innate tiers, track slots, legend, starting cards). Call it again when the observation's `staticVersion` differs from yours, or when it's no longer in your context.
+2. Call `get_observation`. Do it every round, and after anything unexpected. In the first game it was called twice and the game was lost by round 4.
+3. Read the **Invader cards** in order: the card in `ravage` hits this turn's Invader Phase, `build` next, `explore` after. `matchedLands` lists the lands each card's terrain matches.
+4. Work out which lands will take blight (2+ damage; Explorer 1, Town 2, City 3) and which already have blight (cascade, so two blights from one ravage). Nothing predicts this for you: read the tokens and apply the rules. Mods (strife, Defend, Isolate) can change the outcome.
+5. Check `blightRemainingOnCard`. If a ravage can take it to 0 you lose, so that ravage must be stopped before the Invader Phase.
+6. Read the `alerts` on the decision, which say what happened since your last choice.
+7. Read your spirit's `specialRules` and the `tiers` of its `innatePowers` (in `get_static_info`; `innateTierStatus` in the observation says which tiers your elements meet). They differ per spirit.
+8. If a prompt isn't understood, stop and ask the user instead of guessing.
 
 ## What the tools return
 
 **Decision** (`create_game`, `get_decision`, `select_action`): `version`, `prompt`, `options`, plus
 - `alerts`: `{kind, text}` entries for what happened since the previous decision (your own choices are left out). Kinds follow the Maui log colors: `bad`, `invaders`, `rewind`, `phase`, `fear-blight`, `tokens`, `other`. This is where "N Fear generated", ravage/build/explore results, and a revealed fear card with its effect text show up. Repeating `get_decision` returns the same alerts.
+  - Kind `auto`: the server chose a decision for you because it had only one option (e.g. the second half of a growth group, or a fear card's only target land), e.g. `Auto-selected 'A6' (only option for 'Select space to Gather up to 1 Explorers')`. You never see those decisions, only these alerts, in order with the others. An "up to" effect can still be declined on the prompt that follows (it offers "Done"). When the game ends, the final alerts come with the `gameOver` response.
 - `optionDetails`: for card choices only (drawing a card, forgetting one): the card's cost, speed, elements, range, target and instructions, plus `use` (e.g. `AddToHand`). Not attached when choosing which hand card to play; use the observation's `hand` or `get_card_details`.
 - `promptDetails`: spells out the `Play power card ($E / N)` prompt as `Energy: E. Card plays left: N.` (matched by regex in `PromptDetails.cs`; null for other prompts).
 
-**Observation** (`get_observation`):
-- `fear`: `terrorLevel`, `victoryCondition` for that level, `fearPool` / `fearPoolMax`, `facedownCardsRemaining`, `earnedFearCardsPending` (how many earned fear cards are waiting face down; their names are hidden until the next Invader Phase flips them). Each card's name and its effect at the current Terror Level arrive in the decision's `alerts` when it resolves.
+**Static info** (`get_static_info`): what rarely changes, sent once per game.
+- `staticVersion`: a hash of the rest. The observation carries the current one; when they differ (a board added or removed, lands woven together, a new growth option...), call `get_static_info` again.
+- `setup`: spirit, board, and the adversary with its `rules` text (null when there is none).
+- `legend`: token and Invader card codes (e.g. `E@1`, `D@2`, `^` for strife, your Presence's abbreviation, `2J`).
+- `victoryConditions` for each Terror Level.
+- `lands`: terrain and adjacency of each land.
+- `spirit`: `specialRules`, `growthGroups`, `presenceTracks` (every slot in order), `innatePowers` with `tiers` (`threshold`, `effect`).
+- `startingCards`: the full text of the cards you started with. Cards gained later: their text is in the draw decision's `optionDetails`; afterwards use `get_card_details`.
+
+**Observation** (`get_observation`): what changes.
+- `fear`: `terrorLevel` (its victory condition is in the static info), `fearPool` / `fearPoolMax`, `facedownCardsRemaining`, `earnedFearCardsPending` (how many earned fear cards are waiting face down; their names are hidden until the next Invader Phase flips them). Each card's name and its effect at the current Terror Level arrive in the decision's `alerts` when it resolves.
 - `blight`: `cardFlipped`, `blightRemainingOnCard` and `blightCardsRemaining` are always shown. The card's `card` name and `blightedIslandEffect` (what happens when it flips) are **hidden until the card flips** (the card is set up without looking at its back), so before then both are null. The other side's blight count isn't visible until it flips either. Plan for an unknown effect: when `blightRemainingOnCard` gets low, assume something bad happens at 0.
 - `invaders`: the three slots, `discards`, `unrevealedCount` (reveals left; running out loses, see `docs/rules.md`), `matchedLands` per action (lands matching the card's terrain; an adversary can change what an action really does).
-- `spirit`: `specialRules` (title and description), `elements` (gained so far this turn; empty until cards are paid), `presence` (tracks, `sacredSites`), `growth`, `hand`, `inPlay`, `discard` (name, cost, speed), and `innatePowers` with `tiers` (`threshold`, `effect`, `elementStatus`).
-- `spaces`: terrain, adjacency, tokens. Defend and Isolate show as tokens with a count (e.g. `"Defend":2`, `"Isolate":1`; seen live while Roiling Bog and Snagging Thorn's effects were active, and gone by the next round). Strife should show as `^` after an Invader's text (from the code; not yet seen live).
+- `spirit`: `energy`, `elements` (gained so far this turn; empty until cards are paid), `presence` (`energyTrackRevealed` / `cardPlayTrackRevealed`: how many slots of each track are uncovered, counting from the start of the track in the static info; `energyPerTurn`, `cardPlaysPerTurn`, `destroyed`, `sacredSites`), `growthGroupsUsed`, `hand` / `inPlay` / `discard` (name, cost, speed, elements; full text via `get_card_details`), and `innateTierStatus` (each innate's tiers, in order, checked against your elements).
+- `spaces`: land name -> tokens. Lands with no tokens are left out; a land not listed is empty. Terrain and adjacency are in the static info. Defend and Isolate show as tokens with a count (e.g. `"Defend":2`, `"Isolate":1`; seen live while Roiling Bog and Snagging Thorn's effects were active, and gone by the next round). Strife should show as `^` after an Invader's text (from the code; not yet seen live).
 
 **`get_card_details(name)`**: full details for a card in hand, in play, in the discard pile, or offered by the pending decision. Not for the power decks. Accepts the plain name or option text such as `Shatter Homesteads $2 (Slow)`.
 
-All of these were confirmed in a live game: `alerts`, `optionDetails`, `promptDetails`, `matchedLands`, `sacredSites`, `discard`, `blightedIslandEffect`, `victoryCondition`, `specialRules`, innate `tiers`, `get_card_details`.
+All of these were confirmed in a live game: `alerts`, `optionDetails`, `promptDetails`, `matchedLands`, `sacredSites`, `discard`, `blightedIslandEffect`, `victoryCondition`, `specialRules`, innate `tiers`, `get_card_details`. (`victoryCondition` and the innate tiers have since moved to `get_static_info`. That split, `staticVersion` and `innateTierStatus` are not yet confirmed in a live game.)
 
 ## Tool mechanics
 
 - `select_action` needs the current `version` and the exact option text.
-- **Growth**: each round you pick ONE growth group, then do everything in it (follow-up prompts such as "Place Presence(0)" or "Gain Power Card" are part of the same group). The prompt that follows "Done" on the card-play step is the *next round's* growth, not a loop. The group contents are per spirit; the `growth` field in the observation lists them.
+- **Growth**: each round you pick ONE growth group, then do everything in it (follow-up prompts such as "Place Presence(0)" or "Gain Power Card" are part of the same group). The prompt that follows "Done" on the card-play step is the *next round's* growth, not a loop. The group contents are per spirit; `growthGroups` in `get_static_info` lists them.
 - **Card play**: the prompt `Play power card ($E / N)` shows energy and remaining card plays (`promptDetails` spells it out). Select cards one by one, then "Done". Then "Select Fast to resolve" lets you choose the resolve order.
 - Prompts appear for **fear card effects** (for example "Select space to Isolate target land", "Select space to Gather up to 1 Explorers", "Stop Invaders Ravage this Turn", "Remove up to 3 worth of Invaders", "Select space to Push 1 explorers or towns"). The prompt doesn't name the card, but the card's name and its effect at the current Terror Level arrive in the same decision's `alerts` (kind `fear-blight`, e.g. `Flee from Dangerous Lands : 1 : On Each Board: Push 1 Explorer/Town from a land with Badlands/Wilds/Dahan.`). They come at the start of the Invader Phase for cards earned during the Fast phase (or the previous turn).
 - **Isolate** (fear card): the target land is disconnected from adjacent lands for exploring, so it gets no Explorer from adjacent Towns/Cities/Ocean.

@@ -32,18 +32,49 @@ public sealed class AgentGame {
 	/// <summary> Set if the engine task ended without a win/loss result. </summary>
 	public string? Error => IsOver && GameState.Result is null ? "Engine stopped without a result (see log)." : null;
 
+	/// <summary>
+	/// When true (the default), a decision with exactly one option is chosen automatically and reported as an
+	/// "auto" alert on the next decision the agent sees, saving a round trip for a choice that isn't one.
+	/// </summary>
+	public bool AutoSelectSingleOption { get; init; } = true;
+
+	/// <summary> The cards in the spirit's hand when the first decision was asked. </summary>
+	public IReadOnlyList<PowerCard> StartingCards {
+		get { if( _startingCards is null ) GetDecision(); return _startingCards ?? []; }
+	}
+	PowerCard[]? _startingCards;
+
+	/// <summary> Alerts recorded after the last decision, available once the game is over (when <see cref="GetDecision"/> returns null). </summary>
+	public Alert[] FinalAlerts { get; private set; } = [];
+
 	/// <summary> Waits for the engine to present the next decision, or finish. Null when the game is over. </summary>
 	public DecisionSnapshot? GetDecision() {
 		IDecisionPortal portal = _game.UserPortal.DecisionPortal;
 		while( true ) {
 			if( _pending is null && portal.WaitForNext( 20 ) ) {
-				_pending = portal.Next;
+				IDecision next = portal.Next;
+				_startingCards ??= [.. GameState.Spirits.Single().Hand]; // setup is done once the first decision is asked
+				_carriedAlerts.AddRange( _alertBuffer.Drain() );
+				if( AutoSelectSingleOption && next.Options.Length == 1 ) {
+					string only = OptionIds( next )[0];
+					_carriedAlerts.Add( new Alert( "auto", $"Auto-selected '{only}' (only option for '{next.Prompt}')" ) );
+					History.Add( only );
+					portal.Choose( next, next.Options[0] );
+					continue;
+				}
+				_pending = next;
 				_version++;
-				_pendingAlerts = _alertBuffer.Drain(); // kept with the decision so repeated reads show the same alerts
+				_pendingAlerts = [.. _carriedAlerts]; // kept with the decision so repeated reads show the same alerts
+				_carriedAlerts.Clear();
 			}
 			if( _pending is not null )
 				return Snapshot( _pending );
-			if( IsOver ) return null;
+			if( IsOver ) {
+				_carriedAlerts.AddRange( _alertBuffer.Drain() );
+				FinalAlerts = [.. FinalAlerts, .. _carriedAlerts];
+				_carriedAlerts.Clear();
+				return null;
+			}
 		}
 	}
 
@@ -120,6 +151,7 @@ public sealed class AgentGame {
 
 	IDecision? _pending;
 	Alert[] _pendingAlerts = [];
+	readonly List<Alert> _carriedAlerts = []; // alerts (incl. auto-selections) waiting for the next decision the agent sees
 	int _version;
 	readonly AlertBuffer _alertBuffer = new();
 	readonly SoloGame _game;

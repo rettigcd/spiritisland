@@ -40,15 +40,24 @@ public sealed class GameTools {
 		}
 	}
 
+	[McpServerTool( Name = "get_static_info", ReadOnly = true )]
+	[Description( "Returns what rarely changes during a game: setup and adversary rules, a legend for token and card codes, victory conditions by Terror Level, each land's terrain and adjacency, your spirit's special rules, growth groups, presence track slots and innate powers (with tiers), and the full text of your starting cards. Call once per game, and again whenever get_observation's staticVersion differs from the one you have (or you no longer have it in context)." )]
+	public static string GetStaticInfo() {
+		lock( _lock ) {
+			Game.GetDecision(); // let setup finish
+			return PlayerObservation.BuildStatic( Game ).ToJsonString( Pretty );
+		}
+	}
+
 	[McpServerTool( Name = "get_observation", ReadOnly = true )]
-	[Description( "Returns everything a human player could see right now: island, invaders (revealed cards only), fear, blight, and your spirit. Hidden deck contents are never included." )]
+	[Description( "Returns the current state a human player could see: fear, blight, invader cards (revealed only), your spirit's energy, elements, track progress, hand/in play/discard (names, costs, speeds, elements), innate tier status, and the tokens on each land that has any. What rarely changes is in get_static_info; its staticVersion is included here so you can tell when to fetch it again. Hidden deck contents are never included." )]
 	public static string GetObservation() {
 		lock( _lock )
 			return PlayerObservation.Build( Game ).ToJsonString( Pretty );
 	}
 
 	[McpServerTool( Name = "get_decision", ReadOnly = true )]
-	[Description( "Returns the pending decision: a prompt, a version, the list of legal options, and the alerts (game log entries other than your own decisions, e.g. fear generated, fear card revealed with its effect, ravages, blight) recorded since the previous decision. An option's text is its ID." )]
+	[Description( "Returns the pending decision: a prompt, a version, the list of legal options, and the alerts (game log entries other than your own decisions, e.g. fear generated, fear card revealed with its effect, ravages, blight) recorded since the previous decision. An option's text is its ID. A decision with only one option is chosen for you and reported as an alert of kind 'auto'." )]
 	public static string GetDecision() {
 		lock( _lock )
 			return DecisionJson();
@@ -110,18 +119,25 @@ public sealed class GameTools {
 		AgentGame g = Game;
 		DecisionSnapshot? d = g.GetDecision();
 		if( d is null )
-			return new JsonObject { ["gameOver"] = true, ["result"] = g.Result?.ToString() ?? g.Error }.ToJsonString( Pretty );
+			return new JsonObject {
+				["gameOver"] = true,
+				["result"] = g.Result?.ToString() ?? g.Error,
+				["alerts"] = AlertsJson( g.FinalAlerts ),
+			}.ToJsonString( Pretty );
 		return new JsonObject {
 			["version"] = d.Version,
 			["prompt"] = d.Prompt,
 			["options"] = new JsonArray( [.. d.Options.Select( o => (JsonNode)o )] ),
-			["alerts"] = new JsonArray( [.. d.Alerts.Select( a => (JsonNode)new JsonObject { ["kind"] = a.Kind, ["text"] = a.Text } )] ),
+			["alerts"] = AlertsJson( d.Alerts ),
 			["promptDetails"] = d.PromptDetails,
 			["optionDetails"] = new JsonObject( d.OptionDetails.Select( kv => KeyValuePair.Create<string, JsonNode?>( kv.Key, kv.Value.DeepClone() ) ) ),
 		}.ToJsonString( Pretty );
 	}
 
-	static AgentGame Game => _game ?? throw new McpException( "No game in progress. Call create_game first." );
+	static JsonArray AlertsJson( IEnumerable<Alert> alerts )
+		=> new( [.. alerts.Select( a => (JsonNode)new JsonObject { ["kind"] = a.Kind, ["text"] = a.Text } )] );
+
+	static AgentGame Game =>_game ?? throw new McpException( "No game in progress. Call create_game first." );
 
 	static readonly object _lock = new();
 	static AgentGame? _game;
