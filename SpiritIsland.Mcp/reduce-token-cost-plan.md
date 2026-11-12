@@ -97,12 +97,18 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
    - Checked live on Lightning, A, seed 1, round 2: it predicted blight in A1 and A6, the Dahan in A6 destroyed, Towns in A3 and A8, Explorers in A4 and A7, and blight on the card 3 -> 1.
    - Tests: `PredictInvaderPhase_MatchesWhatReallyHappens_AndLeavesTheGameAlone`, `PredictInvaderPhase_DoesNotRevealTheBlightCard_WhenItWouldFlip`, `PredictInvaderPhase_ReportsPendingFearCardsWithoutResolvingThem`, `PredictInvaderPhase_DuringTheSlowPhase_PredictsNextRound`.
 
+7. **Observation diffs (`get_observation(sinceId)`).**
+   - Every observation has an `observationId`. The server keeps the last 3 sent (per game), so `sinceId` gets only what changed since that one. No per-decision history is needed: the diff is against what the model was actually sent.
+   - Keys left out are unchanged, `null` means removed, objects list only changed keys; arrays, values and each land under `spaces` are sent whole. An id that isn't remembered, or none, gets the full observation (`"full": true`).
+   - Measured on Lightning, A, seed 1: full 1,280 characters; the diff from round 1 to round 2 was 756 (-41%); after a single growth choice, 488 (-62%). A changed hand or discard is sent whole, which is most of what's left.
+   - Tests: `ObservationDiffs_RebuildEachFullObservation_ThroughoutAGame` (applies every diff and checks it rebuilds the full observation exactly), `ObservationDiff_SendsAChangedLandWhole_AndAnEmptiedLandAsNull`, `Observation_ComesBackFull_ForAnIdThatIsNoLongerRemembered`.
+
 ## Next steps, in order of payoff
 
-### 1. A smaller observation, further
+### 1. Compact text format for the observation
 
-- `get_observation(sinceVersion)`: only the lands and fields that changed.
-- Optionally a compact text format instead of JSON, for example `A4 Sands: 2E 1T 1B | D2 | P1`.
+- Send the observation (or its diff) as compact text instead of JSON, e.g. `A4 Sands: 2E 1T 1B | D2 | P1`. JSON keys and quotes are a large share of each response.
+- Measure first: with diffs in place, check how much of a round's tool output is still observation.
 
 ### 2. Targeting helper: `get_card_targets(card)`
 
