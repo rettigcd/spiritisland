@@ -27,6 +27,13 @@ public class LightningsSwiftStrike : Spirit {
 		Mods.Add(new SwiftnessOfLightning(this));
 	}
 
+	/// <summary> Fast phase: say how many Slow Powers can still be made Fast, because the Fast list shows them all. </summary>
+	protected override string ResolvePrompt( Phase phase ) {
+		string prompt = base.ResolvePrompt( phase );
+		SwiftnessOfLightning? swiftness = Mods.OfType<SwiftnessOfLightning>().FirstOrDefault(); // the Wind aspect can remove it
+		return phase == Phase.Fast && swiftness is not null ? $"{prompt} ({swiftness.AllowanceStatus})" : prompt;
+	}
+
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
