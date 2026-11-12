@@ -110,6 +110,8 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
    - Not covered: targeting extras a spirit's mods add while choosing (e.g. Shroud moving presence to reach further).
    - Tests: `PowerTargets_MatchTheTargetsOfferedWhenThePowerResolves`, `PowerTargets_ForOneNamedPower_LeaveTheGameAlone`.
 
+9. **Compact PLAYING.md.** Rewritten from 44 KB to 11 KB: no game history, no specific minor/major cards, fear cards or blight cards, only generalized lessons; per-spirit notes only say how a spirit differs from the base rules; tool notes only cover what the tool descriptions don't.
+
 ## Next steps, in order of payoff
 
 ### 1. Compact text format for the observation
@@ -133,7 +135,6 @@ Keep the LLM out of routine moves:
 Changes that need no code:
 
 - Run routine play on a cheaper model (Sonnet or Haiku).
-- Trim [PLAYING.md](PLAYING.md), which is loaded every session.
 
 ## Notes
 
