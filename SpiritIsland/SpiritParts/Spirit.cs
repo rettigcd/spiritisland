@@ -176,12 +176,15 @@ public abstract partial class Spirit
 		if( options.Length == 0 ) return false;
 
 		Present present = gs.Phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
-		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + gs.Phase + " to resolve", options, present));
+		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>(ResolvePrompt(gs.Phase), options, present));
 		if( option is null ) return false;
 
 		await ResolveActionAsync(option, gs.Phase);
 		return true;
 	}
+
+	/// <summary> Overridden by spirits that want to tell the user something about the actions on offer (e.g. Lightning's Slow-as-Fast allowance). </summary>
+	protected virtual string ResolvePrompt( Phase phase ) => "Select " + phase + " to resolve";
 
 	// Set as a side effect of calling SelectAndResolveNextAction - does not need serialized.
 	// Only valid immediately after calling SelectAndResolveNextAction

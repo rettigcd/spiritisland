@@ -12,6 +12,9 @@ sealed class SwiftnessOfLightning(Spirit spirit) : RunSlowCardsAsFastMod_EveryRo
 
 	protected override int AllowedCount => _spirit.Elements[Element.Air];
 
+	/// <summary> Tells the user how many more Slow Powers they may still make Fast this turn. </summary>
+	public string AllowanceStatus => $"Slow as Fast: {Math.Max( 0, AllowedCount - UsedCountForJson )} of {AllowedCount} left";
+
 	#region Json
 
 	// Always present for LightningsSwiftStrike unless the Wind aspect removed it (spirit's own
