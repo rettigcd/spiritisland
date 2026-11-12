@@ -166,6 +166,125 @@ public class AgentGame_Tests {
 		skipped.Text.ShouldContain( "Harbingers of the Lightning" );
 	}
 
+	/// <summary> Lightning, board A, seed 1, round 1 played; returns at the round 2 "Play power card" prompt (presence placed). </summary>
+	static AgentGame LightningAtRound2CardPlay() {
+		var game = new AgentGame( new NewGameRequest( "Lightning's Swift Strike", "A", 1 ) );
+		game.SelectBatch( game.GetDecision()!.Version, [
+			new( "Gain 3 Energy (group: Gain 3 Energy / Place Presence(1))" ),
+			new( "1 energy => A8", "Select Presence" ),
+			new( "Shatter Homesteads $2 (Slow)", "Play power card" ),
+			new( "Harbingers of the Lightning $0 (Slow)", "Play power card" ),
+			new( "Shatter Homesteads $2 (Slow)", "Select Fast" ),
+			new( "A8", "Shatter Homesteads" ),
+			new( "Harbingers of the Lightning $0 (Slow)", "Select Fast" ),
+			new( "A7", "Harbingers" ),
+			new( "Done", "Push" ),
+			new( "Gain 3 Energy (group: Gain 3 Energy / Place Presence(1))", "Select Growth" ),
+		] ).StoppedBecause.ShouldBeNull();
+		DecisionSnapshot d = game.GetDecision()!;
+		d.Prompt.ShouldStartWith( "Select Presence" );
+		game.Select( d.Version, d.Options[0] );
+		game.GetDecision()!.Prompt.ShouldStartWith( "Play power card" );
+		return game;
+	}
+
+	static Dictionary<string, Dictionary<string, int>> LandTokens( AgentGame game )
+		=> PlayerObservation.Build( game )["spaces"]!.AsObject().ToDictionary(
+			kv => kv.Key, kv => kv.Value!.AsObject().ToDictionary( t => t.Key, t => t.Value!.GetValue<int>() ) );
+
+	[Fact]
+	public void PredictInvaderPhase_MatchesWhatReallyHappens_AndLeavesTheGameAlone() {
+		AgentGame game = LightningAtRound2CardPlay();
+		var gs = game.GameState;
+		ActionScope.Initialize( gs.RootScope );
+		string stateBefore = gs.ToJson( new SpiritIsland.Serialization.GameStateSerializationContext( gs ) ).ToJsonString();
+		var tokensBefore = LandTokens( game );
+		int blightBefore = gs.BlightCard.BlightCount;
+		DecisionSnapshot d = game.GetDecision()!;
+
+		JsonObject p = InvaderPhasePrediction.Predict( game );
+
+		// The live game is untouched.
+		ActionScope.Initialize( gs.RootScope );
+		gs.ToJson( new SpiritIsland.Serialization.GameStateSerializationContext( gs ) ).ToJsonString().ShouldBe( stateBefore );
+		game.GetDecision()!.Version.ShouldBe( d.Version );
+
+		// Now play it for real, doing nothing else: no cards, so the Invader Phase follows directly.
+		game.Select( d.Version, "Done" );
+		game.GetDecision()!.Prompt.ShouldBe( "Select Growth" ); // round 3
+
+		var tokensAfter = LandTokens( game );
+		var lands = p["lands"]!.AsObject();
+		foreach( string land in tokensBefore.Keys.Union( tokensAfter.Keys ) ) {
+			var before = tokensBefore.GetValueOrDefault( land ) ?? [];
+			var after = tokensAfter.GetValueOrDefault( land ) ?? [];
+			string[] realChanges = [.. before.Keys.Union( after.Keys ).Order()
+				.Where( k => before.GetValueOrDefault( k ) != after.GetValueOrDefault( k ) )
+				.Select( k => $"{k} {before.GetValueOrDefault( k )}->{after.GetValueOrDefault( k )}" )];
+			(lands[land]?.GetValue<string>() ?? "").ShouldBe( string.Join( ", ", realChanges ), land );
+		}
+		ActionScope.Initialize( gs.RootScope );
+		p["blightOnCard"]!.GetValue<string>().ShouldBe( $"{blightBefore} -> {gs.BlightCard.BlightCount}" );
+		p["outcome"].ShouldBeNull();
+	}
+
+	[Fact]
+	public void PredictInvaderPhase_DoesNotRevealTheBlightCard_WhenItWouldFlip() {
+		AgentGame game = LightningAtRound2CardPlay();
+		var gs = game.GameState;
+		ActionScope.Initialize( gs.RootScope );
+		gs.BlightCard.InitBlight( 1 ); // this round's ravages blight 2 lands, so blight on the card runs out
+		BlightCard card = gs.BlightCard;
+		card.CardFlipped.ShouldBeFalse();
+
+		JsonObject p = InvaderPhasePrediction.Predict( game );
+		string json = p.ToJsonString();
+
+		p["outcome"]!.GetValue<string>().ShouldContain( "would flip" );
+		json.ShouldNotContain( card.Name );
+		json.ShouldNotContain( card.Description );
+		foreach( IFearCard hidden in gs.Fear.Deck.Concat( gs.Fear.ActivatedCards ) )
+			json.ShouldNotContain( ((IOption)hidden).Text );
+		ActionScope.Initialize( gs.RootScope );
+		gs.BlightCard.ShouldBeSameAs( card ); // the stand-in only ever lived in the copy
+		card.CardFlipped.ShouldBeFalse();
+	}
+
+	[Fact]
+	public void PredictInvaderPhase_DuringTheSlowPhase_PredictsNextRound() {
+		var game = new AgentGame( Req( 3 ) );
+		var rnd = new Random( 3 );
+		DecisionSnapshot? d = game.GetDecision();
+		for( int i = 0; i < 300 && d is not null && game.GameState.Phase != Phase.Slow; ++i ) {
+			game.Select( d.Version, d.Options[rnd.Next( d.Options.Length )] );
+			d = game.GetDecision();
+		}
+		game.GameState.Phase.ShouldBe( Phase.Slow );
+		int round = game.GameState.RoundNumber;
+
+		JsonObject p = InvaderPhasePrediction.Predict( game );
+
+		(p["outcome"]?.GetValue<string>() ?? "").ShouldNotStartWith( "Simulation" ); // didn't fail or hang
+		p["notIncluded"]![0]!.GetValue<string>().ShouldContain( "next round" );
+		game.GameState.RoundNumber.ShouldBe( round );
+		game.GameState.Phase.ShouldBe( Phase.Slow );
+	}
+
+	[Fact]
+	public void PredictInvaderPhase_ReportsPendingFearCardsWithoutResolvingThem() {
+		AgentGame game = LightningAtRound2CardPlay();
+		var gs = game.GameState;
+		ActionScope.Initialize( gs.RootScope );
+		IFearCard earned = gs.Fear.Deck.Pop();
+		gs.Fear.ActivatedCards.Push( earned );
+
+		JsonObject p = InvaderPhasePrediction.Predict( game );
+
+		p["notIncluded"]!.AsArray().Select( n => n!.GetValue<string>() ).ShouldContain( s => s.Contains( "1 earned fear card" ) );
+		p.ToJsonString().ShouldNotContain( ((IOption)earned).Text );
+		gs.Fear.ActivatedCards.Count.ShouldBe( 1 ); // still face down in the real game
+	}
+
 	[Fact]
 	public void StaleVersion_IsRejected_AndGameDoesNotAdvance() {
 		var game = new AgentGame( Req() );

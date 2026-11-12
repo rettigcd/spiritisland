@@ -83,6 +83,20 @@ public sealed class GameTools {
 		}
 	}
 
+	[McpServerTool( Name = "predict_invader_phase", ReadOnly = true )]
+	[Description( "Predicts the coming Invader Phase by playing it out on a copy of the game (the real game is not changed): the Ravage, Build and Explore of the three visible Invader cards, from the current state. "
+		+ "Returns the cards, the outcome (null, or a win/loss, or where the blight card would flip), blight on the card and fear before -> after, presence destroyed, each land's token changes, the choices the simulation made for you (first option, e.g. where blight cascades - you choose for real), the Invader log, and what is NOT included. "
+		+ "Hidden information stays hidden: earned (face-down) fear cards are not resolved, and an unflipped blight card's effect is not run or named. "
+		+ "Call it before deciding which lands to protect; call it again after a Fast power changes the board. During the Slow phase it predicts next round's Invader Phase." )]
+	public static string PredictInvaderPhase() {
+		lock( _lock ) {
+			AgentGame g = Game;
+			if( g.GetDecision() is null ) throw new McpException( "The game is over." );
+			try { return InvaderPhasePrediction.Predict( g ).ToJsonString( Pretty ); }
+			catch( InvalidOperationException ex ) { throw new McpException( ex.Message ); }
+		}
+	}
+
 	[McpServerTool( Name = "select_action" )]
 	[Description( "Chooses one option of the pending decision and advances the game to the next decision. Rejected if the version is stale or the option text isn't offered." )]
 	public static string SelectAction(
