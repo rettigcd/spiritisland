@@ -114,12 +114,20 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
 
 ## Next steps, in order of payoff
 
-### 1. Compact text format for the observation
+### 1. Trim the `select_actions` response
+
+Measured in a River game (board A, seed 2, 3 rounds): `select_actions` was the largest remaining payload, 13 calls and 12,900 characters (~3,900 tokens), about 1,000 characters each and half of all tool output.
+
+- **Drop the `batch` echo alerts by default.** They repeat the steps the model just sent. Keep a short note only for a step that was answered differently than asked (e.g. counted as done because it was auto-selected), or make them opt-in.
+- **Shorten long option lists.** The Presence-placement prompt listed 28 options (~1,500 characters): every track slot times every land. Growth options repeat the full group label on each option (`Place Presence(1) (group: Place Presence(1) / Place Presence(1))`). Options must stay unique and selectable by exact text, so any shortening has to keep a stable ID per option.
+- **Fold `tokens` alerts** (`RSiS moved: ...`, `Replace 1 D@2 with D@1`) into the observation diff instead of listing each move.
+
+### 2. Compact text format for the observation
 
 - Send the observation (or its diff) as compact text instead of JSON, e.g. `A4 Sands: 2E 1T 1B | D2 | P1`. JSON keys and quotes are a large share of each response.
 - Measure first: with diffs in place, check how much of a round's tool output is still observation.
 
-### 2. `evaluate_options` (later)
+### 3. `evaluate_options` (later)
 
 - For each option, branch from the saved state, play forward with a heuristic agent, and score the result.
 - Each rollout must reshuffle the cards the player hasn't seen (fear deck, Invader deck, power decks). Otherwise the rollouts use hidden information.
