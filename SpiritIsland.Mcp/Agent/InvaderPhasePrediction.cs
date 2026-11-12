@@ -1,11 +1,9 @@
 using System.Text.Json.Nodes;
-using SpiritIsland.Serialization;
 
 namespace SpiritIsland.Agent;
 
 /// <summary>
-/// Predicts the coming Invader Phase by playing it out on a copy of the game (serialized and restored onto a freshly
-/// built game, the same mechanism rewind uses). The live game is never touched.
+/// Predicts the coming Invader Phase by playing it out on a copy of the game (see <see cref="GameCopy"/>). The live game is never touched.
 ///
 /// Only information a player has is used or reported:
 /// - Earned fear cards are face down until the Invader Phase flips them, so they are NOT resolved; the report says how many will.
@@ -23,11 +21,11 @@ public static class InvaderPhasePrediction {
 		Phase phase = live.Phase;
 		if( phase == Phase.Invaders )
 			throw new InvalidOperationException( "The Invader Phase is already under way; its results arrive as alerts." );
-		JsonObject snapshot = live.ToJson( new GameStateSerializationContext( live ) );
 		string[] hidden = HiddenTexts( live );
 
-		var sim = new Simulation( game.Request, snapshot, phase );
-		sim.Run();
+		var sim = new Simulation( phase );
+		sim.Run( game );
+		ActionScope.Initialize( live.RootScope ); // back to the live game for this thread
 
 		var notIncluded = new JsonArray();
 		if( phase == Phase.Slow )
@@ -69,7 +67,7 @@ public static class InvaderPhasePrediction {
 		return JsonNode.Parse( text )!.AsObject();
 	}
 
-	sealed class Simulation( NewGameRequest request, JsonObject snapshot, Phase livePhase ) {
+	sealed class Simulation( Phase livePhase ) {
 
 		public JsonObject InvaderCards = [];
 		public string? Outcome;
@@ -78,19 +76,12 @@ public static class InvaderPhasePrediction {
 		public List<string> Choices = [];
 		public List<string> Log = [];
 
-		public void Run() {
-			GameState? gs = null;
+		public void Run( AgentGame game ) {
 			var log = new AlertBuffer();
-			var setUp = new TaskCompletionSource<GameState>();
-
-			Task task = Task.Run( async () => {
-				gs = GameSetup.Build( request );
-				ActionScope.Initialize( gs.RootScope );
-				gs.RestoreFromJson( snapshot, new GameStateSerializationContext( gs ) );
+			GameCopy.Result run = GameCopy.Run( game, async gs => {
 				if( !gs.BlightCard.CardFlipped )
 					gs.BlightCard = new StandInBlightCard(); // the blight count lives on the island's tokens, so it carries over
 				gs.NewLogEntry += log.Add;
-				setUp.SetResult( gs );
 
 				if( livePhase == Phase.Slow )
 					await gs.TriggerTimePasses();
@@ -108,37 +99,15 @@ public static class InvaderPhasePrediction {
 				// Not gs.InvaderDeck.AdvanceAsync(): that would reveal the next Invader card.
 			} );
 
-			// Answer the decisions the simulation meets, until it finishes.
-			Task.WaitAny( [setUp.Task, task], TimeSpan.FromSeconds( 30 ) ); // set-up done, or it failed
-			var deadline = DateTime.UtcNow.AddSeconds( 30 );
-			while( setUp.Task.IsCompletedSuccessfully && !task.IsCompleted ) {
-				IDecisionPortal portal = setUp.Task.Result.Spirits.Single().Portal;
-				if( portal.WaitForNext( 20 ) && portal.Next is { } d ) {
-					IOption choice = d.Options[0];
-					Choices.Add( $"'{d.Prompt}': chose '{choice.Text}' (first of {d.Options.Length})" );
-					portal.Choose( d, choice );
-				}
-				if( DateTime.UtcNow > deadline || Choices.Count > 200 ) {
-					Outcome = "Simulation stopped: it took too long.";
-					break;
-				}
-			}
-
-			try { if( !task.Wait( TimeSpan.FromSeconds( 5 ) ) ) Outcome ??= "Simulation stopped: it took too long."; }
-			catch( AggregateException ex ) when( ex.InnerException is GameOverException over ) {
-				Outcome = over.Status.ToString();
-			}
-			catch( AggregateException ex ) when( ex.InnerException is StandInBlightCard.FlipException ) {
-				Outcome = "Blight on the card runs out: the blight card would flip here. Its effect is hidden until it really flips, so the simulation stops at this point.";
-			}
-			catch( AggregateException ex ) {
-				Outcome = $"Simulation failed: {ex.InnerException?.Message}";
-			}
-
-			if( gs is not null ) {
-				ActionScope.Initialize( gs.RootScope );
-				After( gs );
-			}
+			Choices = run.Choices;
+			Outcome = run.Error switch {
+				null => run.TimedOut ? "Simulation stopped: it took too long." : null,
+				GameOverException over => over.Status.ToString(),
+				StandInBlightCard.FlipException => "Blight on the card runs out: the blight card would flip here. Its effect is hidden until it really flips, so the simulation stops at this point.",
+				var ex => $"Simulation failed: {ex.Message}",
+			};
+			if( run.Copy is not null )
+				After( run.Copy );
 			Log = [.. log.Drain().Where( a => a.Kind is "invaders" or "bad" or "fear-blight" ).Select( a => a.Text )];
 		}
 

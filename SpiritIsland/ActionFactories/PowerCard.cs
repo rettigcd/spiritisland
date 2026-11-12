@@ -74,6 +74,10 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	public LandOrSpirit LandOrSpirit => _targetCtxFactory.LandOrSpirit;
 
+	/// <summary> Lands this card could target right now (see TargetSpaceAttribute.GetTargetOptions); null if it targets a Spirit. </summary>
+	public async Task<Space[]?> GetTargetSpaceOptions( Spirit self )
+		=> _targetCtxFactory is TargetSpaceAttribute tsa ? await tsa.GetTargetOptions( self ) : null;
+
 	public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit )
 		=> _speed.CouldBeActiveFor(requestSpeed,spirit);
 

@@ -354,6 +354,54 @@ public class AgentGame_Tests {
 	}
 
 	[Fact]
+	public void PowerTargets_MatchTheTargetsOfferedWhenThePowerResolves() {
+		var game = new AgentGame( new NewGameRequest( "Lightning's Swift Strike", "A", 1 ) );
+		game.SelectBatch( game.GetDecision()!.Version, [
+			new( "Gain 3 Energy (group: Gain 3 Energy / Place Presence(1))" ),
+			new( "1 energy => A8", "Select Presence" ),
+		] ).StoppedBecause.ShouldBeNull();
+		game.GetDecision()!.Prompt.ShouldStartWith( "Play power card" );
+
+		JsonObject targets = PowerTargets.Get( game, null )["targets"]!.AsObject();
+		targets["Lightning's Boon"]!.GetValue<string>().ShouldBe( "a Spirit (yourself)" );
+		targets.ContainsKey( "Thundering Destruction" ).ShouldBeTrue(); // innates are included
+		string[] Lands( string card ) => [.. targets[card]!.AsArray().Select( n => n!.GetValue<string>() )];
+
+		// Now resolve them for real and compare with what the engine offers.
+		game.SelectBatch( game.GetDecision()!.Version, [
+			new( "Shatter Homesteads $2 (Slow)", "Play power card" ),
+			new( "Harbingers of the Lightning $0 (Slow)", "Play power card" ),
+			new( "Shatter Homesteads $2 (Slow)", "Select Fast" ),
+		] ).StoppedBecause.ShouldBeNull();
+		DecisionSnapshot d = game.GetDecision()!;
+		d.Prompt.ShouldBe( "Shatter Homesteads: Target Space" );
+		d.Options.ShouldBe( Lands( "Shatter Homesteads" ), ignoreOrder: true );
+
+		game.SelectBatch( d.Version, [new( "A8" ), new( "Harbingers of the Lightning $0 (Slow)", "Select Fast" )] ).StoppedBecause.ShouldBeNull();
+		d = game.GetDecision()!;
+		d.Prompt.ShouldBe( "Harbingers of the Lightning: Target Space" );
+		d.Options.ShouldBe( Lands( "Harbingers of the Lightning" ), ignoreOrder: true );
+	}
+
+	[Fact]
+	public void PowerTargets_ForOneNamedPower_LeaveTheGameAlone() {
+		var game = new AgentGame( new NewGameRequest( "Lightning's Swift Strike", "A", 1 ) );
+		DecisionSnapshot d = game.GetDecision()!;
+		var gs = game.GameState;
+		ActionScope.Initialize( gs.RootScope );
+		string stateBefore = gs.ToJson( new SpiritIsland.Serialization.GameStateSerializationContext( gs ) ).ToJsonString();
+
+		JsonObject r = PowerTargets.Get( game, "Shatter Homesteads $2 (Slow)" ); // option text works too
+
+		r["targets"]!.AsObject().Select( kv => kv.Key ).ShouldBe( ["Shatter Homesteads"] );
+		r["targets"]!["Shatter Homesteads"]!.AsArray().Count.ShouldBeGreaterThan( 0 );
+		ActionScope.Initialize( gs.RootScope );
+		gs.ToJson( new SpiritIsland.Serialization.GameStateSerializationContext( gs ) ).ToJsonString().ShouldBe( stateBefore );
+		game.GetDecision()!.Version.ShouldBe( d.Version );
+		Should.Throw<ArgumentException>( () => PowerTargets.Get( game, "No Such Card" ) );
+	}
+
+	[Fact]
 	public void StaleVersion_IsRejected_AndGameDoesNotAdvance() {
 		var game = new AgentGame( Req() );
 		DecisionSnapshot d = game.GetDecision()!;

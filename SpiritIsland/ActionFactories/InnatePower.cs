@@ -89,6 +89,10 @@ public class InnatePower : IPowerActionFactory {
 
 	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
 
+	/// <summary> Lands this innate could target right now (see TargetSpaceAttribute.GetTargetOptions); null if it targets a Spirit. </summary>
+	public async Task<Space[]?> GetTargetSpaceOptions( Spirit self )
+		=> _targetAttr is TargetSpaceAttribute tsa ? await tsa.GetTargetOptions( self ) : null;
+
 	public string GeneralInstructions { get; }
 
 	public IEnumerable<IDrawableInnateTier> DrawableOptions { get; }

@@ -103,6 +103,13 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
    - Measured on Lightning, A, seed 1: full 1,280 characters; the diff from round 1 to round 2 was 756 (-41%); after a single growth choice, 488 (-62%). A changed hand or discard is sent whole, which is most of what's left.
    - Tests: `ObservationDiffs_RebuildEachFullObservation_ThroughoutAGame` (applies every diff and checks it rebuilds the full observation exactly), `ObservationDiff_SendsAChangedLandWhole_AndAnEmptiedLandAsNull`, `Observation_ComesBackFull_ForAnIdThatIsNoLongerRemembered`.
 
+8. **Targeting helper (`get_power_targets`).**
+   - Returns, for every card in hand and in play and every innate (or one named power), the lands it could target now, using the engine's own targeting (`TargetSpaceAttribute.GetTargetOptions`, a small new public method over `Targetter.GetPowerTargetOptions`, exposed as `GetTargetSpaceOptions` on `PowerCard` and `InnatePower`). Spirit-targeting powers say so.
+   - Worked out on a copy of the game, because some range bonuses ask an element-threshold question, which would otherwise put a prompt on the real game. The copy-and-run code is now shared with `predict_invader_phase` (`GameCopy`).
+   - Lightning, A, seed 1, start: all five powers in one call, 223 characters.
+   - Not covered: targeting extras a spirit's mods add while choosing (e.g. Shroud moving presence to reach further).
+   - Tests: `PowerTargets_MatchTheTargetsOfferedWhenThePowerResolves`, `PowerTargets_ForOneNamedPower_LeaveTheGameAlone`.
+
 ## Next steps, in order of payoff
 
 ### 1. Compact text format for the observation
@@ -110,11 +117,7 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
 - Send the observation (or its diff) as compact text instead of JSON, e.g. `A4 Sands: 2E 1T 1B | D2 | P1`. JSON keys and quotes are a large share of each response.
 - Measure first: with diffs in place, check how much of a round's tool output is still observation.
 
-### 2. Targeting helper: `get_card_targets(card)`
-
-- Return the lands a power can legally target, given range and sacred sites, so the model doesn't work it out by hand.
-
-### 3. `evaluate_options` (later)
+### 2. `evaluate_options` (later)
 
 - For each option, branch from the saved state, play forward with a heuristic agent, and score the result.
 - Each rollout must reshuffle the cards the player hasn't seen (fear deck, Invader deck, power decks). Otherwise the rollouts use hidden information.
