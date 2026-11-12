@@ -20,6 +20,7 @@ public class LogModel {
 			// Bad stuff
 			GameOverLogEntry or
 			ExceptionEntry or
+			PresenceDestroyed or
 			IslandBlighted => Colors.Red,
 
 			// Invades

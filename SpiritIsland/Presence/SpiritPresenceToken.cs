@@ -67,6 +67,7 @@ public class SpiritPresenceToken
 	/// </summary>
 	public virtual async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
+			ActionScope.Current.Log( new Log.PresenceDestroyed( Self.SpiritName, args.From.Text, args.Count, args.Reason ) );
 			await Self.Presence.Destroyed.Location.SinkAsync(this,args.Count,AddReason.AddedToCard);
 			await OnPresenceDestroyed( args );
 		}
