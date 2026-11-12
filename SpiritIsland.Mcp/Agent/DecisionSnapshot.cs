@@ -11,5 +11,11 @@ namespace SpiritIsland.Agent;
 /// <param name="PromptDetails">The prompt's packed-in numbers spelled out, when the prompt has any (see <see cref="PromptDetails"/>).</param>
 public record DecisionSnapshot( int Version, string Prompt, string[] Options, Alert[] Alerts, IReadOnlyDictionary<string, JsonObject> OptionDetails, string? PromptDetails = null );
 
+/// <summary> One step of a batch: the option to choose and, optionally, the start of the prompt it is meant to answer. </summary>
+public record BatchStep( string Option, string? Prompt = null );
+
+/// <summary> How much of a batch was applied, and why it stopped early (null if it didn't). </summary>
+public record BatchResult( int Applied, int Requested, string? StoppedBecause );
+
 /// <summary> A game log entry, with the same grouping the Maui log view uses for its colors. </summary>
 public record Alert( string Kind, string Text );

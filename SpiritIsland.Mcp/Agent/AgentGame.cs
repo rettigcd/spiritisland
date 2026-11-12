@@ -59,6 +59,7 @@ public sealed class AgentGame {
 					string only = OptionIds( next )[0];
 					_carriedAlerts.Add( new Alert( "auto", $"Auto-selected '{only}' (only option for '{next.Prompt}')" ) );
 					History.Add( only );
+					_autoPicksSinceSelect.Add( (next.Prompt, only) );
 					portal.Choose( next, next.Options[0] );
 					continue;
 				}
@@ -122,9 +123,81 @@ public sealed class AgentGame {
 		IOption option = _pending!.Options[index];
 
 		IDecision decision = _pending;
+		WarnIfDoneSkipsPowers( decision, option );
 		_pending = null;
+		_autoPicksSinceSelect.Clear();
 		History.Add( optionText );
 		_game.UserPortal.DecisionPortal.Choose( decision, option );
+	}
+
+	/// <summary>
+	/// Choosing "Done" on "Select Fast/Slow to resolve" ends that phase's resolving, so any power still on offer that
+	/// can't resolve later this turn is dropped. That's occasionally deliberate, but has also lost games by accident,
+	/// so say which ones with a "skipped" alert. In the Fast phase, a power that can still resolve in the Slow phase
+	/// (e.g. a Slow card offered early by Lightning's Swiftness) isn't lost, so it isn't listed.
+	/// </summary>
+	void WarnIfDoneSkipsPowers( IDecision decision, IOption chosen ) {
+		Phase phase = GameState.Phase;
+		if( chosen is IActionFactory || phase is not (Phase.Fast or Phase.Slow)
+			|| !decision.Prompt.StartsWith( $"Select {phase} to resolve" ) ) return;
+		ActionScope.Initialize( GameState.RootScope ); // engine state is read through AsyncLocal scope
+		Spirit spirit = GameState.Spirits.Single();
+		string[] lost = [.. decision.Options.OfType<IActionFactory>()
+			.Where( f => phase == Phase.Slow || !f.CouldActivateDuring( Phase.Slow, spirit ) )
+			.Select( f => f.Text )];
+		if( lost.Length > 0 )
+			_carriedAlerts.Add( new Alert( "skipped", $"'{chosen.Text}' left {phase} powers unresolved (they won't resolve this turn): {string.Join( ", ", lost )}" ) );
+	}
+
+	/// <summary>
+	/// Applies several choices in order, starting with the decision of the given version. Stops (without throwing) at the
+	/// first step whose option isn't offered or whose expected prompt doesn't match, or when the game ends, so a plan that
+	/// meets an unexpected prompt (e.g. a fear card's) never answers the wrong question.
+	/// A step that names an option the server just auto-selected (the only option) counts as done.
+	/// The decision reached afterwards carries the alerts of every decision the batch passed through, plus one
+	/// "batch" alert per step saying which prompt it answered.
+	/// </summary>
+	/// <exception cref="ArgumentException">the version is stale</exception>
+	/// <exception cref="InvalidOperationException">the game is already over</exception>
+	public BatchResult SelectBatch( int version, IReadOnlyList<BatchStep> steps ) {
+		DecisionSnapshot? d = GetDecision() ?? throw new InvalidOperationException( "Game is over." );
+		if( version != _version )
+			throw new ArgumentException( $"Stale decision version {version}; current is {_version}." );
+
+		var alerts = new List<Alert>();
+		int applied = 0;
+		string? stoppedBecause = null;
+		foreach( BatchStep step in steps ) {
+			if( d is null ) { stoppedBecause = "the game is over"; break; }
+
+			bool promptOk = step.Prompt is null || d.Prompt.StartsWith( step.Prompt, StringComparison.OrdinalIgnoreCase );
+			if( !promptOk || !d.Options.Contains( step.Option ) ) {
+				// Already answered for us because it was the only option? Then the step is done.
+				int auto = _autoPicksSinceSelect.FindIndex( a => a.Option == step.Option
+					&& (step.Prompt is null || a.Prompt.StartsWith( step.Prompt, StringComparison.OrdinalIgnoreCase )) );
+				if( auto >= 0 ) {
+					_autoPicksSinceSelect.RemoveAt( auto );
+					++applied;
+					continue;
+				}
+				stoppedBecause = !promptOk
+					? $"step {applied + 1} expected a prompt starting '{step.Prompt}' but the prompt is '{d.Prompt}'"
+					: $"step {applied + 1}: '{step.Option}' is not offered by '{d.Prompt}'";
+				break;
+			}
+
+			alerts.Add( new Alert( "batch", $"Selected '{step.Option}' for '{d.Prompt}'" ) );
+			Select( d.Version, step.Option );
+			++applied;
+			d = GetDecision();
+			alerts.AddRange( d?.Alerts ?? [] );
+		}
+
+		if( alerts.Count > 0 ) { // something was actually selected (a skipped auto-pick changes nothing)
+			if( d is not null ) _pendingAlerts = [.. alerts]; // the last decision's own alerts are already at the end
+			else FinalAlerts = [.. alerts, .. FinalAlerts];
+		}
+		return new BatchResult( applied, steps.Count, stoppedBecause );
 	}
 
 	/// <summary>
@@ -151,7 +224,8 @@ public sealed class AgentGame {
 
 	IDecision? _pending;
 	Alert[] _pendingAlerts = [];
-	readonly List<Alert> _carriedAlerts = []; // alerts (incl. auto-selections) waiting for the next decision the agent sees
+	readonly List<Alert> _carriedAlerts = [];
+	readonly List<(string Prompt, string Option)> _autoPicksSinceSelect = []; // lets a batch step that names an auto-selected option count as done // alerts (incl. auto-selections) waiting for the next decision the agent sees
 	int _version;
 	readonly AlertBuffer _alertBuffer = new();
 	readonly SoloGame _game;

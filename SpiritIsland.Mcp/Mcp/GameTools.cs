@@ -97,6 +97,30 @@ public sealed class GameTools {
 		}
 	}
 
+	[McpServerTool( Name = "select_actions" )]
+	[Description( "Chooses several options in a row, starting with the pending decision, and returns the decision reached (same shape as select_action) plus 'batch': {applied, requested, stoppedBecause}. "
+		+ "Stops early, without error, at the first step whose option isn't offered or whose 'prompt' doesn't match the start of the actual prompt, so an unexpected prompt (e.g. a fear card's) is never answered by mistake: look at the returned decision and continue. "
+		+ "Give 'prompt' whenever the same option text could answer another question (e.g. a land name). A step naming an option the server just auto-selected counts as done. "
+		+ "The returned alerts cover every decision passed through, with one 'batch' alert per step naming the prompt it answered." )]
+	public static string SelectActions(
+		[Description( "The version from the decision the first step answers" )] int version,
+		[Description( "Steps in order. Each: {\"option\": exact option text, \"prompt\": optional start of the prompt it is meant to answer, e.g. \"Shatter Homesteads: Target Space\"}" )] BatchStep[] actions ) {
+		lock( _lock ) {
+			BatchResult result;
+			try { result = Game.SelectBatch( version, actions ); }
+			catch( Exception ex ) when( ex is ArgumentException or InvalidOperationException ) {
+				throw new McpException( ex.Message );
+			}
+			JsonObject json = DecisionNode();
+			json["batch"] = new JsonObject {
+				["applied"] = result.Applied,
+				["requested"] = result.Requested,
+				["stoppedBecause"] = result.StoppedBecause,
+			};
+			return json.ToJsonString( Pretty );
+		}
+	}
+
 	[McpServerTool( Name = "get_game_result", ReadOnly = true )]
 	[Description( "Returns whether the game is over and, if so, the outcome (Victory/Defeat), cause, rounds played and number of decisions made." )]
 	public static string GetGameResult() {
@@ -115,7 +139,9 @@ public sealed class GameTools {
 		}
 	}
 
-	static string DecisionJson() {
+	static string DecisionJson() => DecisionNode().ToJsonString( Pretty );
+
+	static JsonObject DecisionNode() {
 		AgentGame g = Game;
 		DecisionSnapshot? d = g.GetDecision();
 		if( d is null )
@@ -123,7 +149,7 @@ public sealed class GameTools {
 				["gameOver"] = true,
 				["result"] = g.Result?.ToString() ?? g.Error,
 				["alerts"] = AlertsJson( g.FinalAlerts ),
-			}.ToJsonString( Pretty );
+			};
 		return new JsonObject {
 			["version"] = d.Version,
 			["prompt"] = d.Prompt,
@@ -131,7 +157,7 @@ public sealed class GameTools {
 			["alerts"] = AlertsJson( d.Alerts ),
 			["promptDetails"] = d.PromptDetails,
 			["optionDetails"] = new JsonObject( d.OptionDetails.Select( kv => KeyValuePair.Create<string, JsonNode?>( kv.Key, kv.Value.DeepClone() ) ) ),
-		}.ToJsonString( Pretty );
+		};
 	}
 
 	static JsonArray AlertsJson( IEnumerable<Alert> alerts )
