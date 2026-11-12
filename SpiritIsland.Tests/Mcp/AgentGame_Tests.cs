@@ -30,6 +30,41 @@ public class AgentGame_Tests {
 	}
 
 	[Fact]
+	public void SingleOptionDecisions_AreAutoSelected_AndReportedAsAlerts() {
+		var game = new AgentGame( Req() );
+		var rnd = new Random( 4 );
+		var autoAlerts = new List<Alert>();
+		for( int i = 0; i < 150; ++i ) {
+			DecisionSnapshot? d = game.GetDecision();
+			if( d is null ) break;
+			d.Options.Length.ShouldBeGreaterThan( 1, d.Prompt );
+			autoAlerts.AddRange( d.Alerts.Where( a => a.Kind == "auto" ) );
+			game.Select( d.Version, d.Options[rnd.Next( d.Options.Length )] );
+		}
+		autoAlerts.ShouldNotBeEmpty(); // River's growth groups alone produce some
+		autoAlerts.ShouldAllBe( a => a.Text.StartsWith( "Auto-selected '" ) );
+	}
+
+	[Fact]
+	public void AutoSelect_PlaysTheSameGameAsChoosingTheOnlyOptionByHand() {
+		// Always taking the first option: auto-select must make exactly the choices a player would have had to.
+		static List<string> Play( bool auto ) {
+			var game = new AgentGame( Req( 5 ) ) { AutoSelectSingleOption = auto };
+			for( int i = 0; i < 150; ++i ) {
+				DecisionSnapshot? d = game.GetDecision();
+				if( d is null ) break;
+				game.Select( d.Version, d.Options[0] );
+			}
+			game.GetDecision(); // settle any trailing auto-selections
+			return game.History;
+		}
+		List<string> manual = Play( false );
+		List<string> auto = Play( true );
+		auto.Count.ShouldBeGreaterThanOrEqualTo( manual.Count ); // 150 real decisions plus the auto ones reach further
+		auto.Take( manual.Count ).ShouldBe( manual );
+	}
+
+	[Fact]
 	public void StaleVersion_IsRejected_AndGameDoesNotAdvance() {
 		var game = new AgentGame( Req() );
 		DecisionSnapshot d = game.GetDecision()!;
@@ -133,9 +168,63 @@ public class AgentGame_Tests {
 		game.GetDecision();
 		var obs = PlayerObservation.Build( game );
 
-		obs["spirit"]!["name"]!.GetValue<string>().ShouldBe( RiverSurges.Name );
 		obs["spirit"]!["hand"]!.AsArray().Count.ShouldBeGreaterThan( 0 );
-		obs["spaces"]!.AsArray().Count.ShouldBe( 9 ); // ocean + 8 lands
+		obs["spirit"]!["hand"]![0]!.AsObject().ContainsKey( "instructions" ).ShouldBeFalse(); // full text is in the static info / get_card_details
+		var spaces = obs["spaces"]!.AsObject();
+		spaces.Count.ShouldBeGreaterThan( 0 );
+		spaces.ShouldAllBe( kv => kv.Value!.AsObject().Count > 0 ); // empty lands are left out
+		obs["spirit"]!["presence"]!["energyTrackRevealed"]!.GetValue<int>().ShouldBe( 1 );
+	}
+
+	[Fact]
+	public void StaticInfo_HoldsLayoutSpiritRulesAndStartingCards() {
+		var game = new AgentGame( Req() );
+		game.GetDecision();
+		var info = PlayerObservation.BuildStatic( game );
+
+		info["setup"]!["spirit"]!.GetValue<string>().ShouldBe( RiverSurges.Name );
+		info["setup"]!["adversary"].ShouldBeNull(); // not the "No Adversary" placeholder
+		info["lands"]!.AsArray().Count.ShouldBe( 9 ); // ocean + 8 lands
+		info["lands"]![1]!["adjacent"]!.AsArray().Count.ShouldBeGreaterThan( 0 );
+		info["spirit"]!["innatePowers"]![0]!["tiers"]!.AsArray().Count.ShouldBeGreaterThan( 0 );
+		info["spirit"]!["presenceTracks"]!["energy"]!.AsArray().Count.ShouldBeGreaterThan( 1 );
+		info["startingCards"]!.AsArray().Select( c => c!["name"]!.GetValue<string>() )
+			.ShouldBe( game.GameState.Spirits.Single().Hand.Select( c => c.Title ), ignoreOrder: true );
+		info["startingCards"]![0]!["instructions"].ShouldNotBeNull();
+	}
+
+	[Fact]
+	public void StaticVersion_MatchesObservation_AndStaysTheSameWhilePlaying() {
+		var game = new AgentGame( Req() );
+		game.GetDecision();
+		string version = PlayerObservation.BuildStatic( game )["staticVersion"]!.GetValue<string>();
+		PlayerObservation.Build( game )["staticVersion"]!.GetValue<string>().ShouldBe( version );
+
+		// Playing (growth, presence placed, cards drawn and played) doesn't change what's in the static info.
+		var rnd = new Random( 6 );
+		for( int i = 0; i < 40; ++i ) {
+			DecisionSnapshot? d = game.GetDecision();
+			if( d is null ) break;
+			game.Select( d.Version, d.Options[rnd.Next( d.Options.Length )] );
+		}
+		if( !game.IsOver )
+			PlayerObservation.Build( game )["staticVersion"]!.GetValue<string>().ShouldBe( version );
+	}
+
+	[Fact]
+	public void StaticInfo_DoesNotRevealHiddenCards() {
+		var game = new AgentGame( Req( 2, "England", 1 ) );
+		game.GetDecision();
+		var gs = game.GameState;
+		string json = PlayerObservation.BuildStatic( game ).ToJsonString();
+
+		foreach( IFearCard hidden in gs.Fear.Deck )
+			json.ShouldNotContain( ((IOption)hidden).Text );
+		json.ShouldNotContain( gs.BlightCard.Name );
+
+		var adversary = PlayerObservation.BuildStatic( game )["setup"]!["adversary"]!;
+		adversary["name"]!.GetValue<string>().ShouldBe( "England" );
+		adversary["rules"]!.GetValue<string>().ShouldNotBeNullOrWhiteSpace();
 	}
 
 	[Fact]
@@ -179,7 +268,7 @@ public class AgentGame_Tests {
 		d.Options.Count( o => o.Contains( "(group: " ) ).ShouldBeGreaterThan( 0 );
 		d.Options.Distinct().Count().ShouldBe( d.Options.Length );
 
-		var growth = PlayerObservation.Build( game )["spirit"]!["growth"]!.AsArray();
+		var growth = PlayerObservation.BuildStatic( game )["spirit"]!["growthGroups"]!.AsArray();
 		growth.Count.ShouldBeGreaterThan( 0 );
 	}
 }
