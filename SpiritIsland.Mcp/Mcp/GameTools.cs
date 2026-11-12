@@ -48,10 +48,30 @@ public sealed class GameTools {
 	}
 
 	[McpServerTool( Name = "get_decision", ReadOnly = true )]
-	[Description( "Returns the pending decision: a prompt, a version, and the list of legal options. An option's text is its ID." )]
+	[Description( "Returns the pending decision: a prompt, a version, the list of legal options, and the alerts (game log entries other than your own decisions, e.g. fear generated, fear card revealed with its effect, ravages, blight) recorded since the previous decision. An option's text is its ID." )]
 	public static string GetDecision() {
 		lock( _lock )
 			return DecisionJson();
+	}
+
+	[McpServerTool( Name = "get_card_details", ReadOnly = true )]
+	[Description( "Returns the details (cost, speed, elements, range, target, instructions) of a power card you have access to: in your hand, in play, in your discard pile, or offered by the pending decision. Not for cards in the power decks." )]
+	public static string GetCardDetails(
+		[Description( "The card's name, e.g. 'Shatter Homesteads'. An option text such as 'Shatter Homesteads $2 (Slow)' is also accepted." )] string name ) {
+		lock( _lock ) {
+			AgentGame g = Game;
+			g.GetDecision(); // settle on the pending decision so its offered cards are included
+			ActionScope.Initialize( g.GameState.RootScope ); // engine state is read through AsyncLocal scope
+			var known = g.KnownCards().ToList();
+			var matches = known.Where( k => string.Equals( k.Card.Title, name, StringComparison.OrdinalIgnoreCase )
+				|| string.Equals( ((IOption)k.Card).Text, name, StringComparison.OrdinalIgnoreCase ) ).ToList();
+			if( matches.Count == 0 )
+				throw new McpException( $"No card named '{name}' in your hand, in play, discard pile or the pending decision. Known cards: {string.Join( ", ", known.Select( k => k.Card.Title ).Distinct() )}." );
+			// The same card can appear in several places (e.g. offered while also in the discard); report each place.
+			JsonObject json = PlayerObservation.CardJson( matches[0].Card );
+			json["locations"] = new JsonArray( [.. matches.Select( m => (JsonNode)m.Location ).Distinct()] );
+			return json.ToJsonString( Pretty );
+		}
 	}
 
 	[McpServerTool( Name = "select_action" )]
@@ -95,6 +115,9 @@ public sealed class GameTools {
 			["version"] = d.Version,
 			["prompt"] = d.Prompt,
 			["options"] = new JsonArray( [.. d.Options.Select( o => (JsonNode)o )] ),
+			["alerts"] = new JsonArray( [.. d.Alerts.Select( a => (JsonNode)new JsonObject { ["kind"] = a.Kind, ["text"] = a.Text } )] ),
+			["promptDetails"] = d.PromptDetails,
+			["optionDetails"] = new JsonObject( d.OptionDetails.Select( kv => KeyValuePair.Create<string, JsonNode?>( kv.Key, kv.Value.DeepClone() ) ) ),
 		}.ToJsonString( Pretty );
 	}
 
