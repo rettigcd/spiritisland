@@ -38,6 +38,9 @@ public sealed class AgentGame {
 	/// </summary>
 	public bool AutoSelectSingleOption { get; init; } = true;
 
+	/// <summary> The last observations sent to the agent, so the next can be sent as a diff. </summary>
+	public ObservationHistory Observations { get; } = new();
+
 	/// <summary> The cards in the spirit's hand when the first decision was asked. </summary>
 	public IReadOnlyList<PowerCard> StartingCards {
 		get { if( _startingCards is null ) GetDecision(); return _startingCards ?? []; }

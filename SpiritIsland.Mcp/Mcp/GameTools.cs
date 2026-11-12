@@ -50,10 +50,15 @@ public sealed class GameTools {
 	}
 
 	[McpServerTool( Name = "get_observation", ReadOnly = true )]
-	[Description( "Returns the current state a human player could see: fear, blight, invader cards (revealed only), your spirit's energy, elements, track progress, hand/in play/discard (names, costs, speeds, elements), innate tier status, and the tokens on each land that has any. What rarely changes is in get_static_info; its staticVersion is included here so you can tell when to fetch it again. Hidden deck contents are never included." )]
-	public static string GetObservation() {
-		lock( _lock )
-			return PlayerObservation.Build( Game ).ToJsonString( Pretty );
+	[Description( "Returns the current state a human player could see: fear, blight, invader cards (revealed only), your spirit's energy, elements, track progress, hand/in play/discard (names, costs, speeds, elements), innate tier status, and the tokens on each land that has any. What rarely changes is in get_static_info; its staticVersion is included here so you can tell when to fetch it again. Hidden deck contents are never included. "
+		+ "Every response has an observationId. Pass the last one you have as sinceId to get only what changed since then, under 'changes': keys left out are unchanged, null means removed, objects list only their changed keys, and arrays, values and each land under 'spaces' come whole. "
+		+ "If that id is no longer remembered (only the last 3 are), the full observation comes back with 'full': true. Leave sinceId out whenever you don't have the earlier observation in context." )]
+	public static string GetObservation(
+		[Description( "Optional: the observationId of the last observation you still have, to receive only the changes since it" )] int? sinceId = null ) {
+		lock( _lock ) {
+			AgentGame g = Game;
+			return g.Observations.Next( PlayerObservation.Build( g ), sinceId ).ToJsonString( Pretty );
+		}
 	}
 
 	[McpServerTool( Name = "get_decision", ReadOnly = true )]

@@ -286,6 +286,74 @@ public class AgentGame_Tests {
 	}
 
 	[Fact]
+	public void ObservationDiffs_RebuildEachFullObservation_ThroughoutAGame() {
+		var game = new AgentGame( Req( 9 ) );
+		var rnd = new Random( 9 );
+		JsonObject first = game.Observations.Next( PlayerObservation.Build( game ), null );
+		first["full"]!.GetValue<bool>().ShouldBeTrue();
+		int id = first["observationId"]!.GetValue<int>();
+		JsonObject known = WithoutIds( first );
+		int smallerCount = 0, compared = 0;
+
+		for( int i = 0; i < 120; ++i ) {
+			DecisionSnapshot? d = game.GetDecision();
+			if( d is null ) break;
+			game.Select( d.Version, d.Options[rnd.Next( d.Options.Length )] );
+			if( game.GetDecision() is null ) break;
+
+			JsonObject actual = PlayerObservation.Build( game );
+			JsonObject response = game.Observations.Next( (JsonObject)actual.DeepClone(), id );
+			response["since"]!.GetValue<int>().ShouldBe( id );
+			JsonObject changes = response["changes"]!.AsObject();
+
+			known = ObservationHistory.Apply( known, changes );
+			JsonNode.DeepEquals( known, actual ).ShouldBeTrue( $"after decision {i}: {changes.ToJsonString()}" );
+			++compared;
+			if( changes.ToJsonString().Length < actual.ToJsonString().Length ) ++smallerCount;
+			id = response["observationId"]!.GetValue<int>();
+		}
+		compared.ShouldBeGreaterThan( 10 );
+		smallerCount.ShouldBe( compared ); // a diff is never bigger than the full observation
+	}
+
+	static JsonObject WithoutIds( JsonObject response ) {
+		var o = (JsonObject)response.DeepClone();
+		o.Remove( "observationId" );
+		o.Remove( "full" );
+		return o;
+	}
+
+	[Fact]
+	public void ObservationDiff_SendsAChangedLandWhole_AndAnEmptiedLandAsNull() {
+		var before = JsonNode.Parse( """{"round":1,"spaces":{"A1":{"E@1":1,"T@2":1},"A2":{"D@2":2},"A3":{"E@1":1}}}""" )!.AsObject();
+		var after = JsonNode.Parse( """{"round":1,"spaces":{"A1":{"E@1":2,"T@2":1},"A2":{"D@2":2},"A4":{"E@1":1}}}""" )!.AsObject();
+
+		JsonObject diff = ObservationHistory.Diff( before, after );
+
+		diff.ToJsonString().ShouldBe( """{"spaces":{"A1":{"E@1":2,"T@2":1},"A4":{"E@1":1},"A3":null}}""" );
+		JsonNode.DeepEquals( ObservationHistory.Apply( before, diff ), after ).ShouldBeTrue();
+	}
+
+	[Fact]
+	public void Observation_ComesBackFull_ForAnIdThatIsNoLongerRemembered() {
+		var game = new AgentGame( Req() );
+		game.GetDecision();
+		int oldest = game.Observations.Next( PlayerObservation.Build( game ), null )["observationId"]!.GetValue<int>();
+		for( int i = 0; i < 3; ++i ) game.Observations.Next( PlayerObservation.Build( game ), null );
+
+		JsonObject r = game.Observations.Next( PlayerObservation.Build( game ), oldest );
+		r["full"]!.GetValue<bool>().ShouldBeTrue();
+		r["spaces"].ShouldNotBeNull();
+
+		JsonObject unknown = game.Observations.Next( PlayerObservation.Build( game ), 999 );
+		unknown["full"]!.GetValue<bool>().ShouldBeTrue();
+
+		// The one just sent is remembered: nothing changed since it.
+		int latest = unknown["observationId"]!.GetValue<int>();
+		game.Observations.Next( PlayerObservation.Build( game ), latest )["changes"]!.AsObject().Count.ShouldBe( 0 );
+	}
+
+	[Fact]
 	public void StaleVersion_IsRejected_AndGameDoesNotAdvance() {
 		var game = new AgentGame( Req() );
 		DecisionSnapshot d = game.GetDecision()!;
