@@ -40,7 +40,7 @@ Findings:
 
 - **The number of calls is the problem, not the size of each response.** That's about 13 calls per round, so a full ~10-round game is around 130 turns over a growing context.
 - **`get_observation` is the largest single response.** It was about 850 tokens at round 1 and grows as the board fills. It was called once per round here. PLAYING.md says to call it before every decision, which would make it the biggest cost.
-- **Most of the model's reasoning went into predicting ravage outcomes by hand**, for example "A8 has an explorer and a town, so 3 damage, so blight unless Shatter removes the town." PLAYING.md says "Nothing predicts this for you."
+- **Most of the model's reasoning went into predicting ravage outcomes by hand**, for example "A8 has an explorer and a town, so 3 damage, so blight unless Shatter removes the town." PLAYING.md said "Nothing predicts this for you" (now `predict_invader_phase` does).
 - **9 of the 39 calls (about 23%) were mechanical:**
   - 4 decisions with only one option: the second half of a growth group (3) and a fear card with one target land (1).
   - 3 "Select Fast to resolve" prompts with only one power left besides "Done". The rule to always resolve played powers usually decides those, but not always (see below).
@@ -89,25 +89,26 @@ Even the last remaining power, when nothing is left but it and "Done", is not al
    - Instead, choosing "Done" on "Select Fast/Slow to resolve" adds a `skipped` alert naming the powers that won't resolve this turn. In the Fast phase, a power that can still resolve in the Slow phase (e.g. a Slow card offered early by Lightning's Swiftness) isn't listed. A deliberate skip still works; an accidental one is no longer silent. This doesn't save tokens; it helps the model notice a mistake.
    - Test: `Done_ThatDropsPlayedPowers_IsReportedAsSkipped_ButNotWhenTheyComeBackInTheSlowPhase`.
 
+6. **`predict_invader_phase`.**
+   - Plays the coming Invader Phase on a copy of the game: the live state is serialized and restored onto a freshly built game (the same mechanism rewind uses), and only the three visible Invader slots act. The live game is never touched.
+   - Reports the cards, the outcome, blight on the card and fear `before -> after`, fear cards earned, presence destroyed, per-land token changes (only lands that change), the choices the simulation made (first option, e.g. cascade targets) and the Invader log.
+   - Hidden information stays hidden: earned fear cards aren't resolved (the report says how many will resolve first); an unflipped blight card is replaced in the copy by a stand-in that stops the simulation where the real card would flip; the deck is never advanced, so no new Invader card is revealed; and hidden fear and blight card names are redacted from all text as a safety net.
+   - In the Slow phase it simulates time passing first and predicts next round's Invader Phase. During the Invader Phase itself it refuses.
+   - Checked live on Lightning, A, seed 1, round 2: it predicted blight in A1 and A6, the Dahan in A6 destroyed, Towns in A3 and A8, Explorers in A4 and A7, and blight on the card 3 -> 1.
+   - Tests: `PredictInvaderPhase_MatchesWhatReallyHappens_AndLeavesTheGameAlone`, `PredictInvaderPhase_DoesNotRevealTheBlightCard_WhenItWouldFlip`, `PredictInvaderPhase_ReportsPendingFearCardsWithoutResolvingThem`, `PredictInvaderPhase_DuringTheSlowPhase_PredictsNextRound`.
+
 ## Next steps, in order of payoff
 
-### 1. `predict_invader_phase`
-
-- Clone the state and run the coming Ravage, Build and Explore using only the revealed Invader cards. Return a short report, for example: `A4: ravage 5 damage vs 2 Dahan -> blight (cascade risk); A6: build town; blight on card 3 -> 1`.
-- This uses only information a player could see, so it's fair.
-- Choices inside the simulation, such as cascade targets, need a simple default, or the report should list the possible outcomes.
-- This replaces the most expensive and most error-prone reasoning, and should also improve play.
-
-### 2. A smaller observation, further
+### 1. A smaller observation, further
 
 - `get_observation(sinceVersion)`: only the lands and fields that changed.
 - Optionally a compact text format instead of JSON, for example `A4 Sands: 2E 1T 1B | D2 | P1`.
 
-### 3. Targeting helper: `get_card_targets(card)`
+### 2. Targeting helper: `get_card_targets(card)`
 
 - Return the lands a power can legally target, given range and sacred sites, so the model doesn't work it out by hand.
 
-### 4. `evaluate_options` (later)
+### 3. `evaluate_options` (later)
 
 - For each option, branch from the saved state, play forward with a heuristic agent, and score the result.
 - Each rollout must reshuffle the cards the player hasn't seen (fear deck, Invader deck, power decks). Otherwise the rollouts use hidden information.
