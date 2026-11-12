@@ -25,7 +25,7 @@ sealed class AlertBuffer {
 
 	// Same groups as the Maui LogModel's colors.
 	static string KindOf( ILogEntry entry ) => entry switch {
-		GameOverLogEntry or ExceptionEntry or IslandBlighted => "bad",
+		GameOverLogEntry or ExceptionEntry or IslandBlighted or PresenceDestroyed => "bad",
 		InvaderActionEntry or RavageEntry or SpaceExplored => "invaders",
 		RewindException => "rewind",
 		Log.Phase or Round => "phase",
