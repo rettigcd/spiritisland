@@ -14,6 +14,12 @@ When you play a different spirit, don't carry a spirit's part over. Read that sp
 
 # Part 1: All spirits
 
+## If you played a card, or activated an innate, always resolve it
+
+The user's general rule: if you played a card, always resolve it (in the Fast or Slow phase it belongs to), even if it would do nothing useful. The same goes for an **innate power**: you don't have to activate it, but once it is activated (its Elements are met, so it appears in the resolve list, e.g. River's "Massive Flooding"), make sure you use it. It does **not** mean "play as many cards as you can".
+
+After "Done" on the card-play list, the "Select Fast / Slow to resolve" prompt lists the powers you played and any innate that is active, plus "Done". Resolve each one; saying "Done" there skips them all (this cost me Flash Floods in game 9 and every Slow power in an earlier attempt). Only say "Done" when none are left.
+
 ## Keep a game log of growth and Presence track choices
 
 Which growth to take and which Presence track to focus on (energy vs card plays) is a key part of playing a spirit well, and the answer needs data. For every game, add a section to [GAMELOG.md](GAMELOG.md) with, for each round, the growth group chosen and the track each Presence came from (energy slot, card-play slot, or a power's reclaim slot), plus the income and card plays at the time and what the round achieved. Update the summary table and the "what the data suggests" notes. Don't draw conclusions from one game; compare spirits and seeds first.
@@ -94,7 +100,7 @@ All of these were confirmed in a live game: `alerts`, `optionDetails`, `promptDe
 ## Open questions (all spirits)
 
 - Whether strife shows as `^` on an Invader's token text (Defend and Isolate were confirmed as tokens).
-- **Destroyed Presence alert (added, not yet seen in a live game).** In the River game blight destroyed my Presence at A7 and nothing was reported. The engine now logs a `PresenceDestroyed` entry (kind `bad`), e.g. `River Surges in Sunlight: 1 Presence destroyed from A7.` It also covers Presence removed or replaced by an effect. Until it's confirmed live, still check `presence.destroyed` and your Presence tokens after any blight.
+- **Destroyed Presence alert (confirmed live).** In an early River game blight destroyed my Presence at A7 and nothing was reported. The engine now logs a `PresenceDestroyed` entry (kind `bad`), e.g. `River Surges in Sunlight: 1 Presence destroyed from A2.` (seen in game 9). It also covers Presence removed or replaced by an effect.
 - Whether "Place Presence" growth can be taken together with another group in one round (for Lightning the three groups looked mutually exclusive).
 
 ---
@@ -116,6 +122,60 @@ The following was my earlier inference from the observation's element numbers:
 - River's four unique cards (Boon of Vigor, Flash Floods, River's Bounty, Wash Away) add up to **3 sun, 4 water, 1 earth**, which is exactly Massive Flooding's top tier ("2 damage to each Invader"). Playing all four costs only $3 (Boon 0, Flash Floods 2, River's Bounty 0, Wash Away 1) but needs **4 card plays**, so the plan is to push the **card-play track** (River has to uncover its slots: 1, 2, 2, 3, reclaim 1, 4, 5), then play the full kit each turn and keep the unique cards in hand (don't forget River's Bounty or any other unique card).
 - Massive Flooding is Slow and has range 1 from a sacred site, so it lands after the ravage. Sacred sites matter: every Wetland counts, plus any land with 2 Presence. Use the Fast cards (Flash Floods, Boon of Vigor) and Defend cards for the ravage, and Massive Flooding for the cleanup.
 - Understand a spirit through **its own unique cards and innate**, not through whatever minors happen to be drawn. In games 4 and 5 I leaned on drawn minors for defence and fear, and learned little about River itself.
+
+## The user's River opening (told to me directly; follow this). **It worked: won in round 6 (game 10)**
+
+Followed exactly (G2, G2, G2, then G1 every round), it gave a Terror Level 1 win in round 6 on seed 2, with only 2 blights and no Defend cards. The key moments: River's Bounty into the City's land in round 1 (the City died in round 2's ravage against 4 Dahan), Flash Floods sniping the Builder every round, and Massive Flooding tier 3 once the board was small. Details below.
+
+Round-by-round plan the user plays against no adversary, usually winning by round 5 and always by round 6 (usually the Terror Level 1 win, i.e. zero Invaders). G1/G2 are the growth groups by order (G1 Reclaim All, G2 the two-Presence group); G3 is never used.
+
+- **Round 1: G2, both Presence from the card-play track.** Play **River's Bounty and Wash Away**. Goal: **prevent Builds**, by pushing Invaders out of the lands that will Build or by killing them, so as few lands as possible Build, because every Build opens new lands for Explorers. Remember that Slow powers resolve *after* this round's Invader Phase, so a push in round 1 prevents round 2's Builds. When pushing, **push toward the coast**, so the interior lands have no adjacent Explorers.
+- **Round 2: G2 again, both Presence from the card-play track, reaching "reclaim 1".** Reclaim **River's Bounty**. Play **Boon of Vigor, Flash Floods and River's Bounty.** Use Flash Floods to **snipe any Explorer that is about to Build**; if none is, use it to kill something on the coast. If a City is about to ravage, push everything out of it and use River's Bounty to pull 2 Dahan into it: the 3 Dahan are enough to kill the City.
+- **Round 3: always G2.** First Presence from the **card-play track** (giving 4 plays). Second from the energy track (lets you play a 1-energy drawn card in place of a unique card if it has the right elements) or from the card-play track (a 5th, 0-energy card play). Both work. Reclaim Flash Floods (usually) and snipe any Explorer that would cause an inland Build. This unlocks Massive Flooding tier 3 for round 4. (G1 here would delay tier 3 until round 5.)
+- **Round 4: G1 (Reclaim All).** Use Wash Away to **consolidate Invaders** into one land and smash them with **Massive Flooding tier 3** (all four unique cards = 3 sun, 4 water, 1 earth). Rinse and repeat.
+
+The principle behind it: control where Invaders are and where they Build (push toward the coast, snipe Builders), then sweep what's left with Massive Flooding tier 3. Dahan help kill a City.
+
+**Details I learned following the plan (game 9 in GAMELOG.md):**
+- In round 1, use **River's Bounty to gather Dahan into the City's land** (here A2: it gathers up to 2 Dahan into a land where I have Presence, so A2 needs my Presence, placed in the same G2 via A1), so the City faces 3-4 Dahan in round 2's ravage and dies. I put them into A5 and the City survived.
+- Slow powers resolve after this round's Invader Phase, so round 1's Wash Away/Massive Flooding pushes only prevent *round 2's* Builds.
+- Wash Away's target land can be any land within range 1 of any of my Presence (including one just placed in the same growth); Massive Flooding needs a *sacred site* (Wetlands count).
+- **Prompt hazard:** after I finish choosing cards ("Done" on the play list), the game shows "Select Fast to resolve" / "Select Slow to resolve" with the chosen cards plus "Done". Answering "Done" there skips every power. Resolve each card, and only say "Done" when none are left.
+- The new "Presence destroyed" alert works: `River Surges in Sunlight: 1 Presence destroyed from A2.` (kind `bad`).
+
+**More from the winning game (game 10):**
+- **Coastal lands for Flash Floods:** A1, A2 and A3 are coastal on board A (they touch the Ocean), so Flash Floods does 2 there and 1 elsewhere. Use it on a Town or City in A1/A2/A3 and on single Explorers inland.
+- **The sweep depends on few Towns and Cities.** Explore only adds an Explorer where a land holds or touches a Town, City or the Ocean, so killing the Cities early (the Dahan trick, tier 3) means few new Explorers each round, and Isolate stops it entirely. That's why a Terror Level 1 win is reachable.
+- **Finishing the last pieces:** tier 3 needs all four unique cards (4 plays), but **tier 2 with three unique cards** (Boon, Flash Floods, Wash Away = 2 sun, 3 water, 1 earth) frees the fourth play for a drawn killer, e.g. Savage Mawbeasts (1 damage on a Wetland/Jungle, Slow). A drawn minor that kills is a good spare. Match the target lands to what each card can hit (Mawbeasts: Wetland/Jungle; Flash Floods range 1 from any Presence; Massive Flooding range 1 from a sacred site).
+- **Presence in the lands that blight gets destroyed** (I lost one on A2 and one on A1). Keep 2 Presence in lands where a ravage could blight, or accept the loss: the plan survives it.
+- **A Presence is needed for River's Bounty's land** (range 0), which is why the round 1 growth chains A1 then A2.
+- **When only one card is in hand** (round 3), the play list ends right after I choose it and the game goes straight to the resolve prompt, so the "Done" for the play list never appears. Still resolve the card.
+- **Fear cards can end the game:** the win is checked the moment the last Invader leaves, even during the Invader Phase (a fear card removed the last Explorer in round 6).
+- Energy was never a problem: income stayed at 1-2, and Boon of Vigor and River's Bounty cover the rest.
+
+**Confirmed on a second seed (game 11, seed 5): won in round 6 again with the same opening.** Extra things from it:
+- **Consolidate with Wash Away, then smash with tier 3.** When Invaders are scattered, Wash Away pushes up to 3 pieces from *one* land into another, making a stack for Massive Flooding tier 3 to clear (A2's Town + Explorer pushed into A1's stack: 5 pieces killed at once). Tier 3 can only hit one land per round, so plan which land.
+- **The Build cards vary by seed** (a "Coastal" Build card hit A1 and A2 together in round 4). Look at the Build card each round (`matchedLands.build` says which lands) and snipe or push the Explorers that would Build there; a Coastal card is hardest to prevent because many lands match.
+- **Veil the Night's Hunt** (a drawn minor, Fast, $1, range 2, Dahan): each Dahan deals 1 damage to a different Invader. With 5 Dahan beside River's Bounty, it killed the last Explorer in the Fast phase. Dahan stacks (from River's Bounty) make it strong: a drawn card can serve as a finisher.
+- A win needs only one more Invader dead at the end, so keep a Fast killer ready (Flash Floods, or a Dahan card).
+
+## What the user says about winning with River (earlier hints)
+
+- The user usually wins by round 5 and always by round 6 against no adversary, **mostly with River's unique cards and innate**, not drawn cards. The win is usually **Terror Level 1**, which means **zero Invaders on the island**, so the aim is a clean sweep, not surviving ravages: nothing left alive means nothing ravages.
+- Growth groups are named by order: **G1 = Reclaim All / Gain Power Card / Gain 1 Energy, G2 = the two-Presence group, G3 = Gain Power Card / Place Presence(2)**. The user never uses G3.
+- There is one growth pattern that beats all others, used in every game (not one group every round).
+- I haven't found it. My games used G1 and G2 in alternating order and won by round 8 at best, and I played around ravages.
+- **Mechanic I missed:** within one G2, placing the first Presence extends the range for the second. After putting one Presence on A1, the second can go on A2 (a Wetland, so sacred). Presence on a Wetland next to the City lets Massive Flooding and Flash Floods reach it from round 1-2. (In game 8 I placed on A2 only in round 3.)
+
+## Other ways to win (not centred on ravages), with what I found
+
+The user asked me to consider these without fixating on one. In game 7 (see GAMELOG.md) I tried the Dahan + push approach. Summary of what each looks like for River:
+
+- **Terror Level clear (game 6, won):** earn 3 fear cards (Level 2), then destroy the last Towns/Cities, with Flash Floods in the Fast phase to finish before Builds. Works, but needs fear.
+- **All fear cards (Level 4):** about 36 Fear. River's four unique cards make no Fear except from kills, so it would depend on drawn cards. Not tried; looks unlikely.
+- **Starve Explore/Build:** Flash Floods in the Fast phase kills an Explorer and so prevents a Build there (used every round); Disease, Isolate and Strife come from drawn cards. Helps but doesn't stop the island filling.
+- **Dahan + push (game 7):** River's Bounty built 6 Dahan at A7 by round 7, and Wash Away moved stacks out of ravage lands a round early. It kept some lands safe, but Dahan don't prevent blight and it produced no fear, so the blight card ran down (1 left by round 6) and no win was near. A supporting tool, not a plan by itself.
+- **Blight removal:** drawn cards only; not tried.
 
 ## What differs from Lightning
 
