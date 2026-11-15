@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using SpiritIsland.SinglePlayer;
 
@@ -6,7 +7,10 @@ namespace SpiritIsland.Agent;
 /// <summary>
 /// Drives one single-spirit game without a UI: exposes the pending decision as a snapshot and applies
 /// a choice by option text. Rewind and withdraw are deliberately not exposed.
-/// NOT safe to run alongside another AgentGame (the engine's ActionScope/static state is untested for that).
+/// The game can be written to a <see cref="Save"/> and rebuilt with <see cref="Restore"/>, so a host needn't keep the
+/// engine's async task alive between calls: it restores, makes its calls, saves, and drops the instance (the engine task
+/// is left waiting on a decision, holds no thread, and is collected with the instance).
+/// Only one AgentGame may be driven at a time per execution context (ActionScope is ambient).
 /// </summary>
 public sealed class AgentGame {
 
@@ -14,15 +18,97 @@ public sealed class AgentGame {
 	public GameState GameState => _game.GameState;
 	public List<string> History { get; } = [];
 
-	public AgentGame( NewGameRequest request ) {
+	public AgentGame( NewGameRequest request ) : this( request, null ) { }
+
+	/// <param name="checkpoint">A <see cref="SoloGame.LatestCheckpoint"/> to continue from instead of starting a new game.</param>
+	AgentGame( NewGameRequest request, JsonObject? checkpoint ) {
 		Request = request;
 		_game = new SoloGame( GameSetup.Build( request ) ) {
 			EnablePreselects = false, // keep each decision a plain list of options
 			LogExceptions = true,
 		};
 		_game.GameState.NewLogEntry += _alertBuffer.Add; // before Start, so setup entries aren't missed
+		if( checkpoint is not null ) {
+			_startingCards = [.. GameState.Spirits.Single().Hand]; // as built, before the saved hand replaces it
+			ActionScope.Initialize( _game.GameState.RootScope );
+			_game.Load( checkpoint ); // Start continues from the saved step: the first decision is the menu it was saved at
+		}
 		_game.Start();
 	}
+
+	#region Save / Restore
+
+	/// <summary>
+	/// Everything needed to <see cref="Restore"/> this game: the checkpoint at the last action boundary plus the picks made
+	/// since (the engine is deterministic, so replaying them reaches the same decision), and what the agent has been shown
+	/// (version, alerts, observation history). Settles on the pending decision first, so call it between tool calls.
+	/// </summary>
+	public JsonObject Save() {
+		GetDecision();
+		return new JsonObject {
+			["Request"] = JsonSerializer.SerializeToNode( Request ),
+			["AutoSelect"] = AutoSelectSingleOption,
+			["Checkpoint"] = _baseline?.DeepClone(),
+			["Picks"] = new JsonArray( [.. _picks.Select( p => (JsonNode)p )] ),
+			["Over"] = IsOver,
+			["Version"] = _version,
+			["History"] = new JsonArray( [.. History.Select( p => (JsonNode)p )] ),
+			["PendingAlerts"] = AlertsJson( _pendingAlerts ),
+			["FinalAlerts"] = AlertsJson( FinalAlerts ),
+			["AutoPicks"] = new JsonArray( [.. _autoPicksSinceSelect.Select( a => (JsonNode)new JsonObject { ["Prompt"] = a.Prompt, ["Option"] = a.Option } )] ),
+			["Observations"] = Observations.ToJson(),
+		};
+	}
+
+	/// <summary> Rebuilds a game from a <see cref="Save"/>, waiting at the decision it was saved at. </summary>
+	public static AgentGame Restore( JsonObject save ) {
+		var request = save["Request"].Deserialize<NewGameRequest>()!;
+		var game = new AgentGame( request, save["Checkpoint"]?.AsObject() ) { AutoSelectSingleOption = save["AutoSelect"]!.GetValue<bool>() };
+		foreach( JsonNode? pick in save["Picks"]!.AsArray() ) {
+			game.GetDecision();
+			game.Select( game._version, pick!.GetValue<string>() );
+		}
+		game.GetDecision(); // settle, so nothing the replay produced is left to be reported later
+		if( game.IsOver != save["Over"]!.GetValue<bool>() ) // the engine is deterministic, so this means a bad save or a changed engine
+			throw new InvalidOperationException( "Restoring the saved game " + (game.IsOver ? "ended it: " + string.Join( "; ", game.FinalAlerts.Select( a => a.Text ) ) : "did not end it, but it was saved ended.") );
+
+		// What the agent saw, as it was: replaying regenerated it, but not what happened before the checkpoint.
+		game._version = save["Version"]!.GetValue<int>();
+		game.History.Clear();
+		game.History.AddRange( save["History"]!.AsArray().Select( n => n!.GetValue<string>() ) );
+		game._pendingAlerts = ReadAlerts( save["PendingAlerts"] );
+		game.FinalAlerts = ReadAlerts( save["FinalAlerts"] );
+		game._carriedAlerts.Clear();
+		game._alertBuffer.Drain();
+		game._autoPicksSinceSelect.Clear();
+		game._autoPicksSinceSelect.AddRange( save["AutoPicks"]!.AsArray().Select( n => (n!["Prompt"]!.GetValue<string>(), n["Option"]!.GetValue<string>()) ) );
+		game.Observations.Restore( save["Observations"]!.AsObject() );
+		return game;
+	}
+
+	static JsonArray AlertsJson( IEnumerable<Alert> alerts )
+		=> new( [.. alerts.Select( a => (JsonNode)new JsonObject { ["kind"] = a.Kind, ["text"] = a.Text } )] );
+
+	static Alert[] ReadAlerts( JsonNode? node )
+		=> [.. node!.AsArray().Select( n => new Alert( n!["kind"]!.GetValue<string>(), n["text"]!.GetValue<string>() ) )];
+
+	/// <summary>
+	/// Keeps <see cref="_baseline"/> at the engine's newest action-boundary checkpoint, dropping the picks it already
+	/// includes. Called each time the game settles on a decision (or ends): every pick since the previous call was made
+	/// after the baseline it replaces, or is part of the actions that led up to the new one.
+	/// </summary>
+	void SyncBaseline() {
+		if( _baselineVersion == _game.CheckpointVersion ) return;
+		_baselineVersion = _game.CheckpointVersion;
+		_baseline = _game.LatestCheckpoint;
+		_picks.Clear();
+	}
+
+	JsonObject? _baseline;
+	int _baselineVersion;
+	readonly List<string> _picks = []; // agent picks made since _baseline, in order
+
+	#endregion Save / Restore
 
 	public bool IsOver => _game.EngineTask!.IsCompleted;
 
@@ -67,6 +153,7 @@ public sealed class AgentGame {
 					continue;
 				}
 				_pending = next;
+				SyncBaseline();
 				_version++;
 				_pendingAlerts = [.. _carriedAlerts]; // kept with the decision so repeated reads show the same alerts
 				_carriedAlerts.Clear();
@@ -74,6 +161,7 @@ public sealed class AgentGame {
 			if( _pending is not null )
 				return Snapshot( _pending );
 			if( IsOver ) {
+				SyncBaseline();
 				_carriedAlerts.AddRange( _alertBuffer.Drain() );
 				FinalAlerts = [.. FinalAlerts, .. _carriedAlerts];
 				_carriedAlerts.Clear();
@@ -130,6 +218,7 @@ public sealed class AgentGame {
 		_pending = null;
 		_autoPicksSinceSelect.Clear();
 		History.Add( optionText );
+		_picks.Add( optionText );
 		_game.UserPortal.DecisionPortal.Choose( decision, option );
 	}
 

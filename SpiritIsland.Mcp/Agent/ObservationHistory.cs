@@ -70,6 +70,17 @@ public sealed class ObservationHistory( int keep = 3 ) {
 		return result;
 	}
 
+	public JsonObject ToJson() => new() {
+		["LastId"] = _lastId,
+		["Sent"] = new JsonArray( [.. _sent.Select( x => (JsonNode)new JsonObject { ["Id"] = x.Id, ["Observation"] = x.Observation.DeepClone() } )] ),
+	};
+
+	public void Restore( JsonObject json ) {
+		_lastId = json["LastId"]!.GetValue<int>();
+		_sent.Clear();
+		_sent.AddRange( json["Sent"]!.AsArray().Select( n => (n!["Id"]!.GetValue<int>(), (JsonObject)n["Observation"]!.DeepClone()) ) );
+	}
+
 	readonly List<(int Id, JsonObject Observation)> _sent = [];
 	int _lastId;
 }

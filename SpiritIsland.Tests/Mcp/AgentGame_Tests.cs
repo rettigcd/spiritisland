@@ -1,4 +1,5 @@
 #nullable enable
+using System.Text.Json.Nodes;
 using SpiritIsland.Agent;
 
 namespace SpiritIsland.Tests.Mcp;
@@ -86,6 +87,50 @@ public class AgentGame_Tests {
 		r.Applied.ShouldBe( a.History.Count );
 		b.History.ShouldBe( a.History );
 		b.GetDecision()?.Prompt.ShouldBe( a.GetDecision()?.Prompt );
+	}
+
+	[Theory]
+	[InlineData( 3 )]
+	[InlineData( 11 )]
+	public void SavedGame_RestoredAfterEveryDecision_PlaysTheSameGame( int seed ) {
+		// What the agent sees at each step: the decision, and the observation diff against the previous one.
+		static string Trace( AgentGame g, int? sinceId, out int id ) {
+			DecisionSnapshot? d = g.GetDecision();
+			JsonObject obs = g.Observations.Next( PlayerObservation.Build( g ), sinceId );
+			id = obs["observationId"]!.GetValue<int>();
+			return d is null ? "over: " + string.Join( "|", g.FinalAlerts.Select( a => a.Text ) )
+				: $"{d.Version} {d.Prompt} [{string.Join( ",", d.Options.Order() )}] {string.Join( "|", d.Alerts.Select( a => a.Kind + a.Text ) )} {obs.ToJsonString()}";
+		}
+		// (options can come back in a different order after a restore - the engine lists presence sources by hash order - so they are compared and chosen sorted)
+		const int steps = 250;
+
+		var expected = new List<string>();
+		var game = new AgentGame( Req( seed ) );
+		var rnd = new Random( seed );
+		int? last = null;
+		for( int i = 0; i < steps && game.GetDecision() is { } d; ++i ) {
+			expected.Add( Trace( game, last, out int id ) );
+			last = id;
+			game.Select( d.Version, d.Options.Order().ElementAt( rnd.Next( d.Options.Length ) ) );
+		}
+
+		var actual = new List<string>();
+		game = new AgentGame( Req( seed ) );
+		rnd = new Random( seed );
+		last = null;
+		for( int i = 0; i < expected.Count; ++i ) {
+			game = AgentGame.Restore( JsonNode.Parse( game.Save().ToJsonString() )!.AsObject() ); // as if written to disk
+			DecisionSnapshot d = game.GetDecision()!;
+			actual.Add( Trace( game, last, out int id ) );
+			if( actual[i] != expected[i] ) throw new Exception( $"step {i} differs: expected {expected[i]} ### actual {actual[i]} ### prev {expected[i - 1]}" );
+			last = id;
+			game = AgentGame.Restore( JsonNode.Parse( game.Save().ToJsonString() )!.AsObject() ); // and once more, mid-step
+			game.Select( d.Version, d.Options.Order().ElementAt( rnd.Next( d.Options.Length ) ) );
+		}
+
+		expected.Count.ShouldBeGreaterThan( 20 );
+		actual.ShouldBe( expected );
+		game.StartingCards.Select( c => c.Title ).ShouldBe( new AgentGame( Req( seed ) ).StartingCards.Select( c => c.Title ) );
 	}
 
 	[Fact]

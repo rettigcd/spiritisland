@@ -151,7 +151,7 @@ public class SoloGame {
 						break;
 
 					case RoundStep.EndGrowth:
-						_checkpoint = Save();
+						NewCheckpoint();
 						await Spirit.EndGrowth();
 						_step = RoundStep.PlayCards;
 						break;
@@ -169,9 +169,9 @@ public class SoloGame {
 					case RoundStep.Invaders:
 						// One checkpoint per step, so a timeout rolls back only the step that was prompting and
 						// the user's answers to earlier steps (e.g. an earlier Fear card) are kept.
-						_checkpoint = Save();
+						NewCheckpoint();
 						while( await InvaderPhase.StepAsync( GameState, _invader ) )
-							_checkpoint = Save();
+							NewCheckpoint();
 						SetPhase( Phase.Slow );
 						_step = RoundStep.Slow;
 						break;
@@ -183,7 +183,7 @@ public class SoloGame {
 						break;
 
 					case RoundStep.TimePasses:
-						_checkpoint = Save();
+						NewCheckpoint();
 						await GameState.TriggerTimePasses();
 						_step = RoundStep.RoundStart;
 						break;
@@ -274,6 +274,18 @@ public class SoloGame {
 	JsonObject? _checkpoint;
 
 	/// <summary>
+	/// Counts the checkpoints that moved the game forward (a menu, or between Invader steps). Unlike
+	/// <see cref="LatestCheckpoint"/>'s identity it does not change when <see cref="ChooseAsync"/> re-saves the
+	/// state of the menu it is about to resolve, so a driver can tell which of its picks come after the checkpoint.
+	/// </summary>
+	public int CheckpointVersion { get; private set; }
+
+	void NewCheckpoint() {
+		_checkpoint = Save();
+		++CheckpointVersion;
+	}
+
+	/// <summary>
 	/// The save as of the most recent action boundary (a menu, or between Invader steps) - always safe to
 	/// write to disk, even while the engine is partway through an action waiting on the user (unlike
 	/// <see cref="Save"/>, which is only valid at a boundary). Saving it loses just the current action's
@@ -284,7 +296,7 @@ public class SoloGame {
 
 	/// <summary> A menu is a clean action boundary, so it is also the newest checkpoint. </summary>
 	PendingMenu Menu( MenuKind kind, IActionFactory[] options ) {
-		_checkpoint = Save();
+		NewCheckpoint();
 		return new PendingMenu( kind, options );
 	}
 

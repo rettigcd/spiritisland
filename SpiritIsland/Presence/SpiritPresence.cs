@@ -255,6 +255,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	public void RestoreFromJson( JsonArray json, ISerializationContext ctx ) {
 		Energy.RestoreFromJson( json[0]! );
 		CardPlays.RestoreFromJson( json[1]! );
+		InitEnergyAndCardPlays(); // per-turn totals are derived from what's revealed, as in the Memento restore
 		Destroyed.Count = json[2]!.GetValue<int>();
 		Incarna.Empowered = json[3]!.GetValue<bool>();
 		RestoreCustomStateFromJson( json[4], ctx );
