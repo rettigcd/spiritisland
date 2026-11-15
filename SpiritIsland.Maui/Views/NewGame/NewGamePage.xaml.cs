@@ -15,8 +15,11 @@ public partial class NewGamePage : ContentPage {
 		// Set up the New Game Page
 		SoloGamePage.Current?.Dispose();
 
+		// A new game replaces whatever was suspended
+		SuspendedGame.Delete();
+
 		// create new model
-		var soloGame = new SoloGameModel(gameState);
+		var soloGame = new SoloGameModel(gameState, _model.Config);
 		soloGame.Log.SpecifyGameConfig(_model.LastConfig);
 
 		// Setup page

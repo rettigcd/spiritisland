@@ -1,6 +1,7 @@
-﻿using SpiritIsland.A;
+using SpiritIsland.A;
 using SpiritIsland.An;
 using SpiritIsland.SinglePlayer;
+using System.Text.Json.Nodes;
 using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
@@ -72,17 +73,23 @@ public class SoloGameModel : ObservableModel {
 
 	#region constructor
 
-	public SoloGameModel(GameState gameState) {
+	/// <param name="config">What the game was built from. Needed to suspend it (see <see cref="Suspend"/>).</param>
+	public SoloGameModel(GameState gameState, GameConfiguration? config = null) : this(new SoloGame(gameState), config) { }
+
+	/// <param name="game">A new game, or one restored from a suspended file (see SuspendedGame) - either starts from wherever it is up to.</param>
+	/// <param name="config">What the game was built from. Needed to suspend it (see <see cref="Suspend"/>).</param>
+	public SoloGameModel(SoloGame game, GameConfiguration? config = null) {
+		GameState gameState = game.GameState;
 		if (ActionScope.Current == null)
 			ActionScope.Initialize(gameState.RootScope);
 
 		GameState = gameState;
 
-		// Setup the new game
-		_game = new SoloGame(GameState) {
-			LogExceptions = true,
-			EnablePreselects = true,
-		};
+		// Setup the game
+		_game = game;
+		_game.LogExceptions = true;
+		_game.EnablePreselects = true;
+		_config = config;
 
 		// Wire up Game Notifications
 		_ovm = new OptionViewManager();
@@ -155,6 +162,20 @@ public class SoloGameModel : ObservableModel {
 	#endregion constructor
 
 	public void Start() => _game.Start();
+
+	/// <summary>
+	/// Writes the game as of the user's last completed action to <paramref name="path"/> so it can be resumed
+	/// later (see SuspendedGame). Safe to call while the game is waiting on a decision partway through an
+	/// action - that action's unfinished choices are dropped and the user will make them again. Returns false
+	/// if there is nothing worth saving: the game is over, hasn't reached its first action yet, or has no
+	/// configuration to rebuild it from.
+	/// </summary>
+	public bool Suspend(string path) {
+		JsonObject? checkpoint = _game.LatestCheckpoint;
+		if (_config is null || checkpoint is null || _game.GameState.Result is not null) return false;
+		SoloGameFile.Write(path, _config, checkpoint);
+		return true;
+	}
 
 	/// <summary> Submits the currently selected Option as the Decisions choice. </summary>
 	public void Submit() {
@@ -266,6 +287,7 @@ public class SoloGameModel : ObservableModel {
 	Overlay _visibleOverlay = Overlay.None;
 
 	readonly SoloGame _game;
+	readonly GameConfiguration? _config;
 	readonly internal UserPortalFacade _userPortal;
 	readonly HashSet<IOption> _preSelectedOptions = [];
 	readonly OptionViewManager _ovm;

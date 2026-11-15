@@ -97,12 +97,20 @@ public class Fear : IHaveMemento {
 	/// Flips and Acts() all 'ActivatedCards'
 	/// </summary>
 	public async Task ResolveActivatedCards() {
-		while(0 < ActivatedCards.Count) {
-			IFearCard fearCard = ActivatedCards.Pop();
-			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			await fearCard.ActAsync(TerrorLevel);
-			++ResolvedCardCount; // record discard cards (for England-6)
-		}
+		while( await ResolveNextActivatedCard() ) { }
+	}
+
+	/// <summary>
+	/// Flips and Acts() the next activated card. Returns false (doing nothing) if there are none. The card is
+	/// popped before it acts, so a checkpoint taken between calls already excludes the cards resolved so far.
+	/// </summary>
+	public async Task<bool> ResolveNextActivatedCard() {
+		if( ActivatedCards.Count == 0 ) return false;
+		IFearCard fearCard = ActivatedCards.Pop();
+		await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
+		await fearCard.ActAsync(TerrorLevel);
+		++ResolvedCardCount; // record discard cards (for England-6)
+		return true;
 	}
 
 	public int ResolvedCardCount { get; private set; }

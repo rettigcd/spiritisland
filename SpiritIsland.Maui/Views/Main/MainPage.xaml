@@ -7,6 +7,7 @@
 	<VerticalStackLayout>
 		<Label Text="Welcome to Spirit Island" FontSize="16" HorizontalOptions="Center" Margin="10,50,10,50" />
 		<Button x:Name="CurrentGameButton" Text="↩️ Current Game" Clicked="CurrentGameButton_Clicked" IsVisible="False" Margin="3" Padding="20" />
+		<Button x:Name="ResumeGameButton" Text="⏯ Resume Saved Game" Clicked="ResumeGameButton_Clicked" IsVisible="False" Margin="3" Padding="20" />
 		<Button x:Name="NewGameButton" Text="New Game" Clicked="NewGameButton_Clicked" Margin="3" Padding="20"/>
 	</VerticalStackLayout>
 	

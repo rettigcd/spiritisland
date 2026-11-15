@@ -75,6 +75,12 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 	/// </remarks>
 	public SpaceToken? PreloadedSpaceToken { get; set; }
 
+	/// <summary>
+	/// How long a decision may wait for the user before Select throws <see cref="PromptTimeoutException"/>.
+	/// Null (the default) waits forever.
+	/// </summary>
+	public TimeSpan? PromptTimeout { get; set; }
+
 	readonly public static AsyncLocal<bool> UsePreselect = new AsyncLocal<bool>(); // !! combine with other preferences into a 'preference' object.
 
 	/// <summary>
@@ -123,6 +129,19 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 		// was BLOCKING - BAD, caused problems updating the UI thread.
 
 		NewWaitingDecision?.Invoke(decision);
+
+		if( PromptTimeout is TimeSpan timeout ) {
+			using var cancelDelay = new CancellationTokenSource();
+			Task finished = await Task.WhenAny( promise.Task, Task.Delay( timeout, cancelDelay.Token ) );
+			cancelDelay.Cancel();
+			// Whoever sets the promise first wins: if the user's answer landed at the deadline, TrySetException
+			// fails and the answer is used; otherwise the answer (if it arrives late) is dropped.
+			if( finished != promise.Task && promise.TrySetException( new PromptTimeoutException() ) ) {
+				_activeDecisionMaker = null;
+				_userAccessedDecision = null;
+				_signal.Reset(); // nobody is coming for this decision
+			}
+		}
 
 		T? result = await promise.Task;
 		if(result is not null)

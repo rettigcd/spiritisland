@@ -54,6 +54,9 @@ public abstract partial class Spirit
 
 	public IUserPortalPlus Portal => _gateway;
 
+	/// <inheritdoc cref="UserGateway.PromptTimeout"/>
+	public TimeSpan? PromptTimeout { get => _gateway.PromptTimeout; set => _gateway.PromptTimeout = value; }
+
 
 
 	public event Action<object?>? SelectionMade; // hook for: Reach Through the Efemeral Distance
@@ -113,15 +116,31 @@ public abstract partial class Spirit
 	/// case).
 	/// </summary>
 	public async Task SelectAndResolveNextGrowthAction() {
+		IActionFactory selectedAction = await SelectAlways( new A.GrowthDecision( "Select Growth", GetGrowthMenu(), Present.Always ) );
+		await ResolveGrowthActionAsync( selectedAction );
+	}
+
+	/// <summary>
+	/// The actions currently offered for Growth. Derived entirely from saved state (GrowthTrack, Energy,
+	/// available actions), so it can be recomputed after a Load rather than stored.
+	/// </summary>
+	public IActionFactory[] GetGrowthMenu() {
 		bool isNewPick = !GetAvailableActions( Phase.Growth ).Any();
 
 		// Mid-group (not isNewPick), only the already-committed remainder should be offered - not other
 		// candidate groups - so remainingOptions stays empty until the current group is fully resolved.
 		GrowthGroup[] remainingGroupOptions = isNewPick ? GrowthTrack.RemainingOptions( Energy ) : [];
-		IActionFactory[] consolidated = remainingGroupOptions.SelectMany( grp => grp.GrowthActionFactories )
+		return remainingGroupOptions.SelectMany( grp => grp.GrowthActionFactories )
 			.Union( GetAvailableActions( Phase.Growth ) ).ToArray();
+	}
 
-		IActionFactory selectedAction = await SelectAlways( new A.GrowthDecision( "Select Growth", consolidated, Present.Always ) );
+	/// <summary>
+	/// Resolves one choice from <see cref="GetGrowthMenu"/> - the async half of
+	/// SelectAndResolveNextGrowthAction, callable on its own once the user's pick is known.
+	/// </summary>
+	public async Task ResolveGrowthActionAsync( IActionFactory selectedAction ) {
+		bool isNewPick = !GetAvailableActions( Phase.Growth ).Any();
+		GrowthGroup[] remainingGroupOptions = isNewPick ? GrowthTrack.RemainingOptions( Energy ) : [];
 
 		GrowthGroup? newGroup = isNewPick
 			? remainingGroupOptions.SingleOrDefault( grp => grp.GrowthActionFactories.Contains( selectedAction ) )
@@ -171,7 +190,7 @@ public abstract partial class Spirit
 	/// </summary>
 	public async Task<bool> SelectAndResolveNextAction( GameState gs ) {
 
-		IActionFactory[] options = GetAvailableActions(gs.Phase).ToArray();
+		IActionFactory[] options = GetActionMenu( gs.Phase );
 		HadNextActionOptions = 0 < options.Length; // Side effect for tracking if user was presented with anything.
 		if( options.Length == 0 ) return false;
 
@@ -182,6 +201,12 @@ public abstract partial class Spirit
 		await ResolveActionAsync(option, gs.Phase);
 		return true;
 	}
+
+	/// <summary>
+	/// The actions offered for a Fast/Slow/Init phase. Derived from saved state, so recomputable after a
+	/// Load. Pair with <see cref="ResolveActionAsync"/> to resolve the user's pick.
+	/// </summary>
+	public IActionFactory[] GetActionMenu( Phase phase ) => GetAvailableActions( phase ).ToArray();
 
 	// Set as a side effect of calling SelectAndResolveNextAction - does not need serialized.
 	// Only valid immediately after calling SelectAndResolveNextAction

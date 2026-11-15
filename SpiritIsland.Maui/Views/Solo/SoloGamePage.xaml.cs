@@ -45,6 +45,7 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 
 		else if( obj is GameOverLogEntry go) {
 			// !!! BIND this to a property so we can start new games
+			SuspendedGame.Delete(); // nothing left to resume
 			ShowGameOver(go);
 		} else if( obj is Log.ExceptionEntry ) {
 
@@ -69,6 +70,11 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 		if(sender is not Button) return;
 		_model?.Submit(); // !!! Replace with a command on the model
 	}
+
+	public bool IsGameOver => _model.GameState.Result is not null;
+
+	/// <inheritdoc cref="SoloGameModel.Suspend"/>
+	public bool Suspend(string path) => _model.Suspend(path);
 
 	public void Dispose() {
 		_model.ShutDown();

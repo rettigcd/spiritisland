@@ -184,13 +184,24 @@ class NewGameModel : ObservableModel {
 			? int.Parse(GameNumber) 
 			: (int)(((ulong)DateTime.Now.Ticks)%1000000000); // between 0 and 999,999,999
 
-		var aspectsStr = aspects.Length == 0 ? "" : "-"+string.Join(",",aspects.Select(a=>a.Aspect));
-		LastConfig = $"Spirit:{SelectedSpirit!}{aspectsStr}, Board:{board}, G#:{gc.ShuffleNumber:000 000 000}, Adv:{advConfig.Name}-{advConfig.Level}";
+		Config = gc;
+		LastConfig = Describe(gc);
 
 		var gameState = _builder.BuildGame(gc);
 		NewGameCreated?.Invoke(gameState);
 	}
 	public string LastConfig = "";
+
+	/// <summary> The configuration the last game was built from - what a suspended game needs to be rebuilt. </summary>
+	public GameConfiguration? Config { get; private set; }
+
+	/// <summary> One-line summary of a game's setup, shown at the top of its log. </summary>
+	internal static string Describe(GameConfiguration gc) {
+		AspectConfigKey[] aspects = gc.Aspects ?? [];
+		var aspectsStr = aspects.Length == 0 ? "" : "-"+string.Join(",",aspects.Select(a=>a.Aspect));
+		var adversary = gc.Adversary ?? AdversaryConfig.NullAdversary;
+		return $"Spirit:{gc.Spirits![0]}{aspectsStr}, Board:{gc.Boards![0]}, G#:{gc.ShuffleNumber:000 000 000}, Adv:{adversary.Name}-{adversary.Level}";
+	}
 	public event Action<GameState>? NewGameCreated;
 	#endregion Start
 
@@ -206,7 +217,10 @@ class NewGameModel : ObservableModel {
 	string? _selectedBoard;
 	bool _commandBeast;
 
-	readonly GameBuilder _builder = new GameBuilder(
+	/// <summary> Also what rebuilds a suspended game (see SuspendedGame). </summary>
+	internal static GameBuilder Builder => _builder;
+
+	static readonly GameBuilder _builder = new GameBuilder(
 		new Basegame.GameComponentProvider(),
 		new BranchAndClaw.GameComponentProvider(),
 		new FeatherAndFlame.GameComponentProvider(),
