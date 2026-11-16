@@ -394,6 +394,18 @@ public class GameState : IHaveMemento {
 	/// wipe opens up (Russia L6's `RecordBlightAdded`). Everything else restores onto `this`'s own
 	/// existing objects (Fear, InvaderDeck, each Spirit) rather than replacing them, preserving whatever
 	/// event wiring/identity those objects' own construction already established.
+	///
+	/// Rules for any new state this has to cover:
+	/// - Only valid at an action boundary: an action suspended in Spirit.Select is a Task, which can't
+	///   be serialized.
+	/// - Events and delegates (NewLogEntry, WinLossChecks, Spirit.EnergyCollected/SelectionMade) are
+	///   wiring, not state. Normal construction re-establishes them; don't serialize them.
+	/// - Replaying setup is only safe if setup doesn't capture live board state. France's
+	///   Loss_SprawlingPlantations once did; the replay-then-wipe order above covers it, but check any
+	///   new adversary or setup step for the same thing.
+	/// - When one object is referenced from two places (a blight card that is also a pre-invader hook,
+	///   a mod's own action factory in UsedActions), resolve both to the one live instance
+	///   (ISerializationContext, IOwnedActionFactories) rather than deserializing a second copy.
 	/// </summary>
 	public void RestoreFromJson( JsonObject json, ISerializationContext ctx ) {
 		RoundNumber = json["RoundNumber"]!.GetValue<int>();

@@ -51,6 +51,8 @@ Save state by serializing it.  Allow undo last action instead of whole round.
 =====  Needs Tests  =====
 
 	UI - Cast Down into the Briny Deep - TEST
+	Ravage/Build prompts timing out (PromptTimeout)
+	Maui suspend events (Window.Stopped/Destroying) - verify on each platform
 
 =============================
 

@@ -1,8 +1,33 @@
-# Plan: web-based solo play
+# Plan: web play, solo first, then multiplayer
 
-Play a solo game in a browser. The server runs the engine as a stateless **decision oracle** (option 2 in [MultiplayerDirection.md](MultiplayerDirection.md)). The browser draws the board as SVG from geometry computed by the engine's existing layout code. Nothing here is built yet.
+The end goal is multiplayer Spirit Island in a browser. Multiplayer needs a UI to play-test with, so the first step is a solo web client, built so it can later become the multiplayer one. Nothing here is built yet.
 
-## Decisions already made
+## Goal: multiplayer
+
+Each player builds an entire action, then submits it to a central coordinator. The coordinator applies all of that action's decisions as one unit of work. If another spirit changed the board so the action is no longer possible, the whole action is rejected and the player builds a new one.
+
+Multiplayer will need its own engine, file formats and setup. None of that is designed yet.
+
+## The server steps the player through an action
+
+The web server, not the browser, walks a player through building an action. The browser only shows the current prompt, sends the player's pick, and keeps the list of picks made so far in the current action.
+
+There are two server roles:
+
+1. **Stepping (the decision oracle).** The browser sends `{ checkpoint version, picks so far }`. The server loads the checkpoint, replays the picks, and returns the next prompt and its options. Nothing is held between requests: when the reply is sent, the game instance is dropped.
+2. **Coordinating.** When an action is complete, the server applies it against the current game state as one unit of work. If the checkpoint has moved on, or a pick is no longer valid when replayed, the action is rejected and the player rebuilds it.
+
+In solo play the two roles collapse into one: the replay that completes an action also commits it. The solo plan below builds exactly that.
+
+**Constraint:** the server never holds an in-progress action in memory. A suspended async action can't be serialized, so nothing is kept alive waiting on a player. The in-progress picks travel with the browser; the server only replays them.
+
+**Guidance:**
+- Keep action resolution deterministic and replayable, and keep actions self-contained.
+- Keep per-game state in the execution context rather than in process-wide statics. `ActionScope` is `AsyncLocal`, so games run in parallel only in separate execution contexts (`Task.Run` per game, `ActionScope.Initialize` inside each; see the parallel-games test).
+- Identify picks by option text, not index. Option order can differ after a restore (presence sources are listed in hash order).
+- Save/restore rules for engine code are in the doc comment on `GameState.RestoreFromJson`.
+
+## Solo web client: decisions already made
 
 - **New project, not the MCP server.** The MCP server stays an agent-play tool. The web server is a separate ASP.NET project.
 - **Oracle first, WASM later.** Try running the engine in the browser only after the oracle works.
@@ -123,7 +148,7 @@ Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/
 Each phase ends with something that runs.
 
 ### Phase 0: measure the oracle's cost
-The first step the multiplayer doc asks for. Write a test or small benchmark that loads a checkpoint and replays N picks for a few typical actions (growth, a multi-target power, an innate). Record milliseconds per request.
+Write a test or small benchmark that loads a checkpoint and replays N picks for a few typical actions (growth, a multi-target power, an innate). Record milliseconds per request.
 - **Exit:** a number. If a typical request costs well over ~100 ms, revisit before building UI (e.g. cache the most recent instance per game).
 
 ### Phase 1: oracle server with no UI
@@ -150,7 +175,7 @@ The spirit panel with tracks, growth and innates. Cards, status bar, log and tok
 
 ## Multiplayer-ready choices
 
-The end goal is multiplayer, which will need its own engine, file formats and setup. The solo web UI is the test bed for that work, so it must not bake in solo assumptions. These choices cost little now and avoid rewrites later:
+The solo web UI is the test bed for multiplayer, so it must not bake in solo assumptions. These choices cost little now and avoid rewrites later:
 
 1. **Spirits are a list.** `GameView.spirits` plus `viewerSpiritId` from the start. Panels take a spirit, not "the" spirit. Solo just has one.
 2. **The decision panel is generic.** It renders whatever prompt and options arrive and doesn't walk `SoloGame`'s fixed menu sequence (Growth, PlayCards, Fast, Slow). Round and phase are shown in the status bar only. In multiplayer, players act at the same time within a phase.
@@ -161,7 +186,18 @@ The end goal is multiplayer, which will need its own engine, file formats and se
 
 These are about naming and shape, not features. Lobbies, accounts, push and multiplayer engine work stay out of scope.
 
-## Out of scope
+## Later option: stepping in the browser (WASM)
+
+Only if server-side stepping turns out too slow or too costly (see Phase 0). The engine would run in the browser as WebAssembly (Blazor custom elements, or a .NET WASM module with JSExport/JSImport exposing `advance`/`choose`/`save`/`load`), stepping locally and sending only complete actions to the coordinator. The `View/` projection would move into a library so the browser can run it too.
+
+Expected problems:
+- Blocking calls in `UserGateway` (`WaitForNext`/`Next`/`Current`/`_signal.WaitOne`) can't run on the single browser thread; the stepwise API avoids them.
+- Reflection and `[ModuleInitializer]` registries versus the trimmer (trimming probably has to be off).
+- Download size.
+
+First step, if it ever comes to this: a small spike, a WASM console project that references the engine and calls advance/choose.
+
+## Out of scope for the solo client
 
 - Multiplayer and the coordinator.
 - WASM.
