@@ -38,6 +38,26 @@ public class RelentlessGaze_Tests {
 
 	[Trait("spirit","Relentless Gaze")]
 	[Fact]
+	public async Task RelentlessPunishment_NeedsAtLeast3PresenceInTheOriginLand() {
+		// (the check was "0 or more", so a card could always be repeated)
+		var spirit = new RelentlessGazeOfTheSun();
+		var gs = new SoloGameState(spirit);
+		spirit.AddActionFactory(PowerCard.ForDecorated(TeemingRivers.ActAsync));
+		spirit.Energy=20;
+		//  Given: only 2 presence in land 5
+		gs.Board[5].ScopeSpace.Init(spirit.Presence.Token,2);
+		gs.Phase = Phase.Slow;
+
+		//  When: spirit uses the card
+		await spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Select Slow to resolve").HasOptions("Teeming Rivers $1 (Slow),Done").ChooseFirst();
+			user.NextDecision.HasPrompt("Teeming Rivers: Target Space").Choose("A1");
+			//  Then: it cannot be repeated - the next thing offered is not a repeat
+		}).ShouldComplete("Slow phase");
+	}
+
+	[Trait("spirit","Relentless Gaze")]
+	[Fact]
 	public async Task RelentlessPunishment_CanRepeatCardsThatUseTheirOrigin() {
 		// (used to throw NullReferenceException: Unbearable Gaze reads its origins from the targetting details,
 		//  and a repeat is not targeted again)
