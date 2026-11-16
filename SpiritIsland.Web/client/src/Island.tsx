@@ -1,4 +1,5 @@
 import type { GameView, OptionView, SpaceGeometry, StaticView, TokenView } from './api/model';
+import { isPresence, PRESENCE_IMAGE, presenceHue, STRIFE_IMAGE, tokenImageUrl } from './images';
 import { boardOptions, spacesOf, tokenKey } from './options';
 
 interface Props {
@@ -69,14 +70,60 @@ interface TokenProps {
 
 function Token({ token, space, option, choose }: TokenProps) {
   const r = space.tokenSize / 2;
-  // Shrink long labels ("Blight", "Beast") so they stay inside the circle.
-  const size = Math.min(space.tokenSize * 0.4, (space.tokenSize * 1.5) / Math.max(token.label.length, 1));
+  const url = isPresence(token.image) ? PRESENCE_IMAGE : tokenImageUrl(token.image);
+  const small = space.tokenSize * 0.3; // the size of the badges and counts
+  const title = `${token.label}${token.count > 1 ? ` x${token.count}` : ''}${token.strife > 0 ? ` (strife ${token.strife})` : ''}`;
   return (
     <g class={['token', option ? 'choosable' : ''].join(' ')} onClick={option ? () => choose(option) : undefined}>
-      <title>{`${token.label}${token.count > 1 ? ` x${token.count}` : ''}${token.strife > 0 ? ` (strife ${token.strife})` : ''}`}</title>
-      <circle cx={token.x} cy={token.y} r={r} fill={colourOf(token.image, 72)} stroke={token.sacredSite ? '#a06000' : '#444'} stroke-width={token.sacredSite ? r * 0.2 : r * 0.08} />
-      <text x={token.x} y={token.y} font-size={size} text-anchor="middle" dominant-baseline="central">{token.label}</text>
-      {token.count > 1 && <text class="count" x={token.x + r} y={token.y - r} font-size={size} text-anchor="middle" dominant-baseline="central">{token.count}</text>}
+      <title>{title}</title>
+      {url ? <Picture token={token} url={url} r={r} small={small} /> : <Circle token={token} r={r} />}
+      {0 < token.strife && url && (
+        <image href={STRIFE_IMAGE} x={token.x - r} y={token.y - r} width={r * 0.9} height={r * 0.9} />
+      )}
+      {token.badge && url && <Badge x={token.x + r * 0.55} y={token.y + r * 0.7} text={token.badge} size={small} />}
+      {token.count > 1 && <Badge x={token.x + r * 0.75} y={token.y - r * 0.75} text={String(token.count)} size={small} bold />}
     </g>
+  );
+}
+
+/** A token's picture, with a ring for a sacred site and (when it is an option) a ring to click. */
+function Picture({ token, url, r, small }: { token: TokenView; url: string; r: number; small: number }) {
+  const presence = isPresence(token.image);
+  return (
+    <>
+      {token.sacredSite && <circle class="ring-sacred" cx={token.x} cy={token.y} r={r * 1.05} fill="none" stroke="#a06000" stroke-width={r * 0.18} />}
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" />
+      <image
+        href={url} x={token.x - r} y={token.y - r} width={r * 2} height={r * 2}
+        style={presence ? { filter: `hue-rotate(${presenceHue(token.image)}deg)` } : undefined}
+      />
+      {presence && (
+        <text class="presence-label" x={token.x} y={token.y} font-size={small * 0.9} stroke-width={small * 0.3} text-anchor="middle" dominant-baseline="central">{token.label}</text>
+      )}
+    </>
+  );
+}
+
+/** What is drawn for a token that has no picture. */
+function Circle({ token, r }: { token: TokenView; r: number }) {
+  // Shrink long labels so they stay inside the circle.
+  const size = Math.min(r * 0.8, (r * 3) / Math.max(token.label.length, 1));
+  return (
+    <>
+      <circle cx={token.x} cy={token.y} r={r} fill={colourOf(token.image, 72)} stroke={token.sacredSite ? '#a06000' : '#444'} stroke-width={token.sacredSite ? r * 0.2 : r * 0.08} />
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" />
+      <text x={token.x} y={token.y} font-size={size} text-anchor="middle" dominant-baseline="central">{token.label}</text>
+    </>
+  );
+}
+
+/** A small number or word on a token (its health, or how many are stacked). */
+function Badge({ x, y, text, size, bold }: { x: number; y: number; text: string; size: number; bold?: boolean }) {
+  const width = size * (0.7 + 0.6 * text.length);
+  return (
+    <>
+      <rect class="badge" x={x - width / 2} y={y - size * 0.6} width={width} height={size * 1.2} rx={size * 0.3} />
+      <text class={bold ? 'badge-text bold' : 'badge-text'} x={x} y={y} font-size={size} text-anchor="middle" dominant-baseline="central">{text}</text>
+    </>
   );
 }

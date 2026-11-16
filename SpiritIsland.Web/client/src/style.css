@@ -51,9 +51,14 @@ ul.saved button { width: 100%; }
 .island .space.hovered { stroke: #d33; stroke-width: 5px; }
 .island .space-name { fill: #333; text-anchor: middle; pointer-events: none; opacity: .7; }
 .island .token text { fill: #111; pointer-events: none; }
-.island .token .count { font-weight: 700; }
+/* Stroke widths on text are in the island's own units, so the outline is sized in the component (stroke-width attribute). */
+.island .token .presence-label { fill: #fff; stroke: #000; paint-order: stroke; font-weight: 700; }
+.island .token .badge { fill: #fff; stroke: #444; stroke-width: 1px; vector-effect: non-scaling-stroke; opacity: .92; }
+.island .token .badge-text { fill: #111; }
+.island .token .badge-text.bold { font-weight: 700; }
+.island .token .ring-choose { display: none; }
 .island .token.choosable { cursor: pointer; }
-.island .token.choosable circle { stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
+.island .token.choosable .ring-choose { display: inline; stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
 
 .decision .options button { width: 100%; }
 .decision .details { margin: -4px 0 8px; }

@@ -17,6 +17,7 @@
     "gen": "openapi-typescript openapi.json -o src/api/types.ts",
     "typecheck": "tsc --noEmit",
     "dev": "vite",
-    "build": "npm run gen && npm run typecheck && vite build"
+    "build": "npm run gen && npm run typecheck && vite build",
+    "copy-images": "node scripts/copy-images.mjs"
   }
 }
