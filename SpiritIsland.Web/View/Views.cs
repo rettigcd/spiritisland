@@ -31,8 +31,14 @@ public record FearView( int TerrorLevel, int FearPool, int FearPoolMax, int Face
 /// <param name="Card">Null until the card flips: it is set up healthy side up without looking at the back.</param>
 public record BlightView( bool CardFlipped, string? Card, string? BlightedIslandEffect, int BlightRemainingOnCard, int BlightCardsRemaining );
 
-/// <summary> Invader cards by their text, in the order of their slot. The deck's order and contents stay hidden. </summary>
-public record InvadersView( string[] Explore, string[] Build, string[] Ravage, string[] Discards, int UnrevealedCount );
+/// <summary>
+/// Invader cards by their text, in the order of their slot. The deck's order and contents stay hidden.
+/// There is no Explore slot: the card is flipped in the Invader Phase's Explore step and moves to Build as the cards advance at
+/// the end of that phase, so a player first sees it as the Build card (and the log says what was explored). The engine draws the
+/// next card into the Explore slot as soon as the cards advance, so that card is not sent.
+/// </summary>
+/// <param name="UnrevealedCount">The cards no player has seen: the deck, and the card waiting to be flipped for Explore.</param>
+public record InvadersView( string[] Build, string[] Ravage, string[] Discards, int UnrevealedCount );
 
 /// <param name="Id">The spirit's name.</param>
 /// <param name="Elements">A one-line summary of the elements this turn.</param>
@@ -114,7 +120,8 @@ public record ErrorView( string Error );
 /// <param name="StaticVersion">A hash of everything else here; it changes when, for instance, lands are woven together.</param>
 public record StaticView( string StaticVersion, SetupView Setup, BoundsView WorldBounds, SpaceGeometry[] Spaces, SpiritStatic[] Spirits );
 
-public record SetupView( string[] Boards, AdversaryView? Adversary );
+/// <param name="Seed">The game's number (its shuffle number): starting a game with the same spirit, board, adversary and seed plays the same game again.</param>
+public record SetupView( string[] Boards, AdversaryView? Adversary, int Seed );
 
 /// <param name="Rules"> The adversary's rules at this level, as text. </param>
 public record AdversaryView( string Name, int Level, string Rules );

@@ -88,13 +88,14 @@ public class GameView_Tests( GamesFactory factory ) : IClassFixture<GamesFactory
 		var (gs, view) = NewGame( River );
 		InvaderDeck deck = gs.InvaderDeck;
 
-		view.Invaders.UnrevealedCount.ShouldBe( deck.UnrevealedCards.Count );
-		view.Invaders.Explore.ShouldBe( deck.Explore.Cards.Select( c => ((IOption)c).Text ) );
+		// the card waiting in the Explore slot has not been flipped yet, so it is counted with the deck and not shown
+		view.Invaders.UnrevealedCount.ShouldBe( deck.UnrevealedCards.Count + deck.Explore.Cards.Count );
+		deck.Explore.Cards.ShouldNotBeEmpty( "the engine has drawn the next Explore card, which is what must stay hidden" );
 		view.Invaders.Build.ShouldBe( deck.Build.Cards.Select( c => ((IOption)c).Text ) );
 		view.Invaders.Ravage.ShouldBe( deck.Ravage.Cards.Select( c => ((IOption)c).Text ) );
 		// nothing in the view is a list the length of the deck that could be its order
 		typeof( InvadersView ).GetProperties().Where( p => p.PropertyType == typeof( string[] ) ).Select( p => p.Name )
-			.ShouldBe( ["Explore", "Build", "Ravage", "Discards"] );
+			.ShouldBe( ["Build", "Ravage", "Discards"] );
 	}
 
 	[Fact]

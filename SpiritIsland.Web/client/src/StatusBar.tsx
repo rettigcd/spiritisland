@@ -13,7 +13,8 @@ export function StatusBar({ view }: { view: GameView }) {
       <span>Blight on card {blight.blightRemainingOnCard}{blight.cardFlipped && blight.card ? ` - ${blight.card}` : ''}</span>
       {slot('Ravage', invaders.ravage)}
       {slot('Build', invaders.build)}
-      {slot('Explore', invaders.explore)}
+      {/* No Explore slot: that card is flipped and moved to Build within the Invader Phase, so it is first seen as the Build card. */}
+      <span class="inv-slot"><span class="inv-name">Deck</span> {invaders.unrevealedCount}</span>
     </header>
   );
 }

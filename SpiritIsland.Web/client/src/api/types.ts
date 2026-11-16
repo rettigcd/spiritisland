@@ -174,7 +174,6 @@ export interface components {
             tierStatus: string[];
         };
         InvadersView: {
-            explore: string[];
             build: string[];
             ravage: string[];
             discards: string[];
@@ -260,6 +259,8 @@ export interface components {
         SetupView: {
             boards: string[];
             adversary: null | components["schemas"]["AdversaryView"];
+            /** Format: int32 */
+            seed: number;
         };
         SlotView: {
             id: string;

@@ -82,6 +82,19 @@ public class StaticView_Tests( GamesFactory factory ) : IClassFixture<GamesFacto
 	}
 
 	[Fact]
+	public async Task TheGamesSeed_IsInTheSetup_SoTheGameCanBePlayedAgain() {
+		var request = new NewGameRequest( RiverSurges.Name, "A", Seed: 4321 );
+		StaticView view = await StaticOfAsync( ( await NewGameAsync( request ) ).GameId );
+
+		view.Setup.Seed.ShouldBe( 4321 );
+		view.Setup.Boards.ShouldBe( ["A"] );
+
+		// and a game started again with those same choices is the same game
+		StaticView again = await StaticOfAsync( ( await NewGameAsync( request ) ).GameId );
+		again.StaticVersion.ShouldBe( view.StaticVersion );
+	}
+
+	[Fact]
 	public async Task Adjacency_IsMutual_AndNamesKnownSpaces() {
 		StaticView view = await StaticOfAsync( ( await NewGameAsync( River ) ).GameId );
 		Dictionary<string, SpaceGeometry> byId = view.Spaces.ToDictionary( s => s.Id );

@@ -40,8 +40,10 @@ public static class GameViewBuilder {
 	static InvadersView InvadersOf( GameState gs ) {
 		InvaderDeck deck = gs.InvaderDeck;
 		return new InvadersView(
-			Texts( deck.Explore.Cards ), Texts( deck.Build.Cards ), Texts( deck.Ravage.Cards ), Texts( deck.Discards ),
-			deck.UnrevealedCards.Count ); // order and contents are hidden
+			Texts( deck.Build.Cards ), Texts( deck.Ravage.Cards ), Texts( deck.Discards ),
+			// order and contents are hidden. The card in the Explore slot is not flipped until the Invader Phase's Explore step,
+			// so it is counted with the deck, not shown.
+			deck.UnrevealedCards.Count + deck.Explore.Cards.Count );
 		static string[] Texts( IEnumerable<InvaderCard> cards ) => [.. cards.Select( c => ((IOption)c).Text )];
 	}
 

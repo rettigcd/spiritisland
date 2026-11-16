@@ -12,7 +12,7 @@ public static class StaticViewBuilder {
 		var screen = ScreenCoordinates.For( gs ); // the engine's y points up, a screen's down
 		var content = new StaticView(
 			StaticVersion: "",
-			new SetupView( [.. gs.Island.Boards.Select( b => b.Name )], AdversaryOf( gs ) ),
+			new SetupView( [.. gs.Island.Boards.Select( b => b.Name )], AdversaryOf( gs ), gs.ShuffleNumber ),
 			Bounds( screen.World ),
 			[.. gs.Spaces_Unfiltered.Select( s => GeometryOf( s, screen ) )],
 			[.. gs.Spirits.Select( SpiritOf )] );

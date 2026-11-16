@@ -570,7 +570,6 @@
       },
       "InvadersView": {
         "required": [
-          "explore",
           "build",
           "ravage",
           "discards",
@@ -578,12 +577,6 @@
         ],
         "type": "object",
         "properties": {
-          "explore": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "build": {
             "type": "array",
             "items": {
@@ -918,7 +911,8 @@
       "SetupView": {
         "required": [
           "boards",
-          "adversary"
+          "adversary",
+          "seed"
         ],
         "type": "object",
         "properties": {
@@ -937,6 +931,10 @@
                 "$ref": "#/components/schemas/AdversaryView"
               }
             ]
+          },
+          "seed": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
