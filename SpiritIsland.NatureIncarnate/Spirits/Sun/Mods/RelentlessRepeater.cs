@@ -39,9 +39,8 @@ public class RelentlessRepeater( PowerCard powerCard, Space space ) : IActionFac
 	/// [ Tag, cost, powerCard, spaceLabel ] - no identity problem: ActivateAsync re-adds `this` (the
 	/// same live instance) to keep the chain going, but nothing outside this class ever compares a
 	/// RelentlessRepeater by reference (unlike PourDownPower.RepeatLandCardForCost/MarkedBeastMover,
-	/// whose owning mods count used actions by reference - see docs/GameSerialization-Roadmap.md
-	/// section 2), so a freshly-reconstructed instance is fully equivalent. _powerCard resolves via
-	/// PowerCardRegistry (section 4); _space resolves via ISerializationContext.Tokens/SpaceSpecByLabel.
+	/// whose owning mods count used actions by reference), so a freshly-reconstructed instance is fully
+	/// equivalent. _powerCard resolves via PowerCardRegistry; _space resolves via ISerializationContext.Tokens/SpaceSpecByLabel.
 	/// </summary>
 	public JsonArray ToJson( ISerializationContext ctx ) => new JsonArray( "RelentlessRepeater", _cost, _powerCard.ToJson(), _space.SpaceSpec.Label );
 

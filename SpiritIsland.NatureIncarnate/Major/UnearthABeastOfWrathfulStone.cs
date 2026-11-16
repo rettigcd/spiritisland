@@ -104,7 +104,7 @@ public class TriggerAfterNoRavageOrBuild( Spirit spirit, TargetSpaceCtx ctx, ITo
 	/// Tokens_ForIsland.FromJson/section 1), so restoring _postInvaderPhaseActions must resolve back to
 	/// that same live instance rather than building a second, disconnected copy via
 	/// SpaceEntitySerialization.Deserialize - same recurring identity-resolution shape as
-	/// England.HighImmegrationSlot. See docs/GameSerialization-Roadmap.md section 10.
+	/// England.HighImmegrationSlot.
 	/// </summary>
 	JsonArray IRunAfterInvaderPhase.ToJson( ISerializationContext serCtx ) => new JsonArray( Tag, ctx.SpaceSpec.Label );
 

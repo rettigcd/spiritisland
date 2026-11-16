@@ -28,7 +28,7 @@ public interface ISerializationContext {
 	/// InvaderDeck.ActiveSlots (e.g. England's HighImmegrationSlot) by label - needed so a hook-list
 	/// entry referencing the same slot (e.g. its IRunWhenTimePasses registration) resolves back to that
 	/// one already-restored instance instead of building a second, disconnected copy via
-	/// InvaderSlotRegistry. See docs/GameSerialization-Roadmap.md section 10.
+	/// InvaderSlotRegistry.
 	/// </summary>
 	InvaderSlot InvaderSlotByLabel( string label );
 
@@ -53,8 +53,7 @@ public interface ISerializationContext {
 	/// Tokens_ForIsland.FromJson, section 1) rather than constructing a fresh one - needed when the same
 	/// entity also lives in one of GameState's hook action lists (e.g. TriggerAfterNoRavageOrBuild in
 	/// _postInvaderPhaseActions) and a restore must resolve both references to the one live instance.
-	/// Same recurring identity-resolution shape as InvaderSlotByLabel/BlightCard above - see
-	/// docs/GameSerialization-Roadmap.md section 10.
+	/// Same recurring identity-resolution shape as InvaderSlotByLabel/BlightCard above.
 	/// </summary>
 	T ExistingSpaceEntity<T>( SpaceSpec spec ) where T : class, ISpaceEntity => Tokens[spec].OfType<T>().Single();
 

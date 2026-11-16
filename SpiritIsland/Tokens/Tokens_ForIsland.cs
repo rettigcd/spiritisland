@@ -191,7 +191,7 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 	/// rewind, since only rewinds ever call this). Clearing in place means every existing reference
 	/// keeps observing the same objects, correctly emptied. Whatever tokens/mods were on `target` before
 	/// this call (e.g. an Adversary's `Init`/`Adjust` mutating a normally-constructed board before
-	/// restore - see docs/GameSerialization-Roadmap.md section 9) are discarded rather than
+	/// restore) are discarded rather than
 	/// double-applied; JSON is the sole source of truth for everything `_tokenCounts` covers afterward.
 	/// Static (not an instance method) so the target reads as an explicit parameter rather than an
 	/// implicit `this` - same shape callers already reason about for "restore JSON onto a specific

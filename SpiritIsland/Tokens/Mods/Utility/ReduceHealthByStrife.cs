@@ -54,8 +54,7 @@ public class ReduceHealthByStrife
 	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
 
 	// Same stateless identity, reused for _timePassesActions list membership - a separate concern from
-	// the island-mod placement above, hence its own interface/registry entry (see
-	// docs/GameSerialization-Roadmap.md section 10). No identity problem restoring a fresh instance
+	// the island-mod placement above, hence its own interface/registry entry. No identity problem restoring a fresh instance
 	// here rather than reusing the one placed on the board: this type has no fields at all.
 	JsonArray ISerializableTimePassesAction.ToJson( ISerializationContext ctx ) => new JsonArray( Tag );
 

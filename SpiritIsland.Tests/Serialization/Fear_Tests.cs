@@ -1,8 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for Fear.ToJson/FromJson and FearCardRegistry - docs/GameSerialization-Roadmap.md
-/// section 6.
+/// Round-trips for Fear.ToJson/FromJson and FearCardRegistry.
 /// </summary>
 public class Fear_Tests {
 

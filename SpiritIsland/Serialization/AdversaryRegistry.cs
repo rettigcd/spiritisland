@@ -5,9 +5,8 @@ namespace SpiritIsland.Serialization;
 /// "reuse the engine, seed via each expansion's own [ModuleInitializer]" approach as
 /// PowerCardRegistry/InnatePowerRegistry - AdversaryBuilder instances are stateless/reusable
 /// (IAdversaryBuilder.Build(level) just wraps `this` + level into a fresh Adversary, never mutates the
-/// builder), so the same registered instance is handed back everywhere it's referenced. Only the
-/// identity slice of docs/GameSerialization-Roadmap.md section 9 - doesn't touch Init/Adjust
-/// wiring-replay, which is a separate, harder tier blocked on section 10.
+/// builder), so the same registered instance is handed back everywhere it's referenced. Identity only -
+/// Init/Adjust wiring is reproduced by replaying setup (see GameState.RestoreFromJson), not here.
 /// </summary>
 public static class AdversaryRegistry {
 

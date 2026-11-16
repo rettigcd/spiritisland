@@ -62,8 +62,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	/// <summary>
-	/// Replaces the old TimePassesAction.Once(...) closure - docs/GameSerialization-Roadmap.md's hook
-	/// action lists section. Most of what the closure captured (multi/space/other/multiSpec) is cheaply
+	/// Replaces the old TimePassesAction.Once(...) closure, which couldn't be serialized. Most of what the closure captured (multi/space/other/multiSpec) is cheaply
 	/// re-derivable from spaceSpec/otherSpec alone (MultiSpaceSpec.Build is deterministic, gs.Tokens[spec]
 	/// is just a view) - the only real state is the Spirit plus each side's identity and OldAdjacents.
 	///

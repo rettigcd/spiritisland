@@ -2,8 +2,8 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for Spirit.ToJson/RestoreFromJson and SpiritPresence.ToJson/RestoreFromJson -
-/// docs/GameSerialization-Roadmap.md section 2. RestoreFromJson always overlays onto a *freshly
+/// Round-trips for Spirit.ToJson/RestoreFromJson and SpiritPresence.ToJson/RestoreFromJson.
+/// RestoreFromJson always overlays onto a *freshly
 /// reconstructed* Spirit of the same concrete type/config as the original (mirroring "construct
 /// through the normal path, then overwrite fields" from Fear/Island/BlightCard) - GrowthTrack's
 /// Groups/PickGroups structure, InnatePowers, and Mods are assumed identical from reconstruction
@@ -84,8 +84,7 @@ public class Spirit_Tests {
 
 	/// <summary>
 	/// CompoundPresenceTrack (Starlight Seeks Its Form's Energy/CardPlays, 3 parts each) used to throw in
-	/// SpiritPresence.ToJson/RestoreFromJson - docs/GameSerialization-Roadmap.md's Spirit-core-state
-	/// section. Reveals part0's 2nd slot and part2's 1st slot specifically (Energy2/Track_Gain1Energy -
+	/// SpiritPresence.ToJson/RestoreFromJson. Reveals part0's 2nd slot and part2's 1st slot specifically (Energy2/Track_Gain1Energy -
 	/// neither has an OnRevealAsync decision, unlike the "NewGrowth" slots elsewhere on this track, which
 	/// present a real Growth-choice prompt when revealed), leaving the 1-slot middle part untouched.
 	/// Checking RevealOptions.Count() afterward (not just Revealed.Count()) proves restore tracked *which
@@ -159,7 +158,7 @@ public class Spirit_Tests {
 
 	[Fact]
 	public void RoundTrips_NonDefaultPowerRangeCalc_RangeExtender() {
-		// docs/GameSerialization-Roadmap.md section 2's "known gap" - an active temporary override
+		// An active temporary override
 		// (not just the default singleton) used to throw here. RangeExtender is public, so this proves
 		// the fix at the Spirit.ToJson/RestoreFromJson level directly, no reflection needed.
 		var gs = new SoloGameState();
@@ -483,8 +482,8 @@ public class Spirit_Tests {
 		Should.Throw<KeyNotFoundException>( () => RangeCalcRegistry.Deserialize( new JsonArray( "NoSuchCalc" ), CtxFor( new SoloGameState() ) ) );
 	}
 
-	// -- CustomStateToJson/RestoreCustomStateFromJson - the 7 known CustomMementoValue overrides
-	// (docs/GameSerialization-Roadmap.md's Spirit-core-state section). Deliberately independent of
+	// -- CustomStateToJson/RestoreCustomStateFromJson - the 7 known CustomMementoValue overrides.
+	// Deliberately independent of
 	// CustomMementoValue itself - Mementos are slated for removal later.
 
 	[Fact]

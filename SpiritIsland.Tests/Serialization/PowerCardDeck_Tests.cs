@@ -1,9 +1,8 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for PowerCardDeck.ToJson/RestoreFromJson - docs/GameSerialization-Roadmap.md's
-/// PowerCardDeck section. `_randomizer`'s seed is deliberately not covered here - a separate,
-/// still-open policy decision (the Determinism/RNG section).
+/// Round-trips for PowerCardDeck.ToJson/RestoreFromJson. `_randomizer`'s seed is deliberately not
+/// covered here.
 /// </summary>
 public class PowerCardDeck_Tests {
 

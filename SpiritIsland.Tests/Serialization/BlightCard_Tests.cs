@@ -1,7 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for BlightCard.ToJson/FromJson - docs/GameSerialization-Roadmap.md section 7.
+/// Round-trips for BlightCard.ToJson/FromJson.
 /// Blight *count* isn't tested here - it's ordinary tokens on the "BlightCard" FakeSpace, already
 /// covered by Tokens_ForIsland_Tests.
 /// </summary>

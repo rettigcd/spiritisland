@@ -1,7 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for Island.ToJson/FromJson - docs/GameSerialization-Roadmap.md section 8.
+/// Round-trips for Island.ToJson/FromJson.
 /// </summary>
 public class Island_Tests {
 

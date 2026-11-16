@@ -10,8 +10,7 @@ public interface ICalcRange {
 
 	/// <summary>
 	/// Plain interface member, same precedent as ITargetingSourceStrategy.ToJson(). Resolved via
-	/// RangeCalcRegistry - see docs/GameSerialization-Roadmap.md section 2's
-	/// TargetingSourceStrategy/PowerRangeCalc gap.
+	/// RangeCalcRegistry.
 	/// </summary>
 	JsonArray ToJson( ISerializationContext ctx );
 }

@@ -110,8 +110,8 @@ public abstract partial class Spirit
 
 	/// <summary>
 	/// Selects and resolves exactly one Growth action - safe to call repeatedly, one decision at a time,
-	/// with a JSON save/restore in between each call (see docs/GameSerialization-Roadmap.md's mid-action
-	/// note - this is the one boundary-safe unit of work for the Growth phase). GrowthTrack.Reset() must
+	/// with a JSON save/restore in between each call (saves are only valid between actions - this is
+	/// the one boundary-safe unit of work for the Growth phase). GrowthTrack.Reset() must
 	/// have already run once for the round (DoGrowth below does this for the common "run the whole phase"
 	/// case).
 	/// </summary>
@@ -223,7 +223,7 @@ public abstract partial class Spirit
 
 	// Recorded by GameBuilder.Build1Spirit as each aspect is applied - nothing else currently remembers
 	// which aspects a spirit was built with. Not yet consumed by anything; kept for a future Spirit.Mods
-	// restore-by-replay path (docs/GameSerialization-Roadmap.md).
+	// restore-by-replay path.
 	public List<AspectConfigKey> AppliedAspects = [];
 
 	#region Cards
@@ -578,8 +578,8 @@ public abstract partial class Spirit
 
 	/// <summary>
 	/// Named keys. Assumes the target Spirit was already reconstructed via the normal MakeSpirit +
-	/// aspect-application pipeline (real game setup, and how PowerCardRegistry/InnatePowerRegistry seed themselves - see
-	/// docs/GameSerialization-Roadmap.md section 4) *before* RestoreFromJson is called - it only
+	/// aspect-application pipeline (real game setup, and how PowerCardRegistry/InnatePowerRegistry seed themselves)
+	/// *before* RestoreFromJson is called - it only
 	/// overlays the runtime-mutable deltas on top, the same "construct through the normal path, then
 	/// overwrite fields" approach Fear/Island/BlightCard's FromJson already use.
 	///
@@ -605,9 +605,9 @@ public abstract partial class Spirit
 	/// already-replayed instance rather than constructing a fresh one (see its own ToJson remarks) -
 	/// same reasoning as the Mods bucket immediately below.
 	///
-	/// Mods (docs/ISpiritMod-Types.md): most entries need nothing here at all - constructing the Spirit
+	/// Mods: most entries need nothing here at all - constructing the Spirit
 	/// (or applying its aspect) already deterministically re-adds them, the same "replay is safe" logic
-	/// as GrowthTrack/InnatePowers above (the catalog's Low tier, verified empirically by
+	/// as GrowthTrack/InnatePowers above (verified empirically by
 	/// SpiritMods_LowTier_Tests). `mods` (ModsToJson/RestoreModsFromJson below) captures only the ones
 	/// that also carry small extra state on top (the catalog's Medium tier) via ISerializableSpiritMod -
 	/// SpiritModRegistry's own doc comment explains why most readers mutate an already-present instance
@@ -615,7 +615,7 @@ public abstract partial class Spirit
 	/// UnrelentingStrides, PourDownPower's RepeatLandCardForCost, IntensifyAirWater) - these track "used"
 	/// by reference-equality against their own live instance inside _usedActions/AllActions below, so
 	/// restoring them correctly needs Mods and _usedActions/_availableActions resolved in a coordinated
-	/// order, not just independently reconstructed - see docs/ISpiritMod-Types.md's High tier plan.
+	/// order, not just independently reconstructed - see IOwnedActionFactories.
 	///
 	/// Known gaps, documented rather than silently dropped:
 	/// - _availableActions/_usedActions: PowerCard/InnatePower/GrowthAction/FastSlowAction resolve (the
@@ -693,7 +693,7 @@ public abstract partial class Spirit
 
 	/// <summary>
 	/// Only mods implementing ISerializableSpiritMod are captured - see its own remarks. Everything else
-	/// in Mods (docs/ISpiritMod-Types.md's Low tier) is expected to already be correct after whatever
+	/// in Mods is expected to already be correct after whatever
 	/// reconstructs this Spirit replays its constructor/aspect selection, same reasoning as GrowthTrack/
 	/// InnatePowers above - not serialized here, not a gap.
 	/// </summary>
@@ -740,8 +740,7 @@ public abstract partial class Spirit
 		factories.Select( f => (JsonNode)SerializeActionFactory( f, ctx ) ).ToArray() );
 
 	/// <summary>
-	/// Checks every Mods entry that owns cached IActionFactory instances (docs/ISpiritMod-Types.md's
-	/// High tier) before falling through to the ordinary cases below - see IOwnedActionFactories'
+	/// Checks every Mods entry that owns cached IActionFactory instances before falling through to the ordinary cases below - see IOwnedActionFactories'
 	/// own remarks for why this has to come first.
 	/// </summary>
 	JsonArray SerializeActionFactory( IActionFactory factory, ISerializationContext ctx ) {
@@ -755,7 +754,7 @@ public abstract partial class Spirit
 			GrowthAction growth => SerializeGrowthAction( growth, ctx ),
 			FastSlowAction fastSlow => new JsonArray( "FastSlow", SelfCmdRegistry.Serialize( fastSlow.Cmd, ctx ) ),
 			ISerializableActionFactory custom => custom.ToJson( ctx ),
-			_ => throw new NotSupportedException( $"Spirit.ToJson doesn't support IActionFactory of type {factory.GetType().Name} yet - only PowerCard/InnatePower/GrowthAction/FastSlowAction/ISerializableActionFactory implementers are resolvable (see docs/GameSerialization-Roadmap.md section 4's 'Also out of scope' note)." )
+			_ => throw new NotSupportedException( $"Spirit.ToJson doesn't support IActionFactory of type {factory.GetType().Name} yet - only PowerCard/InnatePower/GrowthAction/FastSlowAction/ISerializableActionFactory implementers are resolvable." )
 		};
 	}
 

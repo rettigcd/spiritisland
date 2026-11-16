@@ -240,8 +240,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	/// runtime deltas - Track structure/slot contents (which Tracks exist on Energy/CardPlays) is
 	/// spirit-type data, identical every time the same concrete Spirit subtype is (re)constructed, so it
 	/// isn't captured here - same reasoning Spirit.ToJson uses for GrowthTrack's Groups/PickGroups
-	/// structure (InnatePowers too; GrowthTrack.Used is the one exception - see
-	/// docs/GameSerialization-Roadmap.md's Spirit-core-state section). Energy/CardPlays each serialize
+	/// structure (InnatePowers too; GrowthTrack.Used is the one exception). Energy/CardPlays each serialize
 	/// themselves via IPresenceTrack.ToJson/RestoreFromJson - handles CompoundPresenceTrack (Starlight
 	/// Seeks Its Form) and FinderTrack (Finder of Paths Unseen) as well as the plain PresenceTrack case.
 	/// customStateJson is CustomStateToJson below - SerpentPresence's AbsorbedPresences is the one known

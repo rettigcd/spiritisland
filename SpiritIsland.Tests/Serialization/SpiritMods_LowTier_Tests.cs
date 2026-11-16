@@ -1,7 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Spirit.Mods - Low tier (docs/ISpiritMod-Types.md): mods added unconditionally in a spirit's own
+/// Spirit.Mods - Low tier: mods added unconditionally in a spirit's own
 /// constructor, or deterministically by an aspect's ModSpirit, carrying zero extra runtime state. These
 /// need no new ToJson/RestoreFromJson code at all - GameState.RestoreFromJson's existing precondition
 /// (restore onto a GameState built "the same way" as the original, including the same spirit/aspect

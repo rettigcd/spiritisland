@@ -11,7 +11,7 @@ public interface IRunAfterInvaderPhase {
 	bool RemoveAfterRun { get; }
 
 	/// <summary>
-	/// Same shape as IRunBeforeInvaderPhase.ToJson() (docs/GameSerialization-Roadmap.md section 10) -
+	/// Same shape as IRunBeforeInvaderPhase.ToJson() -
 	/// added directly to the interface so PostInvaderPhaseActionRegistry/ActionList&lt;IRunAfterInvaderPhase&gt;
 	/// can call it generically. TriggerAfterNoRavageOrBuild is currently the only implementer.
 	/// </summary>

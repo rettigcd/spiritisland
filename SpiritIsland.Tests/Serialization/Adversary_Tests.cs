@@ -1,8 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for AdversaryConfig/AdversaryRegistry - docs/GameSerialization-Roadmap.md section 9,
-/// tier 2 (identity only). Level/escalation is static config fixed at construction, never reassigned
+/// Round-trips for AdversaryConfig/AdversaryRegistry (identity only). Level/escalation is static config fixed at construction, never reassigned
 /// anywhere in the engine, so {Name, Level} fully determines identity - no wiring/state to round-trip
 /// here, that's the harder tier 3 blocked on section 10 (hook action lists).
 /// </summary>
@@ -118,8 +117,7 @@ public class Adversary_Tests {
 	/// that fresh instance and leaving the engine's _token pointing at neither the original nor the
 	/// restored board. Since that orphaned instance is no longer a live island mod, it stops receiving
 	/// HandleTokenAddedAsync callbacks entirely: PressureForFastProfit would then wrongly conclude every
-	/// board received no Ravage Blight, forever, after any restore - see docs/GameSerialization-
-	/// Roadmap.md's Adversary section.
+	/// board received no Ravage Blight, forever, after any restore.
 	/// </summary>
 	[Fact]
 	public async Task RussiaLevel6_ResolveAfterTokensRestored_KeepsTokenWiredToBoardEvents() {
@@ -167,8 +165,7 @@ public class Adversary_Tests {
 		.Join( "|" );
 
 	/// <summary>
-	/// docs/GameSerialization-Roadmap.md's "Invader engine event/delegate fields" section: unlike
-	/// Ravage.Engine (proven above), nothing yet proves GameState.RestoreFromJson preserves
+	/// Invader engine event/delegate fields: unlike Ravage.Engine (proven above), nothing yet proves GameState.RestoreFromJson preserves
 	/// ExploreEngine.ExploredSpace/BuildEngine.BuildComplete-style `+=` subscriptions. Both are wired via
 	/// stateless static method groups (France.ExploreTheFrontier/SlaveLaborBuildAsync close over nothing
 	/// live), so replaying setup the normal way should reproduce them identically - this proves it by
@@ -260,8 +257,7 @@ public class Adversary_Tests {
 			gs.Adversary = adversary;
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
 			// GameConfiguration.BuildGame always sets these; this manual recipe must too, since
-			// GameState.ToJson asserts MajorCards/MinorCards non-null (docs/GameSerialization-
-			// Roadmap.md's PowerCardDeck section - now closed, every real game sets both).
+			// GameState.ToJson asserts MajorCards/MinorCards non-null.
 			gs.MajorCards = new PowerCardDeck( [], 0, PowerType.Major );
 			gs.MinorCards = new PowerCardDeck( [], 0, PowerType.Minor );
 			adversary.Init( gs );

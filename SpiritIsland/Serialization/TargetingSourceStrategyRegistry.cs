@@ -1,8 +1,8 @@
 namespace SpiritIsland.Serialization;
 
 /// <summary>
-/// Resolves an ITargetingSourceStrategy by tag - same tag-dispatch shape as BlightCardRegistry. Closes
-/// the "known gap" flagged in docs/GameSerialization-Roadmap.md section 2: an *active* non-default
+/// Resolves an ITargetingSourceStrategy by tag - same tag-dispatch shape as BlightCardRegistry. An
+/// *active* non-default
 /// strategy (EntwinedPower's EntwinedPresenceSource, Locus of the Serpent's Regard's
 /// IncludeSerpentsIncarna) used to throw in Spirit.ToJson/RestoreFromJson. Only 3 implementers exist
 /// solution-wide, so a small closed registry (not a general Spirit.Mods mechanism) is enough.

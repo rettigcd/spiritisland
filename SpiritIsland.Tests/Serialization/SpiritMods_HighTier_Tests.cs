@@ -4,7 +4,7 @@ using System.Reflection;
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Spirit.Mods - High tier (docs/ISpiritMod-Types.md): mods that track "used"/consumed state via
+/// Spirit.Mods - High tier: mods that track "used"/consumed state via
 /// reference-equality against their own cached IActionFactory instance(s) inside spirit.UsedActions.
 /// Closed via IOwnedActionFactories (SpiritIsland/Hooks/Spirit/IOwnedActionFactories.cs) - Spirit.
 /// SerializeActionFactory/DeserializeActionFactory checks every Mods entry implementing it before

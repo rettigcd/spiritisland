@@ -5,7 +5,7 @@ public record AdversaryConfig(string Name, int Level) {
 
 	/// <summary>
 	/// Level/escalation is static config, fixed once at Adversary construction and never reassigned
-	/// anywhere in the engine (see docs/GameSerialization-Roadmap.md section 9) - so {Name, Level}
+	/// anywhere in the engine - so {Name, Level}
 	/// alone fully determines an adversary's identity, no separate "progress" to capture.
 	/// </summary>
 	public JsonArray ToJson() => new JsonArray( Name, Level );

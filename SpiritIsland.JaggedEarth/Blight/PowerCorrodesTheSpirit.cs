@@ -18,7 +18,7 @@ public class PowerCorrodesTheSpirit : BlightCard, IRunBeforeInvaderPhase {
 	internal static void RegisterSerialization() {
 		BlightCardRegistry.Register( nameof( PowerCorrodesTheSpirit ), ( json, ctx ) => new PowerCorrodesTheSpirit() );
 		// Registers `this` as the IRunBeforeInvaderPhase entry - resolve to the live GameState.BlightCard,
-		// not a fresh instance. See docs/GameSerialization-Roadmap.md section 10.
+		// not a fresh instance.
 		PreInvaderPhaseActionRegistry.Register( nameof( PowerCorrodesTheSpirit ), ( json, ctx ) => (IRunBeforeInvaderPhase)ctx.BlightCard );
 	}
 

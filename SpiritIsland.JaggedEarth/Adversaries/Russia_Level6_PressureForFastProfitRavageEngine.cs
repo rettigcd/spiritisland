@@ -19,8 +19,7 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 	}
 
 	/// <summary>
-	/// Fixes the reference-identity bug described in docs/GameSerialization-Roadmap.md's Adversary
-	/// section: replaying Init on a restored GameState reconstructs this engine and a fresh
+	/// Fixes a reference-identity bug: replaying Init on a restored GameState reconstructs this engine and a fresh
 	/// RecordBlightAdded together (see the constructor), but Tokens_ForIsland.FromJson then
 	/// wipes/replaces island mods with whatever the JSON snapshot says - discarding that fresh instance
 	/// as an island mod without updating _token, which would otherwise keep pointing at an instance no

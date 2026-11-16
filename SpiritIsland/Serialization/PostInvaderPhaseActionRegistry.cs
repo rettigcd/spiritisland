@@ -4,7 +4,7 @@ namespace SpiritIsland.Serialization;
 /// Resolves an IRunAfterInvaderPhase entry by tag. Same shape as PreInvaderPhaseActionRegistry (tag-keyed
 /// reader dispatch, [ModuleInitializer] self-registration) - kept separate because it's a different hook
 /// list (GameState._postInvaderPhaseActions), not interchangeable with _preInvaderPhaseActions/
-/// _timePassesActions. See docs/GameSerialization-Roadmap.md section 10.
+/// _timePassesActions.
 /// </summary>
 public static class PostInvaderPhaseActionRegistry {
 

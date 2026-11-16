@@ -4,7 +4,7 @@ using System.Reflection;
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Spirit.Mods - Medium tier (docs/ISpiritMod-Types.md): mods reconstructed deterministically like Low
+/// Spirit.Mods - Medium tier: mods reconstructed deterministically like Low
 /// tier, but carrying small extra state (a bool/int) that needs its own ISerializableSpiritMod hook.
 ///
 /// Several of these mod classes are internal to their own project with private state fields - by

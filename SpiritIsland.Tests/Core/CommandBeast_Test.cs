@@ -3,7 +3,7 @@ namespace SpiritIsland.Tests;
 /// <summary>
 /// CommandBeasts now becomes available by adding itself to Spirit.Mods (IModifyAvailableActions) once
 /// triggered, and removes itself from Mods when used. Only 1 rewind test remains here on purpose:
-/// Spirit.Mods (ModBucket) has no IHaveMemento coverage (docs/ISpiritMod-Types.md), so
+/// Spirit.Mods (ModBucket) has no IHaveMemento coverage, so
 /// ((IHaveMemento)gs).Memento save/restore can't roll back a Mods.Add/Remove that happened after the
 /// snapshot was taken - only cases where the snapshot precedes the trigger (so re-running the Invader
 /// Phase naturally re-triggers and re-adds it) round-trip correctly. That's not a live gameplay gap:

@@ -1,7 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for InvaderCard/InvaderSlot/InvaderDeck - docs/GameSerialization-Roadmap.md section 5.
+/// Round-trips for InvaderCard/InvaderSlot/InvaderDeck.
 /// </summary>
 public class InvaderDeck_Tests {
 

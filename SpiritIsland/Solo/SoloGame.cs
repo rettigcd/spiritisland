@@ -333,7 +333,7 @@ public class SoloGame {
 	/// <summary>
 	/// The whole game as of now: GameState plus the round-step cursor, so it can be written to disk and
 	/// later passed to <see cref="Load"/> on a freshly built SoloGame. Only valid at an action boundary -
-	/// not while an action is awaiting a decision (see docs/GameSerialization-Roadmap.md).
+	/// not while an action is awaiting a decision (a suspended Task can't be serialized).
 	/// </summary>
 	public JsonObject Save() {
 		JsonObject snapshot = GameState.ToJson( new GameStateSerializationContext( GameState ) );

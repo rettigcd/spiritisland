@@ -103,7 +103,7 @@ public class RoundScopeCleanup_Tests {
 
 	[Fact]
 	public async Task PowerRangeCalc_TemporaryOverride_RollsBackOnTimePasses() {
-		// docs/GameSerialization-Roadmap.md section 10: this used to schedule a separate
+		// This used to schedule a separate
 		// TimePassesAction.Once closure (unserializable); the rollback now lives directly in
 		// Spirit.TimePasses, so it fires from the same round-end call every other cleanup here does.
 		var gs = new SoloGameState();

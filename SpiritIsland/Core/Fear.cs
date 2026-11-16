@@ -145,7 +145,7 @@ public class Fear : IHaveMemento {
 	/// Fear(gs)` then overwrites every field from JSON, same as Island.FromJson going through Island's
 	/// normal constructor rather than bypassing it. Standalone convenience only - GameState.Fear has no
 	/// setter (an adversary can subscribe to the *existing* Fear's CardActivated event during Init replay,
-	/// e.g. Russia L6 - see docs/GameSerialization-Roadmap.md's Adversary section), so a full-GameState
+	/// e.g. Russia L6), so a full-GameState
 	/// restore must call <see cref="RestoreFromJson"/> on the GameState's own Fear instance instead of
 	/// swapping in one of these. </remarks>
 	public static Fear FromJson( JsonObject json, GameState gs ) {

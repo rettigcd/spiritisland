@@ -1,8 +1,8 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for TargetingSourceStrategyRegistry/RangeCalcRegistry - docs/GameSerialization-Roadmap.md
-/// section 2's "known gap" (an active non-default TargetingSourceStrategy/PowerRangeCalc used to throw).
+/// Round-trips for TargetingSourceStrategyRegistry/RangeCalcRegistry (an active non-default
+/// TargetingSourceStrategy/PowerRangeCalc used to throw).
 /// Spirit_Tests covers the single-level case at the Spirit.ToJson/RestoreFromJson level; these cover the
 /// two shapes that need more than one spirit or more than one recursion level.
 /// </summary>

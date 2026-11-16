@@ -21,8 +21,8 @@ public interface IAdversary {
 	public string Describe();
 
 	/// <summary>
-	/// {Name, Level} - Level is fixed at construction and never reassigned (see
-	/// docs/GameSerialization-Roadmap.md section 9), so this fully captures identity. Round-trips via
+	/// {Name, Level} - Level is fixed at construction and never reassigned,
+	/// so this fully captures identity. Round-trips via
 	/// AdversaryConfig.ToJson()/FromJson() and AdversaryRegistry.Build(config).
 	/// </summary>
 	AdversaryConfig Config => new( Name, Level );

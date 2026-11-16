@@ -4,7 +4,7 @@ namespace SpiritIsland.Tests.Serialization;
 /// Proves the DTO+registry serialization design end-to-end against 3 representative
 /// Medium-complexity types: a bare `Spirit` reference, a `TargetSpaceCtx` reference plus
 /// mutable state, and an array of `ITokenClass` singletons resolved via the token-class
-/// registry. See docs/ISpaceEntity-Types.md for the complexity catalog this is based on.
+/// registry.
 /// </summary>
 public class SpaceEntitySerialization_Tests {
 

@@ -1,8 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// GameState.ToJson/RestoreFromJson - the restore driver docs/GameSerialization-Roadmap.md calls for,
-/// sequencing every already-covered section (Tokens, InvaderDeck, Fear, PowerCardDeck, BlightCard,
+/// GameState.ToJson/RestoreFromJson - the restore driver, sequencing every already-covered section (Tokens, InvaderDeck, Fear, PowerCardDeck, BlightCard,
 /// Spirits, hook action lists, ReminderCards) onto an already normally-constructed GameState in the
 /// order that's actually safe.
 /// </summary>

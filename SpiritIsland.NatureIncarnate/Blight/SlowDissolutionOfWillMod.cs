@@ -4,11 +4,8 @@ namespace SpiritIsland.NatureIncarnate;
 /// Split from SlowDissolutionOfWill (the blight card): the recurring Invader-Phase behavior, and the
 /// per-spirit token choice it depends on, live here instead - not entangled with the BlightCard's own
 /// identity. Not ISpaceEntity, per the standing correction that IRunBeforeInvaderPhase-only types are
-/// never placed on a Space (see docs/ISpaceEntity-Types.md). Registered with
-/// PreInvaderPhaseActionRegistry, same tag-dispatch shape as BlightCardRegistry/SpaceEntitySerialization -
-/// nothing calls PreInvaderPhaseActionRegistry.Deserialize end-to-end yet (that needs GameState's
-/// hook-action-list serialization, docs/GameSerialization-Roadmap.md section 10), but this is ready
-/// for whenever it does.
+/// never placed on a Space. Registered with
+/// PreInvaderPhaseActionRegistry, same tag-dispatch shape as BlightCardRegistry/SpaceEntitySerialization.
 /// </summary>
 class SlowDissolutionOfWillMod : IRunBeforeInvaderPhase {
 

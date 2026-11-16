@@ -12,10 +12,7 @@ namespace SpiritIsland.Serialization;
 /// already have an unrelated ToJson(ISerializationContext) for a completely different purpose - full
 /// board/spirit state - and reusing that signature here would be a confusing double meaning).
 ///
-/// Remaining gaps (card/blight-effect-created objects needing identity resolution back to an
-/// already-placed live instance, and the 8 TimePassesAction.Once(...) closures) are documented in
-/// docs/GameSerialization-Roadmap.md section 10, not handled here - Serialize/Deserialize throw
-/// NotSupportedException for anything not registered, same fail-loud approach as every other registry
+/// Serialize/Deserialize throw NotSupportedException for anything not registered, same fail-loud approach as every other registry
 /// in this project.
 /// </summary>
 public static class TimePassesActionRegistry {
@@ -25,7 +22,7 @@ public static class TimePassesActionRegistry {
 		Healer healer => new JsonArray( "Healer", healer.ToJson() ),
 		Spirit spirit => new JsonArray( "Spirit", ctx.IndexOf( spirit ) ),
 		ISerializableTimePassesAction custom => custom.ToJson( ctx ),
-		_ => throw new NotSupportedException( $"TimePassesActionRegistry doesn't know how to serialize IRunWhenTimePasses of type {action.GetType().Name} yet - implement ISerializableTimePassesAction and register a reader (see docs/GameSerialization-Roadmap.md section 10)." )
+		_ => throw new NotSupportedException( $"TimePassesActionRegistry doesn't know how to serialize IRunWhenTimePasses of type {action.GetType().Name} yet - implement ISerializableTimePassesAction and register a reader." )
 	};
 
 	public static IRunWhenTimePasses Deserialize( JsonArray json, ISerializationContext ctx ) {

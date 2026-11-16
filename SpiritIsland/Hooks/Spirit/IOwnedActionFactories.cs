@@ -2,7 +2,7 @@ namespace SpiritIsland;
 
 /// <summary>
 /// Implemented by ISpiritMod types whose own IActionFactory field(s) get compared against
-/// spirit.UsedActions/AllActions by reference later (docs/ISpiritMod-Types.md's High tier -
+/// spirit.UsedActions/AllActions by reference later (
 /// ShadowsPartakeOfAmorphousSpace, PourDownPower, MistsSteadilyDrift, StrandedInTheShiftingMists,
 /// UnrelentingStrides, MarkedBeastMover). Spirit.SerializeActionFactory/DeserializeActionFactory checks
 /// every Mods entry implementing this FIRST, before falling through to the ordinary PowerCard/

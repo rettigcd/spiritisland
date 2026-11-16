@@ -117,7 +117,7 @@ public class InvaderDeck : IHaveMemento {
 	/// call <see cref="RestoreFromJson"/> on the GameState's own (already adversary-wired) InvaderDeck
 	/// instead of swapping in one of these, since this constructs brand new Explore/Build/Ravage slots
 	/// with default Engines, discarding whatever an adversary's Init wired up (e.g. Russia L6's
-	/// Ravage.Engine) - see docs/GameSerialization-Roadmap.md's Adversary section. </remarks>
+	/// Ravage.Engine). </remarks>
 	public static InvaderDeck FromJson( JsonObject json ) {
 		var unrevealedCards = ( (JsonArray)json["UnrevealedCards"]! ).Select( n => InvaderCardRegistry.Deserialize( (JsonArray)n! ) ).ToList();
 		var deck = new InvaderDeck( unrevealedCards, [ new Queue<InvaderCard>(), new Queue<InvaderCard>(), new Queue<InvaderCard>() ] );

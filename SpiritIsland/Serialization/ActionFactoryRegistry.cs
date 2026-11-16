@@ -5,7 +5,7 @@ namespace SpiritIsland.Serialization;
 /// Spirit.SerializeActionFactory/DeserializeActionFactory handle directly) - same tag-dispatch shape as
 /// BlightCardRegistry/SelfCmdRegistry. Types implement ISerializableActionFactory and self-register via
 /// [ModuleInitializer]. Only the RepeatCardForCost family (RepeatCardForCost/RepeatCheapestCardForCost/
-/// RepeatSpecificCardForCost) registers today - see docs/GameSerialization-Roadmap.md section 2/row 2.
+/// RepeatSpecificCardForCost) registers today.
 /// </summary>
 public static class ActionFactoryRegistry {
 

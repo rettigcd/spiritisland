@@ -1,7 +1,7 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for PowerCard/InnatePower identity - docs/GameSerialization-Roadmap.md section 4.
+/// Round-trips for PowerCard/InnatePower identity.
 /// PowerCard/InnatePower are fully immutable (no Flipped-equivalent state), so these are pure identity
 /// lookups, not state round-trips.
 /// </summary>

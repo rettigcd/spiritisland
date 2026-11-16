@@ -2,9 +2,7 @@ namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
 /// Round-trips for the "Free"/"Small"/"Small-Medium" hook-action-list entries and the generic
-/// ActionList&lt;T&gt; JSON shape - docs/GameSerialization-Roadmap.md section 10. The remaining Medium/
-/// Blocked entries in that section's table have no JSON path yet - the registries throw for anything
-/// not registered, same fail-loud approach as every other registry in this project.
+/// ActionList&lt;T&gt; JSON shape. The registries throw for anything not registered, same fail-loud approach as every other registry in this project.
 /// </summary>
 public class HookActionList_Tests {
 
@@ -337,7 +335,7 @@ public class HookActionList_Tests {
 		gs.PostInvaderPhaseActionsToJson( ctx ).ToJsonString().ShouldBe( json.ToJsonString() );
 	}
 
-	// -- Tier-1 "closure -> named type" conversions (docs/GameSerialization-Roadmap.md section 10) --
+	// -- "closure -> named type" conversions --
 	// Each of these is internal to its own expansion assembly, so - same as SlaveRebellion/
 	// LandStrippedBare above - it's constructed via reflection rather than a public API.
 
@@ -431,8 +429,7 @@ public class HookActionList_Tests {
 
 	[Fact]
 	public async Task TimePassesActionRegistry_ResolvesWeaveTogetherTheFabricOfPlace_UnweaveSpaces() {
-		// UnweaveSpaces replaces the old TimePassesAction.Once(...) closure (docs/GameSerialization-
-		// Roadmap.md's hook action lists section) - the interesting identity-resolution case here is that
+		// UnweaveSpaces replaces the old TimePassesAction.Once(...) closure - the interesting identity-resolution case here is that
 		// spaceSpec/otherSpec are *detached* from their Board while the weave is active, so they only
 		// resolve back via the still-attached joined space's MultiSpaceSpec.OrigSpaces, not directly by
 		// label. One Explorer is left on the joined space so DistributeVisibleTokens (the "divide pieces
@@ -489,7 +486,7 @@ public class HookActionList_Tests {
 		board.InvaderActionCount.ShouldBe( 1 );
 	}
 
-	// -- GameCmd.AtTheStartOfNextRound (Medium tier, docs/GameSerialization-Roadmap.md section 10) --
+	// -- GameCmd.AtTheStartOfNextRound --
 	// Both current callers build a fully static, parameterless command graph, so NextRoundCommand only
 	// needs to round-trip which named command it is (via NextRoundCommandRegistry), not any captured
 	// state - proven here by actually running the restored entry and checking its real effect landed.

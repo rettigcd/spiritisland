@@ -3,8 +3,7 @@ namespace SpiritIsland.Serialization;
 /// <summary>
 /// Resolves an IRunBeforeInvaderPhase entry by tag. Same shape as SpaceEntitySerialization/
 /// BlightCardRegistry (tag-keyed reader dispatch, [ModuleInitializer] self-registration), kept
-/// separate because IRunBeforeInvaderPhase is deliberately not ISpaceEntity (see the standing
-/// correction in docs/ISpaceEntity-Types.md) - these live in GameState's own hook action list
+/// separate because IRunBeforeInvaderPhase is deliberately not ISpaceEntity - these live in GameState's own hook action list
 /// (_preInvaderPhaseActions), not on a Space.
 ///
 /// Only covers types whose IRunBeforeInvaderPhase entry is its own standalone object (like
@@ -12,8 +11,7 @@ namespace SpiritIsland.Serialization;
 /// PowerCorrodesTheSpirit, UntendedLandCrumbles, AttenuatedEssence, BlightCorrodesTheSpirit) instead
 /// register the BlightCard itself as the IRunBeforeInvaderPhase entry - reconstructing those means
 /// resolving back to the existing GameState.BlightCard instance, not building a fresh object, which
-/// this registry doesn't attempt. That's the harder half of
-/// docs/GameSerialization-Roadmap.md section 10, still unsolved.
+/// this registry doesn't attempt; each such card registers a reader that returns ctx.BlightCard.
 /// </summary>
 public static class PreInvaderPhaseActionRegistry {
 

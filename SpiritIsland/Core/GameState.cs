@@ -283,9 +283,8 @@ public class GameState : IHaveMemento {
 
 	/// <summary>
 	/// Only the entries covered by TimePassesActionRegistry (Tokens_ForIsland/Healer/Spirit, plus
-	/// anything implementing ISerializableTimePassesAction) actually round-trip today - see
-	/// docs/GameSerialization-Roadmap.md section 10 for what's still missing (identity-resolution
-	/// cases, TimePassesAction.Once(...) closures). Restoring onto a GameState already reconstructed
+	/// anything implementing ISerializableTimePassesAction) round-trip; the registry throws for anything
+	/// else. Restoring onto a GameState already reconstructed
 	/// through the normal constructor + InitSpirits (which already re-added the free entries) is safe:
 	/// the deserialized list replaces _timePassesActions wholesale with an equivalent one, same
 	/// identities/order.
@@ -328,8 +327,7 @@ public class GameState : IHaveMemento {
 	public void RestoreBlightCardsFromJson( JsonArray json, ISerializationContext ctx ) => BlightCards = json.Select( n => BlightCard.FromJson( (JsonArray)n!, ctx ) ).ToList();
 
 	/// <summary>
-	/// ReminderCards is pure UI state (StatusPanel reminder-icon list, see docs/GameSerialization-
-	/// Roadmap.md section 10) - its only real producer is CommandBeasts, which is independently restored
+	/// ReminderCards is pure UI state (StatusPanel reminder-icon list) - its only real producer is CommandBeasts, which is independently restored
 	/// into Spirits[0].Mods via SpiritModRegistry (it's an ISerializableSpiritMod). Resolving by Title
 	/// against that already-restored Mods bucket, rather than constructing a second, disconnected
 	/// CommandBeasts, matters because ActivateAsync calls gs.ReminderCards.Remove(this) on the live Mods
@@ -382,9 +380,8 @@ public class GameState : IHaveMemento {
 	};
 
 	/// <summary>
-	/// The restore driver docs/GameSerialization-Roadmap.md's Adversary section calls for: sequences
-	/// every section above onto `this` in the only order that's actually safe, given the
-	/// identity-resolution dependencies documented throughout this file and that doc.
+	/// The restore driver: sequences every section above onto `this` in the only order that's actually
+	/// safe, given the identity-resolution dependencies documented throughout this file.
 	///
 	/// Precondition: `this` must already be a normally-constructed GameState built the same way the
 	/// original was (same boards/spirits/adversary/ShuffleNumber, e.g. via

@@ -18,8 +18,7 @@ public interface IPresenceTrack: IHaveMemento {
 	/// Only 3 implementers exist solution-wide (PresenceTrack, CompoundPresenceTrack, FinderTrack) - a
 	/// plain interface member is enough, no registry needed (same reasoning as
 	/// ITargetingSourceStrategy.ToJson, minus the ISerializationContext - no Spirit/SpaceSpec references
-	/// are involved here). Closes the gap docs/GameSerialization-Roadmap.md's Spirit-core-state section
-	/// used to flag: SpiritPresence.ToJson/RestoreFromJson used to throw for anything but a plain
+	/// are involved here). SpiritPresence.ToJson/RestoreFromJson used to throw for anything but a plain
 	/// PresenceTrack. Restores onto an already-constructed track (same "existing target" shape as
 	/// PresenceTrack.SetRevealedCount already used), not a freshly-built one - track *structure* (which
 	/// slots exist) is spirit-type data, identical every time the same concrete Spirit is reconstructed.

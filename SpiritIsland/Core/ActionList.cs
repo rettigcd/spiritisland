@@ -39,7 +39,7 @@ public abstract class ActionList<T> : IHaveMemento {
 	/// Ordered [ [tag, ...], ... ] - the serialize/deserialize delegates are supplied by the caller
 	/// (e.g. TimePassesActionRegistry) rather than baked in here, since each concrete ActionList&lt;T&gt;
 	/// (TimePassesActionList/PreInvaderPhaseActionList/PostInvaderPhaseActionList) holds a different T
-	/// needing a different registry. See docs/GameSerialization-Roadmap.md section 10.
+	/// needing a different registry.
 	/// </summary>
 	public JsonArray ToJson( ISerializationContext ctx, Func<T, ISerializationContext, JsonArray> serialize ) =>
 		new JsonArray( _actions.Select( a => (JsonNode)serialize( a, ctx ) ).ToArray() );

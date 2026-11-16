@@ -1,9 +1,8 @@
 namespace SpiritIsland.Tests.Serialization;
 
 /// <summary>
-/// Round-trips for Tokens_ForIsland.ToJson/FromJson - the container driver from
-/// docs/GameSerialization-Roadmap.md section 1, built on top of the already-complete
-/// ISerializableSpaceEntity catalog (docs/ISpaceEntity-Types.md).
+/// Round-trips for Tokens_ForIsland.ToJson/FromJson - the container driver, built on top of
+/// ISerializableSpaceEntity.
 /// </summary>
 public class Tokens_ForIsland_Tests {
 
@@ -116,7 +115,7 @@ public class Tokens_ForIsland_Tests {
 
 	[Fact]
 	public void FromJson_WipesTarget_RatherThanMergingOntoExistingState() {
-		// docs/GameSerialization-Roadmap.md section 9: an Adversary's Init/Adjust could mutate a
+		// An Adversary's Init/Adjust could mutate a
 		// normally-constructed Tokens_ForIsland (island mods, token counts) before this runs. FromJson
 		// must discard that pre-existing state entirely rather than merging it with the JSON - otherwise
 		// restoring a game with 0 Blight on a space would leave whatever Blight Init happened to add.
