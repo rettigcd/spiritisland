@@ -16,6 +16,7 @@ class OpenTheWays : IActionFactory {
 		if(self is not FinderOfPathsUnseen finder) return;
 
 		var options = self.Presence.Lands.ToList();
+		if( options.Count < 2 ) return; // need 2 lands to make adjacent
 		// Select 2 space to link
 		var end0 = await self.SelectAlways( "Select 1st space to make adjacent", options );
 		options.Remove( end0 );

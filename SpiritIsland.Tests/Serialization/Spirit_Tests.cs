@@ -593,6 +593,33 @@ public class Spirit_Tests {
 		target.GatewayToken.ShouldBeSameAs( restoredOnFrom ); // spirit resolves to that same instance, not a fresh one
 	}
 
+	/// <summary> A gateway removes itself from the board when presence at an end leaves, but the spirit still references it.
+	/// That stale reference must not be saved (there is nothing to resolve it to on restore). </summary>
+	[Fact]
+	public void RoundTrips_FinderOfPathsUnseen_RemovedGatewayTokenIsSavedAsNone() {
+		var gs = new SoloGameState( new SpiritIsland.FeatherAndFlame.FinderOfPathsUnseen(), Boards.A );
+		gs.Initialize();
+		var ctx = CtxFor( gs );
+		var original = (SpiritIsland.FeatherAndFlame.FinderOfPathsUnseen)gs.Spirit;
+
+		Space from = gs.Tokens[gs.Board[2]];
+		Space to = gs.Tokens[gs.Board[4]];
+		original.GatewayToken = new GatewayToken( original.Presence.Token, from, to );
+		original.GatewayToken.RemoveSelf(); // the spirit still references it, but it is off the board
+
+		JsonObject tokensJson = gs.Tokens.ToJson( ctx );
+		JsonObject spiritJson = original.ToJson( ctx );
+
+		var restoredGs = new SoloGameState( new SpiritIsland.FeatherAndFlame.FinderOfPathsUnseen(), Boards.A );
+		restoredGs.Initialize();
+		var restoredCtx = CtxFor( restoredGs );
+		Tokens_ForIsland.FromJson( restoredGs.Tokens, tokensJson, restoredCtx );
+		var target = (SpiritIsland.FeatherAndFlame.FinderOfPathsUnseen)restoredGs.Spirit;
+		target.RestoreFromJson( spiritJson, restoredCtx );
+
+		target.GatewayToken.ShouldBeNull();
+	}
+
 	[Fact]
 	public void RoundTrips_FracturedDaysSplitTheSky_RandomizerPositionTimeAndDecks() {
 		var gs = new SoloGameState( new SpiritIsland.JaggedEarth.FracturedDaysSplitTheSky() );

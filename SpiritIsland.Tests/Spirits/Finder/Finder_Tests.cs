@@ -55,6 +55,20 @@ public class Finder_Tests : BoardAGame {
 		_spirit.Presence.IsOnIsland.ShouldBeFalse();
 	}
 
+	[Fact]
+	public async Task OpenTheWays_WithPresenceOnOnlyOneLand_DoesNothing() {
+		// Given: presence on only 1 land
+		foreach(var space in _spirit.Presence.Lands.ToArray())
+			space.Init(_spirit.Presence.Token,0);
+		_gameState.Island.Boards[0][3].ScopeSpace.Init(_spirit.Presence.Token,1);
+
+		// When: Open the Ways is used (2 lands are needed to make adjacent)
+		// Then: it completes without prompting or throwing, and no gateway is made
+		IActionFactory openTheWays = ((IOwnedActionFactories)_spirit).ResolveActionFactory("openTheWays");
+		await openTheWays.ActivateAsync(_spirit).ShouldComplete();
+		((FinderOfPathsUnseen)_spirit).GatewayToken.ShouldBeNull();
+	}
+
 	async Task Do_Growth2( string fromTrack, string destination ){
 		await _spirit.DoGrowthForTestsAsync(_gameState).AwaitUser( u=>{
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(1)");

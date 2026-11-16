@@ -102,6 +102,17 @@ public class SpiritMods_HighTier_Tests {
 	}
 
 	[Fact]
+	public void FinderOpenTheWays_SurvivesRestore() {
+		Spirit spirit = BuildAndRestore( SpiritIsland.FeatherAndFlame.FinderOfPathsUnseen.Name, [], ( gs, s ) => {
+			var owner = OwnerByTag( s, "FinderOfPathsUnseen" );
+			UsedActionsList( s ).Add( owner.ResolveActionFactory( "openTheWays" ) );
+		} );
+
+		var owner = OwnerByTag( spirit, "FinderOfPathsUnseen" );
+		spirit.UsedActions.ShouldContain( owner.ResolveActionFactory( "openTheWays" ) );
+	}
+
+	[Fact]
 	public void UnrelentingStrides_SurvivesRestore() {
 		Spirit spirit = BuildAndRestore( SpiritIsland.NatureIncarnate.EmberEyedBehemoth.Name, [], ( gs, s ) => {
 			var owner = OwnerByTag( s, "UnrelentingStrides" );

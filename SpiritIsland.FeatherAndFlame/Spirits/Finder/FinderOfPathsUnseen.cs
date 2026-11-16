@@ -1,7 +1,7 @@
 ﻿
 namespace SpiritIsland.FeatherAndFlame;
 
-public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
+public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions, IOwnedActionFactories {
 
 	public const string Name = "Finder Of Paths Unseen";
 
@@ -129,12 +129,33 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 	/// Tokens_ForIsland.FromJson restores an instance there on its own - this only needs enough to find
 	/// that live instance again, not reconstruct a second one. Reuses GatewayToken's own ToJson (index 2
 	/// is the "_from" space's label) rather than duplicating its field list - pulled out as a plain
-	/// string, since a JsonNode already owned by that temporary array can't also be attached here. </summary>
-	protected override JsonNode? CustomStateToJson( ISerializationContext ctx )
-		=> GatewayToken is null ? null : ( (ISerializableSpaceEntity)GatewayToken ).ToJson( ctx )[2]!.GetValue<string>();
+	/// string, since a JsonNode already owned by that temporary array can't also be attached here.
+	/// A gateway that has removed itself from the board (GatewayToken.RemoveSelf, e.g. when the presence at an end leaves)
+	/// is still referenced by this field but is not on any space, so there is nothing to find on restore: save it as none. </summary>
+	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) {
+		if( GatewayToken is null ) return null;
+		string from = ( (ISerializableSpaceEntity)GatewayToken ).ToJson( ctx )[2]!.GetValue<string>();
+		bool stillOnBoard = ctx.Tokens[ctx.SpaceSpecByLabel( from )].OfType<GatewayToken>().Any( g => g == GatewayToken );
+		return stillOnBoard ? from : null;
+	}
 
 	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx )
 		=> GatewayToken = json is null ? null : ctx.ExistingSpaceEntity<GatewayToken>( ctx.SpaceSpecByLabel( json.GetValue<string>() ) );
+
+	#region IOwnedActionFactories
+
+	// _openTheWays is added to the available actions by Modify above, so it can end up in the saved action lists.
+	// Restoring must resolve it back to this spirit's own cached instance (the spirit is its own mod), not a new one.
+	const string OpenTheWaysKey = "openTheWays";
+
+	string IOwnedActionFactories.ModTag => "FinderOfPathsUnseen";
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory ) => factory == _openTheWays ? OpenTheWaysKey : null;
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key )
+		=> key == OpenTheWaysKey ? _openTheWays : throw new ArgumentException( $"Unknown key '{key}'" );
+
+	#endregion IOwnedActionFactories
 
 	readonly OpenTheWays _openTheWays;
 
