@@ -9,12 +9,12 @@ public static class StaticViewBuilder {
 
 	public static StaticView Build( GameState gs ) {
 		ActionScope.Initialize( gs.RootScope ); // engine state is read through the AsyncLocal scope
-		SpaceSpec[] specs = [.. gs.SpaceSpecs_Unfiltered];
+		var screen = ScreenCoordinates.For( gs ); // the engine's y points up, a screen's down
 		var content = new StaticView(
 			StaticVersion: "",
 			new SetupView( [.. gs.Island.Boards.Select( b => b.Name )], AdversaryOf( gs ) ),
-			Bounds( new BoundsBuilder( specs.Select( s => s.Layout.Bounds ) ).GetBounds() ),
-			[.. gs.Spaces_Unfiltered.Select( GeometryOf )],
+			Bounds( screen.World ),
+			[.. gs.Spaces_Unfiltered.Select( s => GeometryOf( s, screen ) )],
 			[.. gs.Spirits.Select( SpiritOf )] );
 		return content with { StaticVersion = Version( content ) };
 	}
@@ -27,14 +27,14 @@ public static class StaticViewBuilder {
 		=> gs.Adversary is { Level: var level } adversary && adversary.Builder is not NullAdversaryBuilder
 			? new AdversaryView( adversary.Name, level, adversary.Describe() ) : null;
 
-	static SpaceGeometry GeometryOf( Space space ) {
+	static SpaceGeometry GeometryOf( Space space, ScreenCoordinates screen ) {
 		SpaceLayout layout = space.SpaceSpec.Layout;
 		ManageInternalPoints points = new( layout );
 		return new SpaceGeometry(
 			space.SpaceSpec.Label,
 			string.Join( "/", Enum.GetValues<Terrain>().Where( t => t != Terrain.None && space.SpaceSpec.Is( t ) ) ),
-			[.. layout.Corners.Select( Point )],
-			Point( points.NameLocation ),
+			[.. layout.Corners.Select( screen.Point )],
+			screen.Point( points.NameLocation ),
 			points.TokenSize,
 			[.. space.Adjacent_Existing.Select( a => a.SpaceSpec.Label )] );
 	}
@@ -50,6 +50,5 @@ public static class StaticViewBuilder {
 	static SlotView SlotOf( Track slot )
 		=> new( slot.Code, ((IOption)slot).Text, slot.Energy, slot.CardPlay, [.. slot.Elements.Select( e => e.ToString() )] );
 
-	static PointView Point( XY p ) => new( p.X, p.Y );
 	static BoundsView Bounds( Bounds b ) => new( b.X, b.Y, b.Width, b.Height );
 }

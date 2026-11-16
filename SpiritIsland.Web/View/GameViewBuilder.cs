@@ -11,11 +11,12 @@ public static class GameViewBuilder {
 	/// <param name="viewer">The spirit that belongs to the person looking.</param>
 	public static GameView Build( GameState gs, Spirit viewer ) {
 		ActionScope.Initialize( gs.RootScope ); // engine state is read through the AsyncLocal scope
+		var screen = ScreenCoordinates.For( gs ); // positions are sent the way up a screen draws them
 		return new GameView(
 			gs.RoundNumber, gs.Phase.ToString(),
 			FearOf( gs ), BlightOf( gs ), InvadersOf( gs ),
 			viewer.SpiritName, [.. gs.Spirits.Select( SpiritOf )],
-			[.. gs.Spaces_Unfiltered.Select( SpaceOf )] );
+			[.. gs.Spaces_Unfiltered.Select( s => SpaceOf( s, screen ) )] );
 	}
 
 	static FearView FearOf( GameState gs ) => new(
@@ -64,13 +65,13 @@ public static class GameViewBuilder {
 		=> new( c.Title, c.Title, c.Cost, c.Speed.ToString(), c.Elements.BuildElementString( true ), c.RangeText, c.TargetFilter, c.Instructions );
 
 	/// <summary> Token positions come from the same layout the other UIs use, so they are always inside their space. </summary>
-	static SpaceView SpaceOf( Space space ) {
+	static SpaceView SpaceOf( Space space, ScreenCoordinates screen ) {
 		ManageInternalPoints points = new ManageInternalPoints( space.SpaceSpec.Layout ).Init( space );
-		return new SpaceView( space.SpaceSpec.Label, [.. space.OfType<IToken>().OrderBy( t => t.Text ).Select( t => TokenOf( space, points, t ) )] );
+		return new SpaceView( space.SpaceSpec.Label, [.. space.OfType<IToken>().OrderBy( t => t.Text ).Select( t => TokenOf( space, points, t, screen ) )] );
 	}
 
-	static TokenView TokenOf( Space space, ManageInternalPoints points, IToken token ) {
-		XY at = points.GetPointFor( token );
+	static TokenView TokenOf( Space space, ManageInternalPoints points, IToken token, ScreenCoordinates screen ) {
+		PointView at = screen.Point( points.GetPointFor( token ) );
 		return new TokenView(
 			token.Text,
 			token is SpiritPresenceToken presence ? "Presence:" + presence.Self.SpiritName : token.Img.ToString(),

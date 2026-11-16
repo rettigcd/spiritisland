@@ -60,6 +60,28 @@ public class StaticView_Tests( GamesFactory factory ) : IClassFixture<GamesFacto
 	}
 
 	[Fact]
+	public void TheIsland_IsTheSameWayUpAsTheDesktopAppsDrawIt() {
+		// The engine's y points up and a screen's points down. The desktop apps turn the island over with PointMapper
+		// (see FromWorldToViewport); the view's positions must be where PointMapper puts them, so a client draws them as they are.
+		GameState gs = GameSetup.Builder.BuildGame( GameSetup.Configure( River ) );
+		ActionScope.Initialize( gs.RootScope );
+		StaticView view = StaticViewBuilder.Build( gs );
+		Bounds world = new BoundsBuilder( gs.SpaceSpecs_Unfiltered.Select( s => s.Layout.Bounds ) ).GetBounds();
+		PointMapper desktop = PointMapper.FromWorldToViewport( world, world ); // a viewport the size of the world: no scaling or moving, only the flip
+
+		Dictionary<string, SpaceLayout> engine = gs.Spaces_Unfiltered.ToDictionary( s => s.SpaceSpec.Label, s => s.SpaceSpec.Layout );
+		foreach( SpaceGeometry space in view.Spaces ) {
+			SpaceLayout layout = engine[space.Id];
+			space.Corners.Length.ShouldBe( layout.Corners.Length );
+			for( int i = 0; i < layout.Corners.Length; ++i ) {
+				XY expected = desktop.Map( layout.Corners[i] );
+				space.Corners[i].X.ShouldBe( expected.X, 1e-3, $"{space.Id} corner {i}" );
+				space.Corners[i].Y.ShouldBe( expected.Y, 1e-3, $"{space.Id} corner {i}" );
+			}
+		}
+	}
+
+	[Fact]
 	public async Task Adjacency_IsMutual_AndNamesKnownSpaces() {
 		StaticView view = await StaticOfAsync( ( await NewGameAsync( River ) ).GameId );
 		Dictionary<string, SpaceGeometry> byId = view.Spaces.ToDictionary( s => s.Id );

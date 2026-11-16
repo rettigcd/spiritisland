@@ -31,7 +31,7 @@ In solo play the two roles collapse into one: the replay that completes an actio
 
 - **New project, not the MCP server.** The MCP server stays an agent-play tool. The web server is a separate ASP.NET project.
 - **Oracle first, WASM later.** Try running the engine in the browser only after the oracle works.
-- **Layout runs on the server.** `BoardLayout`, `SpaceLayout` and `ManageInternalPoints` (in `SpiritIsland/Island/Layout/`) stay in C#. The client gets plain coordinates and draws them. No geometry is ported to TypeScript.
+- **Layout runs on the server.** `BoardLayout`, `SpaceLayout` and `ManageInternalPoints` (in `SpiritIsland/Island/Layout/`) stay in C#. The client gets plain coordinates and draws them. No geometry is ported to TypeScript. The engine's y points up and a screen's points down (the desktop apps flip it in `PointMapper`), so the server flips every position it sends (`View/ScreenCoordinates`) and the client draws them as they are.
 - **Send a player view, not GameState.** The server sends a projection modelled on the MCP `PlayerObservation`, which already hides what a player can't see (invader deck order, face-down fear cards, unflipped blight card).
 - **Projection code lives in the web server.** It goes in its own folder and namespace (`View/`), with no ASP.NET types, so it can move into a library if WASM ever needs it.
 - **Copy, don't share, the replay code.** `OracleSession` copies the restore/replay pattern from `AgentGame`. The web project does not reference `SpiritIsland.Mcp`.

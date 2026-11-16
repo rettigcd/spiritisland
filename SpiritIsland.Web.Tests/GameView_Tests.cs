@@ -178,10 +178,12 @@ public class GameView_Tests( GamesFactory factory ) : IClassFixture<GamesFactory
 	}
 
 	static void AssertInsideTheirSpaces( GameState gs, GameView view ) {
-		Dictionary<string, SpaceLayout> layouts = gs.Spaces_Unfiltered.ToDictionary( s => s.SpaceSpec.Label, s => s.SpaceSpec.Layout );
+		var screen = ScreenCoordinates.For( gs ); // the views' positions are the engine's turned over
+		Dictionary<string, XY[]> outlines = gs.Spaces_Unfiltered.ToDictionary( s => s.SpaceSpec.Label,
+			s => s.SpaceSpec.Layout.Corners.Select( c => new XY( c.X, (float)screen.Y( c.Y ) ) ).ToArray() );
 		foreach( SpaceView space in view.Spaces )
 			foreach( TokenView token in space.Tokens )
-				Polygons.IsInside( layouts[space.Id].Corners, (float)token.X, (float)token.Y )
+				Polygons.IsInside( outlines[space.Id], (float)token.X, (float)token.Y )
 					.ShouldBeTrue( $"{token.Id} on {space.Id} at ({token.X}, {token.Y}) is outside the space" );
 	}
 
