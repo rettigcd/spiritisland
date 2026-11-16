@@ -1,0 +1,1217 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "SpiritIsland.Web | v1",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/options": {
+      "get": {
+        "tags": [
+          "SpiritIsland.Web"
+        ],
+        "operationId": "getSetupOptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupOptions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games": {
+      "get": {
+        "tags": [
+          "SpiritIsland.Web"
+        ],
+        "operationId": "listGames",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SpiritIsland.Web"
+        ],
+        "operationId": "createGame",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewGameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OracleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/{id}/static": {
+      "get": {
+        "tags": [
+          "SpiritIsland.Web"
+        ],
+        "operationId": "getStaticView",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaticView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/{id}/decide": {
+      "post": {
+        "tags": [
+          "SpiritIsland.Web"
+        ],
+        "operationId": "decide",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OracleResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OracleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorView"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdversaryView": {
+        "required": [
+          "name",
+          "level",
+          "rules"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rules": {
+            "type": "string"
+          }
+        }
+      },
+      "BlightView": {
+        "required": [
+          "cardFlipped",
+          "card",
+          "blightedIslandEffect",
+          "blightRemainingOnCard",
+          "blightCardsRemaining"
+        ],
+        "type": "object",
+        "properties": {
+          "cardFlipped": {
+            "type": "boolean"
+          },
+          "card": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blightedIslandEffect": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blightRemainingOnCard": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blightCardsRemaining": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "BoundsView": {
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "CardView": {
+        "required": [
+          "id",
+          "name",
+          "cost",
+          "speed",
+          "elements"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "speed": {
+            "type": "string"
+          },
+          "elements": {
+            "type": "string"
+          }
+        }
+      },
+      "DecideRequest": {
+        "required": [
+          "checkpointVersion",
+          "picks"
+        ],
+        "type": "object",
+        "properties": {
+          "checkpointVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DecisionView": {
+        "required": [
+          "prompt",
+          "options"
+        ],
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptionView"
+            }
+          }
+        }
+      },
+      "ErrorView": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "FearView": {
+        "required": [
+          "terrorLevel",
+          "fearPool",
+          "fearPoolMax",
+          "facedownCardsRemaining",
+          "earnedCardsPending"
+        ],
+        "type": "object",
+        "properties": {
+          "terrorLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fearPool": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fearPoolMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "facedownCardsRemaining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "earnedCardsPending": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GameSummary": {
+        "required": [
+          "gameId",
+          "spirit",
+          "board",
+          "seed",
+          "adversary",
+          "over",
+          "lastPlayed"
+        ],
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string"
+          },
+          "spirit": {
+            "type": "string"
+          },
+          "board": {
+            "type": "string"
+          },
+          "seed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "adversary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "over": {
+            "type": "boolean"
+          },
+          "lastPlayed": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GameView": {
+        "required": [
+          "round",
+          "phase",
+          "fear",
+          "blight",
+          "invaders",
+          "viewerSpiritId",
+          "spirits",
+          "spaces"
+        ],
+        "type": "object",
+        "properties": {
+          "round": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "fear": {
+            "$ref": "#/components/schemas/FearView"
+          },
+          "blight": {
+            "$ref": "#/components/schemas/BlightView"
+          },
+          "invaders": {
+            "$ref": "#/components/schemas/InvadersView"
+          },
+          "viewerSpiritId": {
+            "type": "string"
+          },
+          "spirits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpiritView"
+            }
+          },
+          "spaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpaceView"
+            }
+          }
+        }
+      },
+      "GrowthGroupView": {
+        "required": [
+          "id",
+          "actions",
+          "energyChange"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "energyChange": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "InnateStatic": {
+        "required": [
+          "name",
+          "speed",
+          "target",
+          "range",
+          "instructions",
+          "tiers"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "speed": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "tiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TierView"
+            }
+          }
+        }
+      },
+      "InnateView": {
+        "required": [
+          "name",
+          "tierStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tierStatus": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "InvadersView": {
+        "required": [
+          "explore",
+          "build",
+          "ravage",
+          "discards",
+          "unrevealedCount"
+        ],
+        "type": "object",
+        "properties": {
+          "explore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "build": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ravage": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "discards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unrevealedCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NewGameRequest": {
+        "required": [
+          "spirit",
+          "board"
+        ],
+        "type": "object",
+        "properties": {
+          "spirit": {
+            "type": "string"
+          },
+          "board": {
+            "type": "string"
+          },
+          "seed": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "adversary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "adversaryLevel": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        }
+      },
+      "OptionTarget": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "space": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "token": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "spirit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "card": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "track": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "slot": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "toSpace": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "OptionView": {
+        "required": [
+          "id",
+          "label",
+          "target"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/OptionTarget"
+          }
+        }
+      },
+      "OracleResponse": {
+        "required": [
+          "gameId",
+          "checkpointVersion",
+          "picks",
+          "staticVersion",
+          "view",
+          "decision",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string"
+          },
+          "checkpointVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "picks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "staticVersion": {
+            "type": "string"
+          },
+          "view": {
+            "$ref": "#/components/schemas/GameView"
+          },
+          "decision": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DecisionView"
+              }
+            ]
+          },
+          "result": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ResultView"
+              }
+            ]
+          }
+        }
+      },
+      "PointView": {
+        "required": [
+          "x",
+          "y"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "PresenceView": {
+        "required": [
+          "energy",
+          "cardPlays",
+          "energyPerTurn",
+          "cardPlaysPerTurn",
+          "destroyed",
+          "sacredSites"
+        ],
+        "type": "object",
+        "properties": {
+          "energy": {
+            "$ref": "#/components/schemas/TrackView"
+          },
+          "cardPlays": {
+            "$ref": "#/components/schemas/TrackView"
+          },
+          "energyPerTurn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cardPlaysPerTurn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "destroyed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sacredSites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ResultView": {
+        "required": [
+          "outcome",
+          "cause"
+        ],
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string"
+          },
+          "cause": {
+            "type": "string"
+          }
+        }
+      },
+      "RuleView": {
+        "required": [
+          "title",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "SetupOptions": {
+        "required": [
+          "spirits",
+          "boards",
+          "adversaries"
+        ],
+        "type": "object",
+        "properties": {
+          "spirits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "boards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "adversaries": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        }
+      },
+      "SetupView": {
+        "required": [
+          "boards",
+          "adversary"
+        ],
+        "type": "object",
+        "properties": {
+          "boards": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "adversary": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AdversaryView"
+              }
+            ]
+          }
+        }
+      },
+      "SlotView": {
+        "required": [
+          "id",
+          "label",
+          "energy",
+          "cardPlays",
+          "elements"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "energy": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "cardPlays": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SpaceGeometry": {
+        "required": [
+          "id",
+          "terrain",
+          "corners",
+          "nameLocation",
+          "tokenSize",
+          "adjacent"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "terrain": {
+            "type": "string"
+          },
+          "corners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointView"
+            }
+          },
+          "nameLocation": {
+            "$ref": "#/components/schemas/PointView"
+          },
+          "tokenSize": {
+            "type": "number",
+            "format": "double"
+          },
+          "adjacent": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SpaceView": {
+        "required": [
+          "id",
+          "tokens"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenView"
+            }
+          }
+        }
+      },
+      "SpiritStatic": {
+        "required": [
+          "id",
+          "name",
+          "energyTrack",
+          "cardPlayTrack",
+          "growthGroups",
+          "innates",
+          "specialRules"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "energyTrack": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SlotView"
+            }
+          },
+          "cardPlayTrack": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SlotView"
+            }
+          },
+          "growthGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrowthGroupView"
+            }
+          },
+          "innates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InnateStatic"
+            }
+          },
+          "specialRules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuleView"
+            }
+          }
+        }
+      },
+      "SpiritView": {
+        "required": [
+          "id",
+          "name",
+          "energy",
+          "elements",
+          "presence",
+          "growthGroupsUsed",
+          "hand",
+          "inPlay",
+          "discard",
+          "innates"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "energy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "elements": {
+            "type": "string"
+          },
+          "presence": {
+            "$ref": "#/components/schemas/PresenceView"
+          },
+          "growthGroupsUsed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hand": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardView"
+            }
+          },
+          "inPlay": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardView"
+            }
+          },
+          "discard": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardView"
+            }
+          },
+          "innates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InnateView"
+            }
+          }
+        }
+      },
+      "StaticView": {
+        "required": [
+          "staticVersion",
+          "setup",
+          "worldBounds",
+          "spaces",
+          "spirits"
+        ],
+        "type": "object",
+        "properties": {
+          "staticVersion": {
+            "type": "string"
+          },
+          "setup": {
+            "$ref": "#/components/schemas/SetupView"
+          },
+          "worldBounds": {
+            "$ref": "#/components/schemas/BoundsView"
+          },
+          "spaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpaceGeometry"
+            }
+          },
+          "spirits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpiritStatic"
+            }
+          }
+        }
+      },
+      "TierView": {
+        "required": [
+          "threshold",
+          "effect"
+        ],
+        "type": "object",
+        "properties": {
+          "threshold": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          }
+        }
+      },
+      "TokenView": {
+        "required": [
+          "id",
+          "image",
+          "label",
+          "count",
+          "badge",
+          "strife",
+          "sacredSite",
+          "x",
+          "y"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "badge": {
+            "type": "string"
+          },
+          "strife": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sacredSite": {
+            "type": "boolean"
+          },
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "TrackView": {
+        "required": [
+          "revealed"
+        ],
+        "type": "object",
+        "properties": {
+          "revealed": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "SpiritIsland.Web"
+    }
+  ]
+}

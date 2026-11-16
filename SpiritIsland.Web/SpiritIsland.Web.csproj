@@ -5,6 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x64</Platforms>
+    <!-- The build writes the API description (openapi.json) next to the client, which generates its TypeScript types from it. -->
+    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)\client</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
+    <!-- client/ is the TypeScript client: not .NET source, and node_modules must stay out of the build's file globs. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);client\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +21,14 @@
     <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
     <ProjectReference Include="..\SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj" />
     <ProjectReference Include="..\SpiritIsland.Horizons\SpiritIsland.Horizons.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.15">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

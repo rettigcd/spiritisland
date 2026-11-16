@@ -9,18 +9,30 @@ public static class GameEndpoints {
 	public static void MapGameEndpoints( this IEndpointRouteBuilder app ) {
 		RouteGroupBuilder api = app.MapGroup( "/api" );
 
-		api.MapGet( "/options", () => new SetupOptions( GameSetup.Spirits, GameSetup.Boards, GameSetup.Adversaries ) );
+		// The Produces<> lines are what the generated openapi.json (and so the client's TypeScript types) are built from.
 
-		api.MapGet( "/games", ( IGameFiles files ) => files.List() );
+		api.MapGet( "/options", () => new SetupOptions( GameSetup.Spirits, GameSetup.Boards, GameSetup.Adversaries ) )
+			.WithName( "getSetupOptions" )
+			.Produces<SetupOptions>();
+
+		api.MapGet( "/games", ( IGameFiles files ) => files.List() )
+			.WithName( "listGames" )
+			.Produces<IReadOnlyList<GameSummary>>();
 
 		api.MapPost( "/games", async ( NewGameRequest request, OracleService oracle ) => {
 			try { return Results.Ok( await oracle.CreateAsync( request ) ); }
 			catch( ArgumentException ex ) { return Results.BadRequest( new ErrorView( ex.Message ) ); }
-		} );
+		} )
+			.WithName( "createGame" )
+			.Produces<OracleResponse>()
+			.Produces<ErrorView>( StatusCodes.Status400BadRequest );
 
 		// picks: [] just reads the current decision
 		api.MapGet( "/games/{id}/static", async ( string id, OracleService oracle )
-			=> await oracle.StaticAsync( id ) is { } view ? Results.Ok( view ) : Results.NotFound( new ErrorView( $"No game '{id}'." ) ) );
+			=> await oracle.StaticAsync( id ) is { } view ? Results.Ok( view ) : Results.NotFound( new ErrorView( $"No game '{id}'." ) ) )
+			.WithName( "getStaticView" )
+			.Produces<StaticView>()
+			.Produces<ErrorView>( StatusCodes.Status404NotFound );
 
 		api.MapPost( "/games/{id}/decide", async ( string id, DecideRequest request, OracleService oracle )
 			=> await oracle.DecideAsync( id, request ) switch {
@@ -28,6 +40,11 @@ public static class GameEndpoints {
 				DecideOutcome.Stale stale => Results.Conflict( stale.Current ),
 				DecideOutcome.BadPick bad => Results.BadRequest( new ErrorView( bad.Message ) ),
 				_ => Results.NotFound( new ErrorView( $"No game '{id}'." ) ),
-			} );
+			} )
+			.WithName( "decide" )
+			.Produces<OracleResponse>()
+			.Produces<OracleResponse>( StatusCodes.Status409Conflict ) // stale checkpoint: the body is where the game really is
+			.Produces<ErrorView>( StatusCodes.Status400BadRequest )
+			.Produces<ErrorView>( StatusCodes.Status404NotFound );
 	}
 }
