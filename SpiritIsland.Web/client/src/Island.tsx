@@ -1,5 +1,8 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { GameView, OptionView, SpaceGeometry, StaticView, TokenView } from './api/model';
 import { isPresence, PRESENCE_IMAGE, presenceHue, STRIFE_IMAGE, tokenImageUrl } from './images';
+import { destinationsOf, tokenSource } from './moves';
+import type { SourceKey } from './moves';
 import { boardOptions, spacesOf, tokenKey } from './options';
 
 interface Props {
@@ -8,8 +11,24 @@ interface Props {
   options: readonly OptionView[];
   /** The option the player is pointing at in the decision panel, so the island can show where it applies. */
   hovered: OptionView | null;
+  /** The decision's moves by where they start, and the start the player has picked (if any). */
+  moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
+  selected: SourceKey | null;
+  onSelect(source: SourceKey | null): void;
   disabled: boolean;
   onChoose(optionId: string): void;
+}
+
+/** A token being dragged: where it started, whether it has really moved yet (a click is not a drag), and where the pointer is. */
+interface Drag {
+  source: SourceKey;
+  token: TokenView;
+  space: SpaceGeometry;
+  wasSelected: boolean;
+  startX: number;
+  startY: number;
+  moved: boolean;
+  at: { x: number; y: number };
 }
 
 /** A stable colour per name: good enough to tell tokens apart until there are pictures. */
@@ -28,37 +47,145 @@ const terrainFill: [RegExp, string][] = [
 ];
 const fillOf = (terrain: string) => terrainFill.find(([re]) => re.test(terrain))?.[1] ?? '#dddddd';
 
-export function Island({ staticView, view, options, hovered, disabled, onChoose }: Props) {
+/**
+ * How many of the island's own units one screen pixel is. The island is drawn in the server's units (about 1.5 wide), so an
+ * outline that should be a few pixels thick is a few of these. (CSS's `vector-effect: non-scaling-stroke` would do this, but on
+ * some GPUs it draws black boxes, so the widths are worked out here and set on the shapes.)
+ */
+function useUnitsPerPixel(svg: { current: SVGSVGElement | null }, worldWidth: number): number {
+  const [unit, setUnit] = useState(worldWidth / 800);
+  useLayoutEffect(() => {
+    const el = svg.current;
+    if (!el) return;
+    const measure = () => { if (el.clientWidth > 0) setUnit(worldWidth / el.clientWidth); };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [worldWidth]);
+  return unit;
+}
+
+export function Island({ staticView, view, options, hovered, moves, selected, onSelect, disabled, onChoose }: Props) {
   const { x, y, width, height } = staticView.worldBounds;
   const { bySpace, byToken } = boardOptions(options);
-  const hoveredSpaces = new Set(spacesOf(hovered));
   const tokensBySpace = new Map(view.spaces.map(s => [s.id, s.tokens]));
+  const svg = useRef<SVGSVGElement>(null);
+  const pixel = useUnitsPerPixel(svg, width);
+  const [drag, setDrag] = useState<Drag | null>(null);
+  const [over, setOver] = useState<string | null>(null); // the land the pointer is over while a move is being made
+
+  // Once a start is picked, every land its moves can reach is known.
+  const destinations = selected ? destinationsOf(moves.get(selected) ?? []) : new Map<string, OptionView>();
+  const overMove = over ? destinations.get(over) : undefined;
+  const shown = overMove ?? hovered; // what the island shows the effect of: the land the pointer is over, or the hovered button
+  const hoveredSpaces = new Set(spacesOf(shown));
+  const arrow = moveArrow(shown, staticView, view);
 
   const choose = (o: OptionView) => { if (!disabled) onChoose(o.id); };
-  const arrow = moveArrow(hovered, staticView, view);
+
+  // ---- dragging a token: press on it, move, release on a land it can reach. A press and release without moving is a click,
+  // ---- which leaves it picked (or puts it down if it already was), so the destination can be clicked instead.
+  const toSvg = (e: PointerEvent) => {
+    const el = svg.current!;
+    const point = el.createSVGPoint();
+    point.x = e.clientX;
+    point.y = e.clientY;
+    const matrix = el.getScreenCTM();
+    const at = matrix ? point.matrixTransform(matrix.inverse()) : point;
+    return { x: at.x, y: at.y };
+  };
+  const landUnder = (e: PointerEvent) =>
+    document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-space]')?.getAttribute('data-space') ?? null;
+
+  const beginDrag = (e: PointerEvent, source: SourceKey, token: TokenView, space: SpaceGeometry) => {
+    if (disabled) return;
+    e.preventDefault();
+    (e.currentTarget as Element).setPointerCapture?.(e.pointerId); // keep hearing about the pointer when it leaves the token
+    setDrag({ source, token, space, wasSelected: selected === source, startX: e.clientX, startY: e.clientY, moved: false, at: toSvg(e) });
+    onSelect(source);
+  };
+  // The pointer can report several times a frame; only the newest position is drawn, once per frame.
+  const frame = useRef(0);
+  const latest = useRef<PointerEvent | null>(null);
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  const dragTo = (e: PointerEvent) => {
+    if (!drag) return;
+    latest.current = e;
+    if (frame.current) return;
+    frame.current = requestAnimationFrame(() => {
+      frame.current = 0;
+      const last = latest.current;
+      if (!last) return;
+      setDrag(d => {
+        if (!d) return d;
+        const moved = d.moved || Math.hypot(last.clientX - d.startX, last.clientY - d.startY) > 5;
+        return { ...d, moved, at: toSvg(last) };
+      });
+      setOver(landUnder(last));
+    });
+  };
+  const endDrag = (e: PointerEvent) => {
+    if (!drag) return;
+    cancelAnimationFrame(frame.current);
+    frame.current = 0;
+    latest.current = null;
+    const finished = drag;
+    setDrag(null);
+    setOver(null);
+    // (judged from where the pointer is released: a quick flick can end before the first frame has marked the drag as moved)
+    if (finished.moved || Math.hypot(e.clientX - finished.startX, e.clientY - finished.startY) > 5) {
+      const land = landUnder(e);
+      const move = land ? destinations.get(land) : undefined;
+      if (move) choose(move);
+      else onSelect(null); // dropped somewhere it cannot go: put it down
+    } else if (finished.wasSelected) onSelect(null); // clicked a token that was already picked: put it down
+  };
 
   return (
-    <svg class="island" viewBox={`${x} ${y} ${width} ${height}`} role="img" aria-label="The island">
+    <svg
+      ref={svg} class={['island', drag?.moved ? 'dragging' : ''].join(' ')} viewBox={`${x} ${y} ${width} ${height}`} role="img" aria-label="The island"
+      onPointerMove={dragTo} onPointerUp={endDrag} onPointerCancel={() => { setDrag(null); setOver(null); }}
+    >
       {staticView.spaces.map(space => {
         const option = bySpace.get(space.id);
+        const destination = destinations.get(space.id);
+        const onClick = option ? () => choose(option) : destination ? () => choose(destination) : selected ? () => onSelect(null) : undefined;
         return (
-          <g key={space.id}>
+          <g key={space.id} data-space={space.id}>
             <polygon
               points={space.corners.map(c => `${c.x},${c.y}`).join(' ')}
               fill={fillOf(space.terrain)}
-              class={['space', option ? 'choosable' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
-              onClick={option ? () => choose(option) : undefined}
+              stroke-width={pixel * (destination || option ? 4 : hoveredSpaces.has(space.id) ? 5 : 1.5)}
+              class={['space', option ? 'choosable' : '', destination ? 'destination' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
+              onClick={onClick}
+              onPointerEnter={selected ? () => setOver(space.id) : undefined}
+              onPointerLeave={selected && !drag ? () => setOver(null) : undefined}
             >
-              <title>{option ? `${space.id} (${space.terrain}) - choose` : `${space.id} (${space.terrain})`}</title>
+              {!selected && <title>{option ? `${space.id} (${space.terrain}) - choose` : `${space.id} (${space.terrain})`}</title>}
             </polygon>
             <text class="space-name" x={space.nameLocation.x} y={space.nameLocation.y} font-size={space.tokenSize * 0.45}>{space.id}</text>
-            {(tokensBySpace.get(space.id) ?? []).map(t => (
-              <Token key={t.id} token={t} space={space} option={byToken.get(tokenKey(space.id, t.id))} choose={choose} />
-            ))}
+            {(tokensBySpace.get(space.id) ?? []).map(t => {
+              const source = tokenSource(space.id, t.id);
+              const chooses = byToken.get(tokenKey(space.id, t.id));
+              const movable = !chooses && moves.has(source);
+              return (
+                <Token
+                  key={t.id} token={t} space={space} option={chooses} choose={choose}
+                  movable={movable} selected={selected === source} quiet={selected !== null}
+                  onPointerDown={movable ? e => beginDrag(e, source, t, space) : undefined}
+                />
+              );
+            })}
           </g>
         );
       })}
-      {arrow && <Arrow from={arrow.from} to={arrow.to} size={arrow.size} />}
+      {arrow && <Arrow from={arrow.from} to={arrow.to} size={arrow.size} width={pixel * 4} />}
+      {drag?.moved && (
+        <g class="ghost">
+          <Token token={{ ...drag.token, x: drag.at.x, y: drag.at.y }} space={drag.space} option={undefined} choose={choose} movable={false} selected={false} quiet flat />
+        </g>
+      )}
     </svg>
   );
 }
@@ -85,7 +212,7 @@ function moveArrow(option: OptionView | null, staticView: StaticView, view: Game
 }
 
 /** A line with a head, drawn over the island. Sized from the token size, because the island is drawn in its own small units. */
-function Arrow({ from, to, size }: { from: Point; to: Point; size: number }) {
+function Arrow({ from, to, size, width }: { from: Point; to: Point; size: number; width: number }) {
   const dx = to.x - from.x, dy = to.y - from.y;
   const length = Math.hypot(dx, dy);
   if (length === 0) return null;
@@ -99,7 +226,7 @@ function Arrow({ from, to, size }: { from: Point; to: Point; size: number }) {
   ].join(' ');
   return (
     <g class="arrow">
-      <line x1={from.x} y1={from.y} x2={base.x} y2={base.y} />
+      <line x1={from.x} y1={from.y} x2={base.x} y2={base.y} stroke-width={width} />
       <polygon points={points} />
     </g>
   );
@@ -108,18 +235,30 @@ function Arrow({ from, to, size }: { from: Point; to: Point; size: number }) {
 interface TokenProps {
   token: TokenView;
   space: SpaceGeometry;
+  /** Set when clicking the token chooses an option. */
   option: OptionView | undefined;
   choose(o: OptionView): void;
+  /** Set when the token is where a move can start: it can be picked up (clicked, or dragged to a land). */
+  movable: boolean;
+  selected: boolean;
+  /** Draw no tooltip: while a token is picked up, tooltips would come and go as the pointer crosses lands. */
+  quiet?: boolean;
+  /** The copy that follows a drag: the picture if it is plain, but no colour filter (presence is a plain disc in its colour). */
+  flat?: boolean;
+  onPointerDown?: (e: PointerEvent) => void;
 }
 
-function Token({ token, space, option, choose }: TokenProps) {
+function Token({ token, space, option, choose, movable, selected, quiet, flat, onPointerDown }: TokenProps) {
   const r = space.tokenSize / 2;
-  const url = isPresence(token.image) ? PRESENCE_IMAGE : tokenImageUrl(token.image);
+  const url = isPresence(token.image) ? (flat ? null : PRESENCE_IMAGE) : tokenImageUrl(token.image);
   const small = space.tokenSize * 0.3; // the size of the badges and counts
   const title = `${token.label}${token.count > 1 ? ` x${token.count}` : ''}${token.strife > 0 ? ` (strife ${token.strife})` : ''}`;
   return (
-    <g class={['token', option ? 'choosable' : ''].join(' ')} onClick={option ? () => choose(option) : undefined}>
-      <title>{title}</title>
+    <g
+      class={['token', option ? 'choosable' : '', movable ? 'movable' : '', selected ? 'selected' : ''].join(' ')}
+      onClick={option ? () => choose(option) : undefined} onPointerDown={onPointerDown}
+    >
+      {!quiet && <title>{title}</title>}
       {url ? <Picture token={token} url={url} r={r} small={small} /> : <Circle token={token} r={r} />}
       {0 < token.strife && url && (
         <image href={STRIFE_IMAGE} x={token.x - r} y={token.y - r} width={r * 0.9} height={r * 0.9} />
@@ -136,7 +275,8 @@ function Picture({ token, url, r, small }: { token: TokenView; url: string; r: n
   return (
     <>
       {token.sacredSite && <circle class="ring-sacred" cx={token.x} cy={token.y} r={r * 1.05} fill="none" stroke="#a06000" stroke-width={r * 0.18} />}
-      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" />
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
+      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <image
         href={url} x={token.x - r} y={token.y - r} width={r * 2} height={r * 2}
         style={presence ? { filter: `hue-rotate(${presenceHue(token.image)}deg)` } : undefined}
@@ -152,10 +292,12 @@ function Picture({ token, url, r, small }: { token: TokenView; url: string; r: n
 function Circle({ token, r }: { token: TokenView; r: number }) {
   // Shrink long labels so they stay inside the circle.
   const size = Math.min(r * 0.8, (r * 3) / Math.max(token.label.length, 1));
+  const fill = isPresence(token.image) ? `hsl(${presenceHue(token.image)} 85% 30%)` : colourOf(token.image, 72);
   return (
     <>
-      <circle cx={token.x} cy={token.y} r={r} fill={colourOf(token.image, 72)} stroke={token.sacredSite ? '#a06000' : '#444'} stroke-width={token.sacredSite ? r * 0.2 : r * 0.08} />
-      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" />
+      <circle cx={token.x} cy={token.y} r={r} fill={fill} stroke={token.sacredSite ? '#a06000' : '#444'} stroke-width={token.sacredSite ? r * 0.2 : r * 0.08} />
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
+      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <text x={token.x} y={token.y} font-size={size} text-anchor="middle" dominant-baseline="central">{token.label}</text>
     </>
   );
@@ -166,7 +308,7 @@ function Badge({ x, y, text, size, bold }: { x: number; y: number; text: string;
   const width = size * (0.7 + 0.6 * text.length);
   return (
     <>
-      <rect class="badge" x={x - width / 2} y={y - size * 0.6} width={width} height={size * 1.2} rx={size * 0.3} />
+      <rect class="badge" x={x - width / 2} y={y - size * 0.6} width={width} height={size * 1.2} rx={size * 0.3} stroke-width={size * 0.08} />
       <text class={bold ? 'badge-text bold' : 'badge-text'} x={x} y={y} font-size={size} text-anchor="middle" dominant-baseline="central">{text}</text>
     </>
   );

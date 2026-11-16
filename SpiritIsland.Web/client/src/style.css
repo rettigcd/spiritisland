@@ -41,27 +41,37 @@ ul.saved button { width: 100%; }
 .inv-name { font-weight: 600; }
 .columns { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 16px; align-items: start; }
 @media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
-.island-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.island-wrap { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.move-hint-bar { min-height: 2.4em; display: flex; align-items: center; }
+.move-hint { margin: 0; font-size: .9em; color: var(--notice); }
 
 .island { width: 100%; height: auto; max-height: 85vh; display: block; }
-/* The island is drawn in the server's own units (about 1.5 wide), so strokes that must look the same at any size are
-   set in screen pixels with non-scaling-stroke. */
-.island .space { stroke: #555; stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
-.island .space.choosable { stroke: var(--accent); stroke-width: 4px; cursor: pointer; }
-.island .space.hovered { stroke: #d33; stroke-width: 5px; }
+/* The island is drawn in the server's own units (about 1.5 wide). Stroke widths are set on the shapes (Island.tsx works them out
+   in screen pixels), not here: vector-effect: non-scaling-stroke would do it but draws black boxes on some GPUs. */
+.island .space { stroke: #555; }
+.island .space.choosable { stroke: var(--accent); cursor: pointer; }
+.island .space.hovered { stroke: #d33; }
 .island .space-name { fill: #333; text-anchor: middle; pointer-events: none; opacity: .7; }
 .island .token text { fill: #111; pointer-events: none; }
 /* Stroke widths on text are in the island's own units, so the outline is sized in the component (stroke-width attribute). */
 .island .token .presence-label { fill: #fff; stroke: #000; paint-order: stroke; font-weight: 700; }
-.island .token .badge { fill: #fff; stroke: #444; stroke-width: 1px; vector-effect: non-scaling-stroke; opacity: .92; }
+.island .token .badge { fill: #fff; stroke: #444; opacity: .92; }
 .island .token .badge-text { fill: #111; }
 .island .token .badge-text.bold { font-weight: 700; }
 .island .token .ring-choose { display: none; }
 .island .arrow { pointer-events: none; }
-.island .arrow line { stroke: #d33; stroke-width: 4px; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.island .arrow line { stroke: #d33; stroke-linecap: round; }
 .island .arrow polygon { fill: #d33; }
 .island .token.choosable { cursor: pointer; }
-.island .token.choosable .ring-choose { display: inline; stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
+/* Making a move: a token that can be picked up, the one that is, the lands it can go to, and the copy that follows a drag. */
+.island .token .ring-move { display: none; }
+.island .token.movable { cursor: grab; touch-action: none; }
+.island .token.movable .ring-move { display: inline; stroke: var(--accent); }
+.island .token.selected .ring-move { stroke: #d33; stroke-dasharray: none; }
+.island .ghost { pointer-events: none; }
+.island.dragging { cursor: grabbing; }
+.island .space.destination { stroke: #2e7d32; cursor: pointer; }
+.island .token.choosable .ring-choose { display: inline; stroke: var(--accent); }
 
 .decision .options button { width: 100%; }
 .decision .details { margin: -4px 0 8px; }
@@ -79,6 +89,8 @@ ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wr
 .slot.revealed { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }
 .slot.covered { color: var(--muted); border-style: dashed; }
 button.slot { cursor: pointer; }
+button.movable { border-style: dashed; border-color: var(--accent); }
+button.movable.selected { border-style: solid; border-color: #d33; }
 ul.growth { margin: 0; padding-left: 18px; }
 ul.growth li.used { text-decoration: line-through; color: var(--muted); }
 ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; gap: 2px; font-size: .9em; }

@@ -1,4 +1,6 @@
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
+import { destroyedSource, slotSource } from './moves';
+import type { SourceKey } from './moves';
 import { rangeText } from './text';
 
 interface Props {
@@ -7,6 +9,10 @@ interface Props {
   info: SpiritStatic | undefined;
   isViewer: boolean;
   options: readonly OptionView[];
+  /** The decision's moves by where they start, and the start the player has picked: a track slot or the destroyed pile can be one. */
+  moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
+  selected: SourceKey | null;
+  onSelect(source: SourceKey | null): void;
   busy: boolean;
   onChoose(optionId: string): void;
 }
@@ -18,7 +24,7 @@ type TrackName = 'energy' | 'cardPlays';
  * decision is asking about (a track slot, a card, an innate power) is highlighted and can be clicked here as well as in the
  * decision panel.
  */
-export function SpiritPanel({ spirit, info, isViewer, options, busy, onChoose }: Props) {
+export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, onSelect, busy, onChoose }: Props) {
   const optionWhere = (kinds: readonly string[], match: (o: OptionView) => boolean) =>
     options.find(o => kinds.includes(o.target.kind) && o.target.spirit === spirit.id && match(o));
 
@@ -27,6 +33,8 @@ export function SpiritPanel({ spirit, info, isViewer, options, busy, onChoose }:
   const innateOption = (name: string) => optionWhere(['innate'], o => o.target.card === name);
 
   const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
+  const pick = (source: SourceKey) => () => { if (!busy) onSelect(selected === source ? null : source); };
+  const pile = destroyedSource(spirit.id);
 
   return (
     <section class="panel spirit">
@@ -36,11 +44,18 @@ export function SpiritPanel({ spirit, info, isViewer, options, busy, onChoose }:
         {' '}· Elements: {spirit.elements || 'none'}
       </p>
       <p class="muted">Presence destroyed: {spirit.presence.destroyed} · Sacred sites: {spirit.presence.sacredSites.join(', ') || 'none'}</p>
+      {moves.has(pile) && (
+        <p>
+          <button type="button" class={`movable ${selected === pile ? 'selected' : ''}`} disabled={busy} onClick={pick(pile)}>
+            Place destroyed presence ({spirit.presence.destroyed} in the pile)
+          </button>
+        </p>
+      )}
 
       {info && (
         <>
-          <Track title="Energy track" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} busy={busy} choose={choose} />
-          <Track title="Card plays track" track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} busy={busy} choose={choose} />
+          <Track title="Energy track" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+          <Track title="Card plays track" track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
 
           <h3>Growth</h3>
           <ul class="growth">
@@ -84,11 +99,15 @@ interface TrackProps {
   /** Indexes of the slots whose presence has been taken: those are the ones whose benefit you now have. */
   revealed: readonly number[];
   optionFor(track: TrackName, slot: number): OptionView | undefined;
+  spirit: string;
+  moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
+  selected: SourceKey | null;
+  pick(source: SourceKey): () => void;
   busy: boolean;
   choose(o: OptionView | undefined): () => void;
 }
 
-function Track({ title, track, slots, revealed, optionFor, busy, choose }: TrackProps) {
+function Track({ title, track, slots, revealed, optionFor, spirit, moves, selected, pick, busy, choose }: TrackProps) {
   return (
     <div class="track">
       <h3>{title}</h3>
@@ -96,13 +115,17 @@ function Track({ title, track, slots, revealed, optionFor, busy, choose }: Track
         {slots.map((slot, i) => {
           const open = revealed.includes(i);
           const option = optionFor(track, i);
-          const classes = `slot ${open ? 'revealed' : 'covered'} ${option ? 'choosable' : ''}`;
+          const source = slotSource(spirit, track, i);
+          const movable = !option && moves.has(source); // presence that can be moved from this slot to a land
+          const classes = `slot ${open ? 'revealed' : 'covered'} ${option ? 'choosable' : ''} ${movable ? 'movable' : ''} ${selected === source ? 'selected' : ''}`;
           const hint = open ? 'Revealed' : 'Presence still here';
           return (
             <li key={i}>
               {option
                 ? <button type="button" class={classes} disabled={busy} onClick={choose(option)} title={hint}>{slot.label}</button>
-                : <span class={classes} title={hint}>{slot.label}</span>}
+                : movable
+                  ? <button type="button" class={classes} disabled={busy} onClick={pick(source)} title="Pick up this presence, then choose a land">{slot.label}</button>
+                  : <span class={classes} title={hint}>{slot.label}</span>}
             </li>
           );
         })}
