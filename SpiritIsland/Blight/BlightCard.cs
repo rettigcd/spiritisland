@@ -26,7 +26,7 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 		if (!CardFlipped)
 			await Side1Depleted(gs);
 		else
-			Side2Depleted(gs);
+			await Side2Depleted(gs);
 	}
 
 	public abstract IActOn<GameState> Immediately { get; }
@@ -111,8 +111,11 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 			gs => gs.AddPreInvaderPhaseAction( action )
 		);
 
-	protected virtual void Side2Depleted(GameState gameState) 
-		=> GameOverException.Lost( "Blighted Island-" + Name );
+	/// <summary> Awaited by <see cref="OnBlightDepleated"/>: a card that comes into play here runs its own effect, which can wait on the player. </summary>
+	protected virtual Task Side2Depleted(GameState gameState) {
+		GameOverException.Lost( "Blighted Island-" + Name ); // always throws
+		return Task.CompletedTask;
+	}
 
 	Space VirtualSpace => _space ??= GameState.Current.Tokens[_spaceSpec];
 	Space? _space;

@@ -26,6 +26,40 @@ public class Blight_Tests {
 
 	}
 
+	[Trait("Blight","FlipCard")]
+	[Fact]
+	public async Task DrawingTheNextBlightCard_FinishesItsEffect_BeforeTheActionThatCausedItEnds() {
+		// Given: a spirit with presence on the island
+		var spirit = new LightningsSwiftStrike();
+		var gs = new SoloGameState( spirit, Boards.A );
+		Space space = ActionScope.Current.Spaces.Single( x => x.Label == "A5" );
+		spirit.Given_IsOn( space );
+		//   And: the blight card is a Still-Healthy one, already flipped, with 1 blight left on it
+		gs.BlightCard = new InvadersFindTheLandToTheirLiking();
+		gs.Initialize();
+		gs.BlightCard.CardFlipped = true;
+		gs.BlightCard.InitBlight( 1 );
+		//   And: the next card's effect makes the spirit destroy presence, which waits on the player
+		gs.BlightCards.Insert( 0, new ErosionOfWill() );
+		//   And: an Invader action is under way
+		await using ActionScope invaderAction = await ActionScope.Start( ActionCategory.Invader );
+
+		// When: it adds the last blight, which draws the next card
+		Task adding = space.Blight.AddAsync( 1 );
+		await adding.AwaitUser( user => {
+			var prompt = user.NextDecision.HasPrompt( "Select Presence to Destroy" );
+			// Then: the add is still waiting on the new card's effect, so the Invader action can't end (and close its scope) yet.
+			//       (Not awaiting the new card let it finish early, leaving the card's scope open: Error SI01.)
+			adding.IsCompleted.ShouldBeFalse( "adding the blight finished while the new card's effect was still waiting on the player" );
+			prompt.ChooseFirst();
+		} ).ShouldComplete();
+
+		//   And: afterwards the new card is in play and its scope is closed
+		gs.BlightCard.ShouldBeOfType<ErosionOfWill>();
+		ActionScope.Current.ShouldBeSameAs( invaderAction );
+		spirit.Presence.Destroyed.Count.ShouldBe( 1 );
+	}
+
 	[Fact]
 	public async Task TwoBlight_TriggerBlightedIslandOnce(){
 		var gs = new SoloGameState(Boards.C); // Board
