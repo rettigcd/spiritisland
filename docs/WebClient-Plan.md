@@ -66,38 +66,30 @@ What you get for free:
 {
   checkpointVersion,        // current, after any boundary crossed during replay
   picks,                    // the picks still pending after that checkpoint (client replaces its list with this)
-  staticVersion,            // not there yet (Phase 2): client refetches /static when this changes
+  staticVersion,            // client refetches GET /api/games/{id}/static when this changes
   view,                     // GameView
   decision,                 // DecisionView, or null when the game is over
   result                    // win/loss, when over
 }
 ```
 
-## Still to add to the server
+## View projection: what is still open
 
-`SpiritIsland.Web` already serves the oracle under `/api` (see `Endpoints/GameEndpoints.cs`). Still to add: `GET /api/games/{id}/static`, which returns the `StaticView` (geometry, setup, spirit tracks, innates), and serving the built client from `wwwroot/` (Phase 3).
+`View/` builds the player view, the static view and each option's target (see `GameViewBuilder`, `StaticViewBuilder`, `OptionTargets`). The rule that outlives that work: use `PlayerObservation` as the checklist for what a player may see. Anything it hides stays hidden, and the tests check the names of face-down fear cards and the unflipped blight card never appear.
 
-## View projection (`View/`)
+Not in the view yet, for Phases 3 and 4:
+- **Prompt details and recent log entries** on `DecisionView`, for the log panel (the MCP server's `PromptDetails` and `Alert`s are the model).
+- **Full card text** (range, target, instructions) for the cards in hand and in play. `CardView` has name, cost, speed and elements only.
+- **Picture keys.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name), and invader cards are their text. The client maps them to files copied from `SpiritIsland.Maui/Resources/Images`.
+- **Arrows** for decisions that move something (`IHaveArrows`). A move option already says where from and where to.
+- **Growth options** arrive as kind "action". The client matches them to the static view's growth groups by text.
 
-Typed C# records, serialized with `System.Text.Json` (camelCase). The client's TypeScript types are generated from them (see "Generated types").
+## Engine problems that stop some spirits
 
-**`StaticView`**: changes only when the island layout changes, versioned by a hash as `PlayerObservation.BuildStatic` does.
-- Setup: spirit, boards, adversary and level.
-- `WorldBounds`.
-- For each space: id, label, terrain, `Corners`, `NameLocation` and `TokenSize` (from `ManageInternalPoints`).
-- Spirit: presence tracks (each slot's energy, card plays, elements or action), growth options and innate tiers.
-
-**`GameView`**: per response.
-- Round, phase, fear (pool, terror level, cards remaining), blight (count, flipped card), invader slots (explore, build and ravage cards, discards, deck count).
-- `spirits`: a list (solo has one entry), plus `viewerSpiritId`. Each has energy, elements, revealed track slots, hand, in play, discard, destroyed presence and growth groups used.
-- For each space: its tokens, each with a stable id, an image key (token class plus count, damage and strife) and an `xy`. Positions come from a fresh `ManageInternalPoints(...).Init(space)`.
-
-**`DecisionView`**:
-- Prompt text and prompt details. Decisions with a single option are shown like any other; nothing is auto-picked.
-- Options, each with `id` (option text, unique within a decision), `label` and a target: `{ kind: space | spaceToken | card | track | growth | other, ref }`. The `ref` points at a space id, token id or card name, so the client can highlight it on the board or in a panel.
-- Recent log entries, for a log panel.
-
-Use `PlayerObservation` as the checklist for what may be shown. Anything it hides stays hidden.
+Playing every spirit found failures in the engine, not in the oracle. `EverySpirit_Tests` lists them (`KnownFailures`), fails if a new one appears, and fails when a listed one is fixed so it gets removed. The oracle reports them as a 500 with the engine's message.
+- **Not savable yet** (the oracle saves a checkpoint at every action boundary, so it meets these sooner than Maui or the MCP server): Finder of Paths Unseen (`OpenTheWays`), Fractured Days (`RepeatableSelfCmd`), Stone (`StubbornSolidityBehavior`), Sun Bright Whirlwind (`AdjustHealth`), Towering Roots ("Sequence contains no elements"), Volcano Looming High (key 'M' missing).
+- **`Error SI01`** (an `ActionScope` disposed out of order during a Ravage): six spirits including River. It also happens in plain in-memory play on the same seeds, so it is an engine bug.
+- **`NullReferenceException` in `Cmd.DestroyPresence`**, seen once in in-memory play (River, seed 35) and not yet in the list.
 
 ## Generated types
 
@@ -132,12 +124,8 @@ Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/
 
 Each phase ends with something that runs.
 
-### Phase 2: view projection
-Add `StaticView` and the `/static` endpoint, grow `GameView` from just round and phase to the full player view, and give `DecisionView` options their targets. Port the hidden-information rules from `PlayerObservation`.
-- **Tests:** the projection hides the invader deck order and face-down fear cards. Every token on every space has a position inside its polygon. Option targets resolve to existing space, token and card ids.
-
 ### Phase 3: minimal client
-Vite + Preact + TypeScript, with types generated from the server's OpenAPI document. Includes the new-game screen, the island SVG with highlighted options, the decision panel with Undo, and `localStorage` for picks.
+Vite + Preact + TypeScript, with types generated from the server's OpenAPI document, built into `wwwroot/` and served by `SpiritIsland.Web`. Includes the new-game screen, the island SVG with highlighted options, the decision panel with Undo, and `localStorage` for picks.
 - **Exit:** a whole game can be played in the browser, ugly but complete.
 
 ### Phase 4: full player panels
