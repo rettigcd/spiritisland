@@ -35,6 +35,9 @@ public class VitalStrength : Spirit {
 		var higestMountain = board.Spaces.OrderByDescending(s => s.Label).First(s => s.IsMountain);
 		higestMountain.ScopeSpace.Setup( Presence.Token, 2 );
 		higestJungle.ScopeSpace.Setup( Presence.Token, 1 );
+		// Earth's Vitality (not replaced by an aspect): Defend 3 where there is a sacred site - including the one we start with.
+		if( Presence.Token is EarthsVitality vitality )
+			vitality.DefendStartingSacredSite( higestMountain.ScopeSpace );
 	}
 
 }

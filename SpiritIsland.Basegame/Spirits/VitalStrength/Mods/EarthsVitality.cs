@@ -3,6 +3,7 @@ namespace SpiritIsland.Basegame;
 
 public class EarthsVitality(Spirit spirit) : SpiritPresenceToken(spirit)
 	, IHandleTokenAdded
+	, ICleanupSpaceWhenTimePasses
 // , IHandleTokenRemoved - already implemented in base class
 {
 	public const string Name = "Earth's Vitality";
@@ -31,11 +32,24 @@ public class EarthsVitality(Spirit spirit) : SpiritPresenceToken(spirit)
 			int current = space[this];
 			int previous = current + args.Count;
 			if( current < 2 && 2 <= previous ) {
-				if( space[Token.Defend] < 3 ) throw new Exception("Defend sync issue with Earths Vitality");
-				space.Defend.Add(-3);
+				// Take away what we gave. (Defend is a shared pool and is cleared every round, so never take more than is there.)
+				int defend = Math.Min( 3, space[Token.Defend] );
+				if( 0 < defend ) space.Defend.Add( -defend );
 			}
 		}
 		return base.HandleTokenRemovedAsync(args);
+	}
+
+	/// <summary> Defend is cleared every round, but this is a standing effect: give it back for the next round. </summary>
+	void ICleanupSpaceWhenTimePasses.CleanupSpace( Space space ) {
+		if( 2 <= space[this] )
+			space.Defend.Add( 3 );
+	}
+
+	/// <summary> A sacred site that is there from the start of the game (placed with no 'token added' event) has its Defend too. </summary>
+	public void DefendStartingSacredSite( Space space ) {
+		if( 2 <= space[this] )
+			space.Defend.Add( 3 );
 	}
 
 }
