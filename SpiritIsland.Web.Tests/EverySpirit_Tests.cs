@@ -18,18 +18,7 @@ public class EverySpirit_Tests( GamesFactory factory, ITestOutputHelper output )
 
 	/// <summary> Spirit name to the start of the engine's error message. </summary>
 	static readonly Dictionary<string, string> KnownFailures = new() {
-		// Can't be saved yet.
-		["Finder Of Paths Unseen"] = "Spirit.ToJson doesn't support IActionFactory of type OpenTheWays",
-		["Fractured Days Split the Sky"] = "SelfCmdRegistry doesn't know how to serialize IActOn<Spirit> of type RepeatableSelfCmd",
-		["Stone's Unyielding Defiance"] = "Don't know how to serialize ISpaceEntity of type SpiritIsland.JaggedEarth.StubbornSolidityBehavior",
-		["Sun Bright Whirlwind"] = "Don't know how to serialize ISpaceEntity of type SpiritIsland.AdjustHealth",
-		["Towering Roots of the Jungle"] = "Sequence contains no elements",
-		["Volcano Looming High"] = "The given key 'M' was not present in the dictionary",
-		// Can't be restored: when a Still-Healthy blight card is replaced, the old card's start-of-Invader-Phase hook stays
-		// in PreInvaderPhaseActions, and restoring resolves a hook named for a card to the *current* card.
-		["Many Minds Move as One"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
-		["Relentless Gaze of the Sun"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
-		["Thunderspeaker"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
+		// Empty: every spirit plays 100 picks. Add a spirit here only while a known engine bug stops it.
 	};
 
 	[Fact]

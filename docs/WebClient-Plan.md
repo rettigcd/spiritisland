@@ -84,12 +84,13 @@ Not in the view yet, for Phases 3 and 4:
 - **Arrows** for decisions that move something (`IHaveArrows`). A move option already says where from and where to.
 - **Growth options** arrive as kind "action". The client matches them to the static view's growth groups by text.
 
-## Engine problems that stop some spirits
+## Engine problems found by playing every spirit
 
-Playing every spirit found failures in the engine, not in the oracle. `EverySpirit_Tests` lists them (`KnownFailures`), fails if a new one appears, and fails when a listed one is fixed so it gets removed. The oracle reports them as a 500 with the engine's message.
-- **Not savable yet** (the oracle saves a checkpoint at every action boundary, so it meets these sooner than Maui or the MCP server): Finder of Paths Unseen (`OpenTheWays`), Fractured Days (`RepeatableSelfCmd`), Stone (`StubbornSolidityBehavior`), Sun Bright Whirlwind (`AdjustHealth`), Towering Roots ("Sequence contains no elements"), Volcano Looming High (key 'M' missing).
-- **`Error SI01`** (an `ActionScope` disposed out of order during a Ravage): six spirits including River. It also happens in plain in-memory play on the same seeds, so it is an engine bug.
-- **`NullReferenceException` in `Cmd.DestroyPresence`**, seen once in in-memory play (River, seed 35) and not yet in the list.
+Playing every spirit found failures in the engine, not in the oracle. They are all fixed. `EverySpirit_Tests` plays each spirit for 100 random picks and fails on any engine error. Its `KnownFailures` list is empty. Add a spirit there only while a known engine bug stops it, and the test fails when a listed one is fixed so it gets removed. The oracle reports an engine failure as a 500 with the engine's message.
+
+Also open:
+- **Every-spirit coverage is shallow.** `EverySpirit_Tests` stops each game after 100 picks, so it only finds failures reachable early. Late-game saves (many tokens, blight cascades) and games played to the end are untested, as is the oracle's cost late in a game (Phase 0 measured early game only).
+- **Prompts that time out.** The oracle gives up after 30 s waiting for the engine to reach a decision (`Settle`). `todo.txt` lists Ravage and Build prompts timing out as needing tests; they may surface here as 500s.
 
 ## Generated types
 
