@@ -32,8 +32,8 @@ public class LetsSeeWhatHappens {
 		await ctx.Self.Select(new A.TypedDecision<IActionFactory>("Perform All Action at Max", [card], Present.Always));
 
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
-		await using var maxScope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		maxScope.Owner = ctx.Self;
+		// (a Spirit action: ActionScope.Start is only for non-spirit actions, and this one is owned by the spirit)
+		await using var maxScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, ctx.Self);
 		maxScope.MoverFactory = new TrickesterMoverFactory();
 
 		await card.InvokeOn( new LetsSeeWhatHappensCtx( ctx ) );
