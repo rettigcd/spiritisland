@@ -66,31 +66,16 @@ What you get for free:
 {
   checkpointVersion,        // current, after any boundary crossed during replay
   picks,                    // the picks still pending after that checkpoint (client replaces its list with this)
-  staticVersion,            // client refetches /static when this changes
+  staticVersion,            // not there yet (Phase 2): client refetches /static when this changes
   view,                     // GameView
   decision,                 // DecisionView, or null when the game is over
   result                    // win/loss, when over
 }
 ```
 
-## Server: `SpiritIsland.Web`
+## Still to add to the server
 
-An ASP.NET Core minimal API (`net10.0`). It references the engine and the expansion projects, like `SpiritIsland.Mcp` does, and serves the built client from `wwwroot/`.
-
-| Endpoint | Purpose |
-|---|---|
-| `GET /api/options` | Spirits, boards, adversaries and levels to choose from |
-| `POST /api/games` | Create a game; returns its id and the first response |
-| `GET /api/games` | List saved games |
-| `POST /api/games/{id}/decide` | The oracle call described above. `picks: []` just reads the current decision. |
-| `GET /api/games/{id}/static` | The `StaticView` (geometry, setup, spirit tracks, innates) |
-
-Folders:
-- `Oracle/`: `GameFiles` (one JSON file per game, written with `SoloGameFile`, plus the checkpoint version) and `OracleSession` (load, replay, read decision, detect boundary; copied from `AgentGame` without its auto-select, alert buffering, observation diffs and batch steps).
-- `View/`: the projection. It uses plain records and has no web types.
-- `Endpoints/`: the HTTP layer. Request validation, JSON and error mapping happen only here.
-
-Concurrency: one lock per game id. Each request runs its engine work inside `Task.Run` with `ActionScope.Initialize`, so parallel games don't share the ambient scope (see the parallel-games test).
+`SpiritIsland.Web` already serves the oracle under `/api` (see `Endpoints/GameEndpoints.cs`). Still to add: `GET /api/games/{id}/static`, which returns the `StaticView` (geometry, setup, spirit tracks, innates), and serving the built client from `wwwroot/` (Phase 3).
 
 ## View projection (`View/`)
 
@@ -147,13 +132,8 @@ Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/
 
 Each phase ends with something that runs.
 
-### Phase 1: oracle server with no UI
-`SpiritIsland.Web` with the game files, `OracleSession` and endpoints, returning `decision` with plain options and a minimal `view`.
-- **Tests:** create a game, then play the first rounds through `/decide` by taking the first option each time. Check that replaying the same picks gives the same decision, that a stale `checkpointVersion` gets 409, and that an invalid pick gets 400.
-- **Exit:** a whole game can be played with `curl` or a test.
-
 ### Phase 2: view projection
-`StaticView`, `GameView` and `DecisionView` with option targets. Port the hidden-information rules from `PlayerObservation`.
+Add `StaticView` and the `/static` endpoint, grow `GameView` from just round and phase to the full player view, and give `DecisionView` options their targets. Port the hidden-information rules from `PlayerObservation`.
 - **Tests:** the projection hides the invader deck order and face-down fear cards. Every token on every space has a position inside its polygon. Option targets resolve to existing space, token and card ids.
 
 ### Phase 3: minimal client
