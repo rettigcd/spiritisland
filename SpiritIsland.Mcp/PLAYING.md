@@ -70,6 +70,8 @@ Base: one growth group per round; Presence tracks for energy and card plays; sac
 - Starts with 1 Presence, 1 energy and 1 card play; the card-play track has a "reclaim 1" slot.
 - **Its four unique cards together meet Massive Flooding's top tier** (2 damage to each Invader in one land), for $3 but 4 card plays. So grow the card-play track first.
 - **Opening that wins by round 5-6 without an adversary (the user's):** G2 (the two-Presence group) in rounds 1-3, Presence from the card-play track (in round 3 the second may come from energy), then G1 (Reclaim All) every round. Never G3. Round 1: River's Bounty to gather Dahan into the City's land (needs your Presence there), Wash Away to push Explorers out of Build lands toward the coast. Rounds 2-3: Flash Floods (Fast) snipes any Explorer about to Build; reclaim the card you need. From round 4: Wash Away consolidates, Massive Flooding tier 3 sweeps. Win at Terror Level 1 (no Invaders). Won on two seeds.
+- **Wash Away's target depends on the round:** sometimes it clears an Explorer that would cause next round's Build, sometimes the Town/Explorer that was just built (e.g. before it ravages a land where you'd lose Presence to blight). Check the prediction and pick.
+- **Chain pushes:** resolve Massive Flooding first to push an Explorer into the land you will target with Wash Away, then Wash Away pushes it again: the same Explorer moves two lands.
 - Flash Floods does extra damage on a Coastal land; River's Bounty needs your Presence in its land (range 0).
 - Little Fast damage and no Defend in the starting hand: Fast defence comes from drawn cards.
 
