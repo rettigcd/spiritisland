@@ -23,7 +23,7 @@ public sealed class OracleService( IGameFiles files ) {
 	public async Task<OracleResponse> CreateAsync( NewGameRequest request ) {
 		GameConfiguration config = GameSetup.Configure( request );
 		SessionState state = await Task.Run( () => OracleSession.Start( config ) ); // own execution context: ActionScope is ambient
-		var record = new GameRecord( files.NewId(), config, CheckpointVersion: 1, state.Checkpoint );
+		var record = new GameRecord( files.NewId(), config, CheckpointVersion: 1, state.Checkpoint, Log: Latest( state.LogCompleted ) );
 		files.Write( record );
 		return Respond( record, state, state.Picks );
 	}
@@ -51,11 +51,11 @@ public sealed class OracleService( IGameFiles files ) {
 			}
 
 			if( !record.Over && state.Result is not null ) {
-				record = record with { CheckpointVersion = record.CheckpointVersion + 1, Checkpoint = state.Checkpoint, Over = true, FinishingPicks = state.Picks };
+				record = record with { CheckpointVersion = record.CheckpointVersion + 1, Checkpoint = state.Checkpoint, Over = true, FinishingPicks = state.Picks, Log = Latest( [.. record.Log ?? [], .. state.LogCompleted] ) };
 				files.Write( record );
 			}
 			else if( !record.Over && state.CheckpointMoved ) {
-				record = record with { CheckpointVersion = record.CheckpointVersion + 1, Checkpoint = state.Checkpoint };
+				record = record with { CheckpointVersion = record.CheckpointVersion + 1, Checkpoint = state.Checkpoint, Log = Latest( [.. record.Log ?? [], .. state.LogCompleted] ) };
 				files.Write( record );
 			}
 			return new DecideOutcome.Ok( Respond( record, state, record.Over ? [] : state.Picks ) );
@@ -78,8 +78,14 @@ public sealed class OracleService( IGameFiles files ) {
 		}
 	}
 
+	/// <summary> Up to here is the log of what happened before the checkpoint; the lines after it are the action in progress. </summary>
 	static OracleResponse Respond( GameRecord record, SessionState state, string[] picks )
-		=> new( record.Id, record.CheckpointVersion, picks, state.Static.StaticVersion, state.View, state.Decision, state.Result );
+		=> new( record.Id, record.CheckpointVersion, picks, state.Static.StaticVersion, state.View, state.Decision, state.Result,
+			Latest( [.. record.Log ?? [], .. state.LogPending] ) );
+
+	/// <summary> Only the most recent lines are kept and sent. </summary>
+	const int MaxLogLines = 300;
+	static LogLineView[] Latest( IEnumerable<LogLineView> lines ) => [.. lines.TakeLast( MaxLogLines )];
 
 	readonly ConcurrentDictionary<string, SemaphoreSlim> _gates = new();
 }

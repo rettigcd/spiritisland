@@ -56,6 +56,16 @@ ul.saved button { width: 100%; }
 .island .token.choosable circle { stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
 
 .decision .options button { width: 100%; }
+.decision .details { margin: -4px 0 8px; }
+
+/* The island and the log share the left column. */
+.log { margin-top: 12px; }
+.log-lines { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }
+.log-lines li { padding: 1px 4px; border-left: 3px solid transparent; white-space: pre-line; }
+.log-lines .log-phase { color: var(--muted); font-weight: 600; border-left-color: var(--border); }
+.log-lines .log-invaders { border-left-color: #c47f00; }
+.log-lines .log-fear-blight { border-left-color: #7b4fb3; }
+.log-lines .log-bad { color: var(--error); font-weight: 600; border-left-color: var(--error); }
 .picks { display: flex; gap: 10px; align-items: baseline; margin-top: 10px; flex-wrap: wrap; }
 .result { padding: 8px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
 .result.victory { border-color: #2e7d32; }

@@ -343,6 +343,12 @@
             "items": {
               "$ref": "#/components/schemas/OptionView"
             }
+          },
+          "details": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -590,6 +596,21 @@
           }
         }
       },
+      "LogLineView": {
+        "required": [
+          "kind",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
       "NewGameRequest": {
         "required": [
           "spirit",
@@ -704,7 +725,8 @@
           "staticVersion",
           "view",
           "decision",
-          "result"
+          "result",
+          "log"
         ],
         "type": "object",
         "properties": {
@@ -746,6 +768,12 @@
                 "$ref": "#/components/schemas/ResultView"
               }
             ]
+          },
+          "log": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogLineView"
+            }
           }
         }
       },

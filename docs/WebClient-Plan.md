@@ -78,7 +78,7 @@ What you get for free:
 `View/` builds the player view, the static view and each option's target (see `GameViewBuilder`, `StaticViewBuilder`, `OptionTargets`). The rule that outlives that work: use `PlayerObservation` as the checklist for what a player may see. Anything it hides stays hidden, and the tests check the names of face-down fear cards and the unflipped blight card never appear.
 
 Not in the view yet, for Phases 3 and 4:
-- **Prompt details and recent log entries** on `DecisionView`, for the log panel (the MCP server's `PromptDetails` and `Alert`s are the model).
+- **Prompt details and log: done.** `DecisionView.Details` spells out the "Play power card ($E / N)" prompt (same wording match as the MCP server's `PromptDetails`). `OracleResponse.Log` is the most recent 300 lines of what happened: rounds and phases, what the invaders did, blight and fear, presence destroyed and the end of the game (Debug detail such as each token moved, what the player chose, and failures are left out). The oracle keeps no state, so completed lines are stored in the game record with each checkpoint, tagged by the checkpoint version they were raised under; the lines after the checkpoint (the action in progress) are made again each time the picks are replayed.
 - **Full card text** (range, target, instructions) for the cards in hand and in play. `CardView` has name, cost, speed and elements only.
 - **Picture keys.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name), and invader cards are their text. The client maps them to files copied from `SpiritIsland.Maui/Resources/Images`.
 - **Arrows** for decisions that move something (`IHaveArrows`). A move option already says where from and where to.

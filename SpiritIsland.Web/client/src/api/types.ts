@@ -113,6 +113,7 @@ export interface components {
         DecisionView: {
             prompt: string;
             options: components["schemas"]["OptionView"][];
+            details?: null | string;
         };
         ErrorView: {
             error: string;
@@ -177,6 +178,10 @@ export interface components {
             /** Format: int32 */
             unrevealedCount: number;
         };
+        LogLineView: {
+            kind: string;
+            text: string;
+        };
         NewGameRequest: {
             spirit: string;
             board: string;
@@ -214,6 +219,7 @@ export interface components {
             view: components["schemas"]["GameView"];
             decision: null | components["schemas"]["DecisionView"];
             result: null | components["schemas"]["ResultView"];
+            log: components["schemas"]["LogLineView"][];
         };
         PointView: {
             /** Format: double */

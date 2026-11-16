@@ -154,6 +154,7 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 
 		result.Decision.ShouldBe( stepwise.Last.Decision, new DecisionComparer() );
 		Json( result.View ).ShouldBe( Json( stepwise.Last.View ) );
+		result.Log.ShouldBe( stepwise.Last.Log ); // the log is the same whichever way the picks arrive
 	}
 
 	[Fact]
@@ -255,6 +256,71 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 
 	#endregion rejecting
 
+	#region the log and prompt details
+
+	[Fact]
+	public async Task NewGame_StartsTheLog() {
+		OracleResponse first = await new Player( factory ).NewAsync( River );
+
+		first.Log.ShouldContain( l => l.Kind == "phase" && l.Text.Contains( "Round 1" ) );
+	}
+
+	[Fact]
+	public async Task TheLog_KeepsEverythingThatHappened_WhenTheGameMovesOn() {
+		var player = new Player( factory );
+		OracleResponse before = await player.NewAsync( River );
+		// play until the log has grown and the checkpoint has moved on: what happened before is now before the checkpoint
+		for( int i = 0; i < 80 && ( player.Last.Log.Length <= before.Log.Length || player.Last.CheckpointVersion == before.CheckpointVersion ); ++i )
+			await player.PickAsync( player.Last.Decision!.Options[0].Id );
+
+		player.Last.CheckpointVersion.ShouldBeGreaterThan( before.CheckpointVersion );
+		player.Last.Log.Length.ShouldBeGreaterThan( before.Log.Length );
+		player.Last.Log.Take( before.Log.Length ).ShouldBe( before.Log );
+
+		// and asking again later - the picks since the checkpoint are replayed - neither loses nor repeats any of it
+		( await player.ReadAsync() ).Log.ShouldBe( player.Last.Log );
+	}
+
+	[Fact]
+	public async Task TheLog_IsKeptOnDisk_SoAFreshHostHasIt() {
+		var player = new Player( factory );
+		await player.NewAsync( River );
+		while( player.Last.CheckpointVersion < 3 )
+			await player.PickAsync( player.Last.Decision!.Options[0].Id );
+		OracleResponse last = player.Last;
+
+		using WebApplicationFactory<Program> fresh = factory.WithWebHostBuilder( _ => { } ); // same directory, new host
+		var other = new Player( fresh ) { Last = last };
+		( await other.ReadAsync() ).Log.ShouldBe( last.Log );
+	}
+
+	[Fact]
+	public async Task StaleCheckpoint_ResponseCarriesTheLog() {
+		var player = new Player( factory );
+		await player.NewAsync( River );
+		while( player.Last.CheckpointVersion == 1 )
+			await player.PickAsync( player.Last.Decision!.Options[0].Id );
+		OracleResponse current = player.Last;
+
+		HttpResponseMessage response = await player.DecideRawAsync( 1, [] );
+
+		response.StatusCode.ShouldBe( HttpStatusCode.Conflict );
+		( await response.Content.ReadFromJsonAsync<OracleResponse>() )!.Log.ShouldBe( current.Log );
+	}
+
+	[Fact]
+	public async Task PlayPowerCardPrompt_HasItsNumbersSpelledOut() {
+		var player = new Player( factory );
+		await player.NewAsync( River );
+		for( int i = 0; i < 40 && !player.Last.Decision!.Prompt.StartsWith( "Play power card" ); ++i )
+			await player.PickAsync( player.Last.Decision.Options[0].Id );
+
+		player.Last.Decision!.Prompt.ShouldStartWith( "Play power card" );
+		player.Last.Decision.Details.ShouldNotBeNull().ShouldMatch( @"^Energy: \d+\. Card plays left: \d+\.$" );
+	}
+
+	#endregion the log and prompt details
+
 	/// <summary> What a browser holds: the last response, whose pending picks it adds to. </summary>
 	sealed class Player( WebApplicationFactory<Program> host ) {
 		readonly HttpClient _http = host.CreateClient();
@@ -297,7 +363,8 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 		public bool Equals( OracleResponse? a, OracleResponse? b )
 			=> a is null ? b is null : b is not null
 				&& a.GameId == b.GameId && a.CheckpointVersion == b.CheckpointVersion && a.Picks.SequenceEqual( b.Picks )
-				&& Json( a.View ) == Json( b.View ) && new DecisionComparer().Equals( a.Decision, b.Decision ) && a.Result == b.Result;
+				&& Json( a.View ) == Json( b.View ) && new DecisionComparer().Equals( a.Decision, b.Decision ) && a.Result == b.Result
+				&& a.Log.SequenceEqual( b.Log );
 		public int GetHashCode( OracleResponse r ) => HashCode.Combine( r.GameId, r.CheckpointVersion );
 	}
 }

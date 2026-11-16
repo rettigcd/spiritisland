@@ -8,7 +8,12 @@ namespace SpiritIsland.Web.View;
 /// <param name="StaticVersion">The client fetches the static view again when this differs from the one it holds.</param>
 /// <param name="Decision">Null when the game is over.</param>
 /// <param name="Result">Set when the game is over.</param>
-public record OracleResponse( string GameId, int CheckpointVersion, string[] Picks, string StaticVersion, GameView View, DecisionView? Decision, ResultView? Result );
+/// <param name="Log">What has happened, oldest first: the most recent lines only.</param>
+public record OracleResponse( string GameId, int CheckpointVersion, string[] Picks, string StaticVersion, GameView View, DecisionView? Decision, ResultView? Result, LogLineView[] Log );
+
+/// <summary> One line of the game log. </summary>
+/// <param name="Kind">What sort of thing it is, for colouring: "phase", "invaders", "fear-blight", "bad" or "other".</param>
+public record LogLineView( string Kind, string Text );
 
 /// <summary>
 /// Everything a player may see of the game right now. Built by <see cref="GameViewBuilder"/>, which never reads what is
@@ -61,7 +66,8 @@ public record SpaceView( string Id, TokenView[] Tokens );
 /// <param name="X">Where to draw it, in the same board coordinates as the space's corners.</param>
 public record TokenView( string Id, string Image, string Label, int Count, string Badge, int Strife, bool SacredSite, double X, double Y );
 
-public record DecisionView( string Prompt, OptionView[] Options );
+/// <param name="Details">The prompt's packed-in numbers spelled out, when it has any (see <see cref="PromptDetails"/>).</param>
+public record DecisionView( string Prompt, OptionView[] Options, string? Details = null );
 
 /// <param name="Id">The option's text, made unique within its decision. This is what a pick sends.</param>
 /// <param name="Target">What on the board or in a panel this option is, so the client can highlight it.</param>

@@ -13,6 +13,7 @@ export type DecisionView = S['DecisionView'];
 export type OptionView = S['OptionView'];
 export type OptionTarget = S['OptionTarget'];
 export type ResultView = S['ResultView'];
+export type LogLineView = S['LogLineView'];
 export type StaticView = S['StaticView'];
 export type SpaceGeometry = S['SpaceGeometry'];
 export type SetupOptions = S['SetupOptions'];

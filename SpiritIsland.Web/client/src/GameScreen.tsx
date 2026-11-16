@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import type { GameActions, GameState } from './game';
 import type { OptionView } from './api/model';
 import { Island } from './Island';
+import { LogPanel } from './LogPanel';
 import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
 import { StatusBar } from './StatusBar';
@@ -26,10 +27,13 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
       {state.error && <p class="error" role="alert">{state.error} <button type="button" onClick={actions.dismissMessages}>OK</button></p>}
 
       <div class="columns">
-        <div class="island-wrap">
-          {staticView
-            ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} disabled={busy} onChoose={actions.choose} />
-            : <p>Loading the board...</p>}
+        <div class="main">
+          <div class="island-wrap">
+            {staticView
+              ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} disabled={busy} onChoose={actions.choose} />
+              : <p>Loading the board...</p>}
+          </div>
+          <LogPanel log={response.log} />
         </div>
         <div class="side">
           <DecisionPanel

@@ -14,7 +14,10 @@ public sealed class EngineStoppedException( string message, Exception? inner ) :
 /// <param name="Checkpoint">The newest action-boundary checkpoint.</param>
 /// <param name="CheckpointMoved">True if replaying crossed an action boundary, so <paramref name="Checkpoint"/> is newer than the one started from.</param>
 /// <param name="Picks">The picks made since <paramref name="Checkpoint"/>.</param>
-public record SessionState( JsonObject Checkpoint, bool CheckpointMoved, string[] Picks, StaticView Static, GameView View, DecisionView? Decision, ResultView? Result );
+/// <param name="LogCompleted">Log lines from before <paramref name="Checkpoint"/> that were not in the record this session was resumed from: the record keeps them.</param>
+/// <param name="LogPending">Log lines from after <paramref name="Checkpoint"/>: the action in progress. Replaying the picks makes them again, so the record does not keep them.</param>
+public record SessionState( JsonObject Checkpoint, bool CheckpointMoved, string[] Picks, StaticView Static, GameView View, DecisionView? Decision, ResultView? Result,
+	LogLineView[] LogCompleted, LogLineView[] LogPending );
 
 /// <summary>
 /// Runs one game for the length of one request: loads a checkpoint, replays picks, and reports the decision the game is
@@ -49,7 +52,12 @@ public sealed class OracleSession : IDisposable {
 		_game = game;
 		_game.LogExceptions = true;
 		_baseline = startedAt;
-		_game.GameState.NewLogEntry += entry => { if( entry is Log.ExceptionEntry failure ) _failure ??= failure.Ex; }; // before Start, so none is missed
+		_resumed = startedAt is not null;
+		_game.GameState.NewLogEntry += entry => { // before Start, so none is missed. Runs on the engine's thread.
+			if( entry is Log.ExceptionEntry failure ) _failure ??= failure.Ex;
+			if( LogFilter.From( entry ) is { } line )
+				lock( _log ) _log.Add( (_game.CheckpointVersion, line) ); // which checkpoint it came after, to tell what is before the newest one
+		};
 		_game.Start();
 		Interlocked.Increment( ref _enginesRunning );
 	}
@@ -76,6 +84,8 @@ public sealed class OracleSession : IDisposable {
 	SessionState Replay( IReadOnlyList<string> picks ) {
 		bool moved = false;
 		DecisionView? decision = Settle( ref moved, firstLook: true );
+		// A resumed game starts at a checkpoint whose earlier log the record already has.
+		if( _resumed ) lock( _log ) _log.RemoveAll( l => l.Version < _baselineVersion );
 		foreach( string pick in picks ) {
 			if( decision is null ) {
 				ThrowIfEngineFailed();
@@ -85,8 +95,13 @@ public sealed class OracleSession : IDisposable {
 			decision = Settle( ref moved );
 		}
 		if( decision is null ) ThrowIfEngineFailed();
+		LogLineView[] completed, pending;
+		lock( _log ) {
+			completed = [.. _log.Where( l => l.Version < _baselineVersion ).Select( l => l.Line )];
+			pending = [.. _log.Where( l => _baselineVersion <= l.Version ).Select( l => l.Line )];
+		}
 		return new SessionState( _baseline!, moved, [.. _picksSinceBaseline], StaticViewBuilder.Build( _game.GameState ), GameViewBuilder.Build( _game.GameState, _game.Spirit ),
-			decision, Result() );
+			decision, Result(), completed, pending );
 	}
 
 	/// <summary>
@@ -103,7 +118,8 @@ public sealed class OracleSession : IDisposable {
 				SyncBaseline( ref moved, firstLook );
 			}
 			if( _pending is not null )
-				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ) ) )] );
+				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ) ) )],
+					PromptDetails.For( _pending.Prompt ) );
 			if( _game.EngineTask!.IsCompleted ) {
 				SyncBaseline( ref moved, firstLook );
 				return null;
@@ -165,6 +181,8 @@ public sealed class OracleSession : IDisposable {
 	}
 
 	readonly SoloGame _game;
+	readonly bool _resumed;
+	readonly List<(int Version, LogLineView Line)> _log = [];
 	IDecision? _pending;
 	Exception? _failure;
 	JsonObject? _baseline;

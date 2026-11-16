@@ -27,6 +27,7 @@ export function DecisionPanel({ decision, result, picks, busy, onChoose, onUndo,
       {decision && (
         <>
           <h2>{decision.prompt}</h2>
+          {decision.details && <p class="muted details">{decision.details}</p>}
           <ul class="options">
             {decision.options.map(o => (
               <li key={o.id}>
