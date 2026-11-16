@@ -11,6 +11,6 @@ class RelentlessPunishment( Spirit spirit ) : IHandleActivatedActions {
 		if( factory is not PowerCard powerCard ) return;
 		var details = TargetSpaceAttribute.TargettedSpace;
 		if( details is not null && details.Sources.Any(s => spirit.Presence.CountOn(s) >= 0) )
-			spirit.AddActionFactory(new RelentlessRepeater(powerCard, details.Space));
+			spirit.AddActionFactory(new RelentlessRepeater(powerCard, details.Space, details.Sources));
 	}
 }

@@ -386,6 +386,28 @@ public class Spirit_Tests {
 	}
 
 	[Fact]
+	public void RoundTrips_AvailableAction_RelentlessRepeater_KeepsItsOrigins() {
+		// A repeat is not targeted again, so the origin lands the power was first used from have to survive a save.
+		var gs = new SoloGameState();
+		var ctx = CtxFor( gs );
+
+		var original = new TestSpirit();
+		PowerCard card = original.Hand.Single();
+		Space target = gs.Tokens[gs.Board[5]];
+		var relentlessRepeater = new SpiritIsland.NatureIncarnate.RelentlessRepeater( card, target, [gs.Tokens[gs.Board[1]], gs.Tokens[gs.Board[6]]] );
+		original.AddActionFactory( relentlessRepeater );
+
+		JsonObject json = original.ToJson( ctx );
+		var restored = new TestSpirit();
+		restored.RestoreFromJson( json, ctx );
+
+		var before = ( (ISerializableActionFactory)relentlessRepeater ).ToJson( ctx );
+		var after = ( (ISerializableActionFactory)restored.AllActions.Single() ).ToJson( ctx );
+		after.ToJsonString().ShouldBe( before.ToJsonString() );
+		after[4]!.AsArray().Select( n => n!.GetValue<string>() ).ShouldBe( ["A1", "A6"] );
+	}
+
+	[Fact]
 	public void ActionFactoryRegistry_ThrowsForUnregisteredTag() {
 		var ctx = CtxFor( new SoloGameState() );
 		Should.Throw<NotSupportedException>( () => ActionFactoryRegistry.Deserialize( new JsonArray( "NoSuchActionFactory" ), ctx ) );

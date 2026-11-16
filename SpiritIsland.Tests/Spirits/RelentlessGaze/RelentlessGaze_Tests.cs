@@ -36,6 +36,36 @@ public class RelentlessGaze_Tests {
 		gs.Board[1].ScopeSpace.Summary.ShouldBe("4A");
 	}
 
+	[Trait("spirit","Relentless Gaze")]
+	[Fact]
+	public async Task RelentlessPunishment_CanRepeatCardsThatUseTheirOrigin() {
+		// (used to throw NullReferenceException: Unbearable Gaze reads its origins from the targetting details,
+		//  and a repeat is not targeted again)
+		// Given: Relentless Gaze with Unbearable Gaze in its hand, lots of energy and 3 presence in land 5
+		var spirit = new RelentlessGazeOfTheSun();
+		var gs = new SoloGameState(spirit);
+		spirit.AddActionFactory(PowerCard.ForDecorated(UnbearableGaze.ActAsync));
+		spirit.Energy = 20;
+		gs.Board[5].ScopeSpace.Init(spirit.Presence.Token,3);
+		gs.Phase = Phase.Slow;
+		//   And: explorers on the target land (A1) and on the origin land (A5)
+		gs.Board[1].ScopeSpace.Given_HasTokens("1E@1");
+		gs.Board[5].ScopeSpace.Given_HasTokens("3E@1");
+
+		//  When: spirit uses the card, then repeats it
+		await spirit.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Select Slow to resolve").ChooseFirst();
+			user.NextDecision.HasPrompt("Unbearable Gaze: Target Space").Choose("A1");
+			user.NextDecision.HasPrompt("Push (2)").ChooseFrom("E@1 on A1").ChooseTo("A2");
+			user.NextDecision.HasPrompt("Push (1)").ChooseFrom("E@1 on A5").ChooseTo("A6");
+			user.NextDecision.HasPrompt("Select Slow to resolve").HasOptions("Repeat Unbearable Gaze on A1 for 2 energy.,Done").ChooseFirst();
+			//  Then: the repeat can push from the same origin (A5), like the first use did
+			user.NextDecision.HasPrompt("Push (2)").ChooseFrom("E@1 on A5").ChooseTo("A6");
+			user.NextDecision.HasPrompt("Push (1)").ChooseFrom("E@1 on A5").ChooseTo("A6");
+			user.NextDecision.HasPrompt("Select Slow to resolve").Choose("Done");
+		}).ShouldComplete("Slow phase");
+	}
+
 	[Trait("spirit", "Relentless Gaze")]
 	[Fact]
 	public async Task GainEnergyTwice() {

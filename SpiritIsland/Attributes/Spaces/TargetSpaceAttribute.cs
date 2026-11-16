@@ -10,6 +10,12 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 	public static TargetSpaceResults? TargettedSpace => _targettedSpace.Value; // must be nullable so action can detect IF a space was targetted in a round.
 	readonly static ActionScopeValueNullable<TargetSpaceResults> _targettedSpace = new ActionScopeValueNullable<TargetSpaceResults>("Targetted Space");
 
+	/// <summary>
+	/// For a power that is used again without being targeted again (Relentless Gaze's repeat): sets the details powers read
+	/// from <see cref="TargettedSpace"/> (the origin lands) for the current action.
+	/// </summary>
+	public static void SetTargettedSpace( TargetSpaceResults results ) => _targettedSpace.Value = results;
+
 	#endregion ActionScope Targetted Details
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
