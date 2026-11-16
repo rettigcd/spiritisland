@@ -58,12 +58,11 @@ public class RepeatCardForCost( string exclude = "" ) : IActionFactory, ISeriali
 
 public class RepeatCheapestCardForCost( string exclude = "" ) : RepeatCardForCost(exclude) {
 	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
-		return [
-			.. base.GetCardOptions(self,phase)
-				.GroupBy( pc => pc.Cost )  // group with lowest cost
-				.OrderBy( grp => grp.Key )
-				.First() // all the cards in the 1st group
-		];
+		IGrouping<int,PowerCard>? cheapest = base.GetCardOptions(self,phase)
+			.GroupBy( pc => pc.Cost )  // group with lowest cost
+			.OrderBy( grp => grp.Key )
+			.FirstOrDefault(); // all the cards in the 1st group; none when there is nothing to repeat
+		return cheapest is null ? [] : [.. cheapest];
 	}
 
 	#region Json
