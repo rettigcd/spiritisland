@@ -79,9 +79,9 @@ What you get for free:
 
 Not in the view yet, for Phases 3 and 4:
 - **Prompt details and log: done.** `DecisionView.Details` spells out the "Play power card ($E / N)" prompt (same wording match as the MCP server's `PromptDetails`). `OracleResponse.Log` is the most recent 300 lines of what happened: rounds and phases, what the invaders did, blight and fear, presence destroyed and the end of the game (Debug detail such as each token moved, what the player chose, and failures are left out). The oracle keeps no state, so completed lines are stored in the game record with each checkpoint, tagged by the checkpoint version they were raised under; the lines after the checkpoint (the action in progress) are made again each time the picks are replayed.
-- **Full card text** (range, target, instructions) for the cards in hand and in play. `CardView` has name, cost, speed and elements only.
-- **Picture keys.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name), and invader cards are their text. The client maps them to files copied from `SpiritIsland.Maui/Resources/Images`.
-- **Arrows** for decisions that move something (`IHaveArrows`). A move option already says where from and where to.
+- **Full card text: done.** `CardView` also has range, target and instructions, and an `OptionView` that is a power card carries its `Card`, so the text can be read before choosing which card to gain.
+- **Picture keys: done.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name). The client's `images.ts` maps those to the pictures in `client/public/img` (copied from `SpiritIsland.Utilities/images` by `npm run copy-images`; the copies are committed). A key with no picture is drawn as a labelled circle. Presence is the one red picture turned to a hue worked out from the spirit's name; the desktop apps instead build it from the spirit's artwork, which is a possible upgrade (about 3 MB of pictures).
+- **Arrows: done, for moves.** Hovering a move option draws an arrow on the island from the token (or its land) to the destination, and outlines both lands. Other decisions that carry arrows in the desktop apps (`IHaveArrows`) are not drawn.
 - **Growth options** arrive as kind "action". The client matches them to the static view's growth groups by text.
 
 ## Engine problems found by playing every spirit
@@ -154,8 +154,8 @@ How the client works, in short:
 - The island is drawn in the server's own units (about 1.5 wide), so strokes are in screen pixels (`vector-effect: non-scaling-stroke`).
 - Tokens are coloured circles with their text for now; pictures come with Phase 4.
 
-### Phase 4: full player panels
-The spirit panel with tracks, growth and innates. Cards, status bar, log and token images.
+### Phase 4: full player panels (built)
+The log, prompt details, the spirit panel (tracks, growth, innate powers, special rules, cards with their text), token pictures and move arrows. What is left from the original list is a fuller status bar and the other arrows.
 
 ### Phase 5: polish (pick as needed)
 - **Tokens jumping.** Positions are computed fresh each request, so tokens may move when others come or go. If that's distracting, send ordered slot lists and port the slot-assignment part of `ManageInternalPoints` (~100 lines) to TypeScript.
