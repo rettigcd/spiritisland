@@ -31,6 +31,8 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   const slotOption = (track: TrackName, slot: number) => optionWhere(['track', 'trackPresence'], o => o.target.track === track && o.target.slot === slot);
   const cardOption = (card: string) => optionWhere(['card'], o => o.target.card === card);
   const innateOption = (name: string) => optionWhere(['innate'], o => o.target.card === name);
+  // A growth action is picked by which action of which group it is (several can read the same, like two "Place Presence (1)").
+  const growthOption = (group: number, action: number) => optionWhere(['growth'], o => o.target.group === group && o.target.action === action);
 
   const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
   const pick = (source: SourceKey) => () => { if (!busy) onSelect(selected === source ? null : source); };
@@ -39,6 +41,29 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   return (
     <section class="panel spirit">
       <h2>{spirit.name}{isViewer ? '' : ' (other player)'}</h2>
+      {info && (
+        <>
+          <h3>Growth</h3>
+          <ul class="growth">
+            {info.growthGroups.map((g, gi) => (
+              <li key={g.id} class={spirit.growthGroupsUsed.includes(g.id) ? 'used' : ''}>
+                {g.actions.map((action, ai) => {
+                  const option = growthOption(gi, ai);
+                  return (
+                    <span key={ai}>
+                      {ai > 0 && ' · '}
+                      {option
+                        ? <button type="button" class="choosable growth-action" disabled={busy} onClick={choose(option)}>{action}</button>
+                        : action}
+                    </span>
+                  );
+                })}
+                {g.energyChange !== 0 ? <span class="muted"> ({g.energyChange > 0 ? '+' : ''}{g.energyChange} energy)</span> : null}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       <p>
         Energy <strong>{spirit.energy}</strong> (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn}
         {' '}· Elements: {spirit.elements || 'none'}
@@ -56,16 +81,6 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         <>
           <Track title="Energy track" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
           <Track title="Card plays track" track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
-
-          <h3>Growth</h3>
-          <ul class="growth">
-            {info.growthGroups.map(g => (
-              <li key={g.id} class={spirit.growthGroupsUsed.includes(g.id) ? 'used' : ''}>
-                {g.actions.join(' · ')}
-                {g.energyChange !== 0 ? <span class="muted"> ({g.energyChange > 0 ? '+' : ''}{g.energyChange} energy)</span> : null}
-              </li>
-            ))}
-          </ul>
 
           <h3>Innate powers</h3>
           {info.innates.map(innate => (

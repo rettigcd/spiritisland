@@ -14,9 +14,19 @@ public static class OptionTargets {
 		DestroyedPresence => new( "destroyedPresence", Spirit: viewer.SpiritName ),
 		PowerCard card => new( "card", Spirit: viewer.SpiritName, Card: card.Title ),
 		InnatePower innate => new( "innate", Spirit: viewer.SpiritName, Card: innate.Title ),
-		IActionFactory => new( "action" ),
+		IActionFactory action => GrowthTarget( action, viewer ) ?? new( "action" ),
 		_ => new( "other" ),
 	};
+
+	/// <summary> A growth action is the very object its group holds, so which group and which action it is can be found by identity. </summary>
+	static OptionTarget? GrowthTarget( IActionFactory action, Spirit spirit ) {
+		GrowthGroup[] groups = spirit.GrowthTrack.Groups;
+		for( int g = 0; g < groups.Length; ++g ) {
+			int a = Array.IndexOf( groups[g].GrowthActionFactories, action );
+			if( 0 <= a ) return new( "growth", Spirit: spirit.SpiritName, Group: g, Action: a );
+		}
+		return null;
+	}
 
 	static OptionTarget OnTrack( string kind, Track track, Spirit spirit ) {
 		int energy = IndexOf( spirit.Presence.Energy, track );

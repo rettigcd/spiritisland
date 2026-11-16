@@ -47,6 +47,12 @@ export function destinationsOf(moves: readonly OptionView[]): Map<string, Option
   return byLand;
 }
 
+/** Where a move ends, for a list of destinations: the end of a move's label ("E@1 on A1 => A2" is "A2"). */
+export function describeDestination(move: OptionView): string {
+  const arrow = move.label.indexOf(' => ');
+  return arrow < 0 ? move.label : move.label.slice(arrow + 4);
+}
+
 /** What is being moved, for a message: the start of a move's label ("E@1 on A1 => A2" is "E@1 on A1"). */
 export function describeSource(moves: readonly OptionView[]): string {
   const label = moves[0]?.label ?? 'something';

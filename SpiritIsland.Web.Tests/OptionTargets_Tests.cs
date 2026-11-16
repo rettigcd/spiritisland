@@ -102,6 +102,17 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 	}
 
 	[Fact]
+	public void GrowthAction_PointsAtItsGroupAndItsPlaceInTheGroup() {
+		var (_, spirit) = NewGame();
+		GrowthGroup[] groups = spirit.GrowthTrack.Groups;
+		int g = Array.FindIndex( groups, grp => 2 <= grp.GrowthActionFactories.Length );
+		g.ShouldBeGreaterThanOrEqualTo( 0 ); // River has a group of more than one action
+
+		OptionTargets.For( groups[g].GrowthActionFactories[1], spirit )
+			.ShouldBe( new OptionTarget( "growth", Spirit: spirit.SpiritName, Group: g, Action: 1 ) );
+	}
+
+	[Fact]
 	public void ChoicesWithNothingToPointAt_AreOther() {
 		var (_, spirit) = NewGame();
 
@@ -145,7 +156,7 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 		}
 
 		// so this can't pass by looking at nothing
-		foreach( string kind in new[] { "space", "spaceToken", "move", "card", "action", "other" } )
+		foreach( string kind in new[] { "space", "spaceToken", "move", "card", "growth", "other" } )
 			kinds.GetValueOrDefault( kind ).ShouldBeGreaterThan( 0, $"no '{kind}' option was ever offered" );
 	}
 
@@ -191,6 +202,11 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 				break;
 			case "innate":
 				view.Spirits.Single( s => s.Id == t.Spirit ).Innates.ShouldContain( i => i.Name == t.Card, $"{where}: innate '{t.Card}' isn't the spirit's" );
+				break;
+			case "growth":
+				t.Spirit.ShouldBe( view.ViewerSpiritId, where );
+				t.Group.ShouldNotBeNull( where );
+				t.Action.ShouldNotBeNull( where );
 				break;
 			case "action" or "other" or "destroyedPresence":
 				break;

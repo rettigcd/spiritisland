@@ -75,6 +75,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
         <div class="side">
           <DecisionPanel
             decision={response.decision} result={response.result} picks={state.picks} busy={busy}
+            moves={moves} selected={selected} onSelect={setPicked}
             onChoose={actions.choose} onUndo={actions.undo} onHover={setHovered}
           />
           {response.view.spirits.map(s => (

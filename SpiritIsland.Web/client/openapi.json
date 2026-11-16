@@ -700,6 +700,20 @@
               "null",
               "string"
             ]
+          },
+          "group": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "action": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },

@@ -113,3 +113,4 @@ details.rules p { font-size: .9em; }
 .result { padding: 8px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
 .result.victory { border-color: #2e7d32; }
 .result.defeat { border-color: var(--error); }
+.growth-action { padding: 2px 8px; }

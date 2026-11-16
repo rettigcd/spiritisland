@@ -91,7 +91,9 @@ public record OptionView( string Id, string Label, OptionTarget Target, CardView
 /// a track, or just Spirit for presence coming back from the destroyed pile - plus ToSpace, the destination, which is
 /// empty when it isn't a space),
 /// "track" (Spirit, Track, Slot: a slot to reveal or return), "destroyedPresence" (Spirit), "card" (Spirit, Card),
-/// "innate" (Spirit, Card), "action" (an action to resolve, like a growth option: nothing to point at, use the label),
+/// "innate" (Spirit, Card),
+/// "growth" (Spirit, Group, Action: one of the actions of the spirit's growth groups, as the static view lists them),
+/// "action" (an action to resolve with nothing to point at: use the label),
 /// "other" (Done, a choice with no picture).
 /// </summary>
 /// <param name="Space">A space id (its label). For a move, the space the token is leaving.</param>
@@ -101,7 +103,9 @@ public record OptionView( string Id, string Label, OptionTarget Target, CardView
 /// <param name="Track">"energy" or "cardPlays".</param>
 /// <param name="Slot">Index into that track's slots (listed in the static view).</param>
 /// <param name="ToSpace">For a move, the space id of the destination.</param>
-public record OptionTarget( string Kind, string? Space = null, string? Token = null, string? Spirit = null, string? Card = null, string? Track = null, int? Slot = null, string? ToSpace = null );
+/// <param name="Group">For growth, the index of the growth group (in the static view's GrowthGroups).</param>
+/// <param name="Action">For growth, the index of the action within that group's Actions.</param>
+public record OptionTarget( string Kind, string? Space = null, string? Token = null, string? Spirit = null, string? Card = null, string? Track = null, int? Slot = null, string? ToSpace = null, int? Group = null, int? Action = null );
 
 public record ResultView( string Outcome, string Cause );
 

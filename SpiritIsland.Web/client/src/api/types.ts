@@ -206,6 +206,10 @@ export interface components {
             /** Format: int32 */
             slot?: null | number;
             toSpace?: null | string;
+            /** Format: int32 */
+            group?: null | number;
+            /** Format: int32 */
+            action?: null | number;
         };
         OptionView: {
             id: string;
