@@ -8,7 +8,7 @@ public class ScorchingConvergence {
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
 		// (the target land can be an origin too, but there is nothing to move from it to itself)
-		Space[] originOptions = [.. TargetSpaceAttribute.TargettedSpace!.Sources.Where( s => s != ctx.Space )];
+		Space[] originOptions = [.. TargetSpaceAttribute.RequireTargettedSpace().Sources.Where( s => s != ctx.Space )];
 
 		await new TokenMover( ctx.Self, "Move",
 			new SourceSelector( originOptions ).FromASingleLand(),

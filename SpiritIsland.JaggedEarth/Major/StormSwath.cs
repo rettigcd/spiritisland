@@ -42,7 +42,7 @@ public class StormSwath {
 	}
 
 	static Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
-		return ctx.Self.SelectAlways( "Select Origin land", TargetSpaceAttribute.TargettedSpace!.Sources, true );
+		return ctx.Self.SelectAlways( "Select Origin land", TargetSpaceAttribute.RequireTargettedSpace().Sources, true );
 	}
 
 }

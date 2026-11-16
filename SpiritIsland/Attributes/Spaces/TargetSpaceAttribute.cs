@@ -11,6 +11,13 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 	readonly static ActionScopeValueNullable<TargetSpaceResults> _targettedSpace = new ActionScopeValueNullable<TargetSpaceResults>("Targetted Space");
 
 	/// <summary>
+	/// For powers that need the land they were targeted from (their origins): <see cref="TargettedSpace"/>, or a clear
+	/// error when the power is being used without having been targeted, instead of a NullReferenceException.
+	/// </summary>
+	public static TargetSpaceResults RequireTargettedSpace() => TargettedSpace
+		?? throw new InvalidOperationException( "This power uses the land it was targeted from, but it is being used without having been targeted. Set the details first (see SetTargettedSpace)." );
+
+	/// <summary>
 	/// For a power that is used again without being targeted again (Relentless Gaze's repeat): sets the details powers read
 	/// from <see cref="TargettedSpace"/> (the origin lands) for the current action.
 	/// </summary>

@@ -9,7 +9,7 @@ public class SpreadingAndDreadfulMire {
 	[InnateTier("1 water","Move 1 presence from the origin Sacred Site to target land.",0)]
 	static public async Task Option1(TargetSpaceCtx ctx) {
 		var options = ctx.Self.Presence.Token
-			.On( TargetSpaceAttribute.TargettedSpace!.Sources)
+			.On( TargetSpaceAttribute.RequireTargettedSpace().Sources)
 			.Select(x=>new Move(x,ctx.Space));
 		var move = await ctx.Self.SelectAlways("Move presence to Target", options);
 		await move.Apply();

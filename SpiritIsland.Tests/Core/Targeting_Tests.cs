@@ -30,6 +30,20 @@ public class Targeting_Tests {
 		CaptureTargetSources.Origins.Select(x => x.Label).OrderBy(x => x).Join(",").ShouldBe("A3");
 	}
 
+	[Fact]
+	public void RequireTargettedSpace_WithoutTargetting_SaysSo_ThenReturnsWhatWasSet() {
+		var gs = new SoloGameState();
+
+		// Used without having been targeted: a clear error, not a NullReferenceException
+		Should.Throw<InvalidOperationException>( () => TargetSpaceAttribute.RequireTargettedSpace() )
+			.Message.ShouldContain( "without having been targeted" );
+
+		// Once set (as Relentless Gaze's repeat does), it is available
+		var results = new TargetSpaceResults( gs.Tokens[gs.Board[5]], [gs.Tokens[gs.Board[3]]] );
+		TargetSpaceAttribute.SetTargettedSpace( results );
+		TargetSpaceAttribute.RequireTargettedSpace().ShouldBeSameAs( results );
+	}
+
 	public class CaptureTargetSources {
 		[MinorCard("TestCard", 1, "fire"), Fast, FromPresence(0)]
 		[Instructions("..."), Artist(Artists.JoshuaWright)]
