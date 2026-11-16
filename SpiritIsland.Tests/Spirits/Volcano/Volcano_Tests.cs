@@ -22,6 +22,23 @@ public class Volcano_Tests {
 		gs.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
+	[Trait( "Spirit", "SetupAction" )]
+	[Fact]
+	public async Task SetupAction_PlacesPresenceAndBadlandsOnChosenMountain() {
+		// (used to throw "The given key 'M' was not present in the dictionary" - Badlands has no default token)
+		var (spirit, gameState, board) = Init();
+		Space a6 = gameState.Tokens[board[6]];
+		a6.Given_ClearAll();
+		int presenceBefore = spirit.Presence.CountOn( a6 );
+
+		await new AddBagPresenceToMountain().ActAsync( spirit ).AwaitUser( u =>
+			u.NextDecision.HasPrompt( "Add presence to" ).Choose( "A6" )
+		).ShouldComplete();
+
+		spirit.Presence.CountOn( a6 ).ShouldBe( presenceBefore + 1 );
+		a6.Badlands.Count.ShouldBe( 1 );
+	}
+
 	[Theory]
 	[Trait("SpecialRule", VolcanicPeaksTowerOverTheLandscape.Name )]
 	[InlineData(2,"A6")]

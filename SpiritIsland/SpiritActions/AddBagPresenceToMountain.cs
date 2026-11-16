@@ -15,7 +15,7 @@ public class AddBagPresenceToMountain : SpiritAction, ISerializableSelfCmd { // 
 		var options = GameState.Current.Spaces.Where( space=>space.SpaceSpec.IsMountain );
 		Space space = await self.SelectAlways("Add presence to", options);
 		await self.Presence.Token.AddTo(space);
-		await space.AddDefaultAsync( Token.Badlands, 1);
+		await space.Badlands.AddAsync( 1 );
 
 		// Push all dahan from that land.
 		var targetCtx = self.Target(space);
