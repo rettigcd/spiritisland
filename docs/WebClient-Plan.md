@@ -15,9 +15,9 @@ The web server, not the browser, walks a player through building an action. The 
 There are two server roles:
 
 1. **Stepping (the decision oracle).** The browser sends `{ checkpoint version, picks so far }`. The server loads the checkpoint, replays the picks, and returns the next prompt and its options. Nothing is held between requests: when the reply is sent, the game instance is dropped.
-2. **Coordinating.** When an action is complete, the server applies it against the current game state as one unit of work. If the checkpoint has moved on, or a pick is no longer valid when replayed, the action is rejected and the player rebuilds it.
+2. **Coordinating.** When an action is complete, the server applies it as one unit of work. In multiplayer the checkpoint may have moved on since the player started building the action. That alone doesn't reject it: the server replays the picks against the newest checkpoint. If every pick is still valid there, the action is accepted. If any pick no longer applies, the whole action is rejected and the player rebuilds it.
 
-In solo play the two roles collapse into one: the replay that completes an action also commits it. The solo plan below builds exactly that.
+In solo play the two roles collapse into one: the replay that completes an action also commits it. Nothing else can move the checkpoint, so a stale `checkpointVersion` is just an error (409), not something to retry. The solo plan below builds exactly that.
 
 **Constraint:** the server never holds an in-progress action in memory. A suspended async action can't be serialized, so nothing is kept alive waiting on a player. The in-progress picks travel with the browser; the server only replays them.
 
@@ -147,10 +147,6 @@ Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/
 
 Each phase ends with something that runs.
 
-### Phase 0: measure the oracle's cost
-Write a test or small benchmark that loads a checkpoint and replays N picks for a few typical actions (growth, a multi-target power, an innate). Record milliseconds per request.
-- **Exit:** a number. If a typical request costs well over ~100 ms, revisit before building UI (e.g. cache the most recent instance per game).
-
 ### Phase 1: oracle server with no UI
 `SpiritIsland.Web` with the game files, `OracleSession` and endpoints, returning `decision` with plain options and a minimal `view`.
 - **Tests:** create a game, then play the first rounds through `/decide` by taking the first option each time. Check that replaying the same picks gives the same decision, that a stale `checkpointVersion` gets 409, and that an invalid pick gets 400.
@@ -182,13 +178,13 @@ The solo web UI is the test bed for multiplayer, so it must not bake in solo ass
 3. **The island handles several boards.** The layout code already supports board orientation and `Island` takes several boards. Test a solo game on two boards early, if the engine allows it, to prove the SVG view copes.
 4. **The client re-renders from any incoming view**, not only from the answer to its own request. Multiplayer needs server push (SSE or WebSockets) when another player acts; with this rule, push is a new event source rather than a rewrite.
 5. **Storage and setup are swappable.** `GameFiles` and the new-game endpoint sit behind small interfaces in `Oracle/`, because both will change for multiplayer. Don't design the multiplayer formats now.
-6. **Keep the oracle's request shape.** `{ checkpointVersion, picks[] }` with a 409 on a stale checkpoint is the same mechanism multiplayer needs to reject an action when another spirit changed the board. Don't add solo-only shortcuts to it.
+6. **Keep the oracle's request shape.** `{ checkpointVersion, picks[] }` is also what multiplayer needs: replaying the picks against the current checkpoint is how it decides whether an action still applies, and an invalid pick gets the same 400 rejection. Only the stale-checkpoint response differs (solo: 409; multiplayer: replay against the new checkpoint). Don't add solo-only shortcuts to the request.
 
 These are about naming and shape, not features. Lobbies, accounts, push and multiplayer engine work stay out of scope.
 
 ## Later option: stepping in the browser (WASM)
 
-Only if server-side stepping turns out too slow or too costly (see Phase 0). The engine would run in the browser as WebAssembly (Blazor custom elements, or a .NET WASM module with JSExport/JSImport exposing `advance`/`choose`/`save`/`load`), stepping locally and sending only complete actions to the coordinator. The `View/` projection would move into a library so the browser can run it too.
+Only if server-side stepping turns out too slow or too costly. A first measurement (`OracleCost_Tests`) found a median request of about 7 ms in rounds 1-4, so this isn't expected; re-measure with a stronger player's late-game state before ruling it out. The engine would run in the browser as WebAssembly (Blazor custom elements, or a .NET WASM module with JSExport/JSImport exposing `advance`/`choose`/`save`/`load`), stepping locally and sending only complete actions to the coordinator. The `View/` projection would move into a library so the browser can run it too.
 
 Expected problems:
 - Blocking calls in `UserGateway` (`WaitForNext`/`Next`/`Current`/`_signal.WaitOne`) can't run on the single browser thread; the stepwise API avoids them.
