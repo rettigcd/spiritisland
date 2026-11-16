@@ -57,6 +57,9 @@ ul.saved button { width: 100%; }
 .island .token .badge-text { fill: #111; }
 .island .token .badge-text.bold { font-weight: 700; }
 .island .token .ring-choose { display: none; }
+.island .arrow { pointer-events: none; }
+.island .arrow line { stroke: #d33; stroke-width: 4px; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.island .arrow polygon { fill: #d33; }
 .island .token.choosable { cursor: pointer; }
 .island .token.choosable .ring-choose { display: inline; stroke: var(--accent); stroke-width: 4px; vector-effect: non-scaling-stroke; }
 

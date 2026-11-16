@@ -35,6 +35,7 @@ export function Island({ staticView, view, options, hovered, disabled, onChoose 
   const tokensBySpace = new Map(view.spaces.map(s => [s.id, s.tokens]));
 
   const choose = (o: OptionView) => { if (!disabled) onChoose(o.id); };
+  const arrow = moveArrow(hovered, staticView, view);
 
   return (
     <svg class="island" viewBox={`${x} ${y} ${width} ${height}`} role="img" aria-label="The island">
@@ -57,7 +58,50 @@ export function Island({ staticView, view, options, hovered, disabled, onChoose 
           </g>
         );
       })}
+      {arrow && <Arrow from={arrow.from} to={arrow.to} size={arrow.size} />}
     </svg>
+  );
+}
+
+interface Point { x: number; y: number }
+
+const centre = (space: SpaceGeometry): Point => ({
+  x: space.corners.reduce((sum, c) => sum + c.x, 0) / space.corners.length,
+  y: space.corners.reduce((sum, c) => sum + c.y, 0) / space.corners.length,
+});
+
+/**
+ * Where a hovered move would go, as an arrow: from the token (or the middle of its land) to the middle of the destination.
+ * A move that does not start and end on the island (presence from a track, or back from the destroyed pile) has none.
+ */
+function moveArrow(option: OptionView | null, staticView: StaticView, view: GameView): { from: Point; to: Point; size: number } | null {
+  const target = option?.target;
+  if (!target || target.kind !== 'move' || !target.space || !target.toSpace) return null;
+  const from = staticView.spaces.find(s => s.id === target.space);
+  const to = staticView.spaces.find(s => s.id === target.toSpace);
+  if (!from || !to || from.id === to.id) return null;
+  const token = view.spaces.find(s => s.id === from.id)?.tokens.find(t => t.id === target.token);
+  return { from: token ? { x: token.x, y: token.y } : centre(from), to: centre(to), size: from.tokenSize };
+}
+
+/** A line with a head, drawn over the island. Sized from the token size, because the island is drawn in its own small units. */
+function Arrow({ from, to, size }: { from: Point; to: Point; size: number }) {
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const length = Math.hypot(dx, dy);
+  if (length === 0) return null;
+  const ux = dx / length, uy = dy / length; // along the arrow
+  const head = size * 0.7;
+  const base = { x: to.x - ux * head, y: to.y - uy * head };
+  const points = [
+    `${to.x},${to.y}`,
+    `${base.x - uy * head * 0.45},${base.y + ux * head * 0.45}`,
+    `${base.x + uy * head * 0.45},${base.y - ux * head * 0.45}`,
+  ].join(' ');
+  return (
+    <g class="arrow">
+      <line x1={from.x} y1={from.y} x2={base.x} y2={base.y} />
+      <polygon points={points} />
+    </g>
   );
 }
 
