@@ -39,13 +39,14 @@ ul.saved button { width: 100%; }
 .topbar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
 .status { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; margin-bottom: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
 .inv-name { font-weight: 600; }
-.columns { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 16px; align-items: start; }
+/* The island has a fixed width (it shrinks only when the window is too narrow for it), so browser zoom makes it bigger or smaller. */
+.columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(280px, 440px); justify-content: start; gap: 16px; align-items: start; }
 @media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
 .island-wrap { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 .move-hint-bar { min-height: 2.4em; display: flex; align-items: center; }
 .move-hint { margin: 0; font-size: .9em; color: var(--notice); }
 
-.island { width: 100%; height: auto; max-height: 85vh; display: block; }
+.island { width: 100%; height: auto; display: block; }
 /* The island is drawn in the server's own units (about 1.5 wide). Stroke widths are set on the shapes (Island.tsx works them out
    in screen pixels), not here: vector-effect: non-scaling-stroke would do it but draws black boxes on some GPUs. */
 .island .space { stroke: #555; }
