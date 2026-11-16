@@ -1,44 +1,174 @@
-import type { CardView, OptionView, SpiritView } from './api/model';
+import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
+import { rangeText } from './text';
 
 interface Props {
   spirit: SpiritView;
+  /** The spirit's tracks, growth, innate powers and rules. Undefined until the static view has loaded. */
+  info: SpiritStatic | undefined;
   isViewer: boolean;
   options: readonly OptionView[];
   busy: boolean;
   onChoose(optionId: string): void;
 }
 
-/** The first, plain version: energy, elements and cards. Tracks, growth and innates come with the full panels. */
-export function SpiritPanel({ spirit, isViewer, options, busy, onChoose }: Props) {
-  // A card (or innate) the current decision is asking about, found by the spirit and the card's title.
-  const optionFor = (card: string) => options.find(o => (o.target.kind === 'card' || o.target.kind === 'innate') && o.target.spirit === spirit.id && o.target.card === card);
+type TrackName = 'energy' | 'cardPlays';
 
-  const cardList = (title: string, cards: readonly CardView[]) => (
+/**
+ * Everything about one spirit: its presence tracks, growth, innate powers, special rules and cards. Whatever the current
+ * decision is asking about (a track slot, a card, an innate power) is highlighted and can be clicked here as well as in the
+ * decision panel.
+ */
+export function SpiritPanel({ spirit, info, isViewer, options, busy, onChoose }: Props) {
+  const optionWhere = (kinds: readonly string[], match: (o: OptionView) => boolean) =>
+    options.find(o => kinds.includes(o.target.kind) && o.target.spirit === spirit.id && match(o));
+
+  const slotOption = (track: TrackName, slot: number) => optionWhere(['track', 'trackPresence'], o => o.target.track === track && o.target.slot === slot);
+  const cardOption = (card: string) => optionWhere(['card'], o => o.target.card === card);
+  const innateOption = (name: string) => optionWhere(['innate'], o => o.target.card === name);
+
+  const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
+
+  return (
+    <section class="panel spirit">
+      <h2>{spirit.name}{isViewer ? '' : ' (other player)'}</h2>
+      <p>
+        Energy <strong>{spirit.energy}</strong> (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn}
+        {' '}· Elements: {spirit.elements || 'none'}
+      </p>
+      <p class="muted">Presence destroyed: {spirit.presence.destroyed} · Sacred sites: {spirit.presence.sacredSites.join(', ') || 'none'}</p>
+
+      {info && (
+        <>
+          <Track title="Energy track" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} busy={busy} choose={choose} />
+          <Track title="Card plays track" track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} busy={busy} choose={choose} />
+
+          <h3>Growth</h3>
+          <ul class="growth">
+            {info.growthGroups.map(g => (
+              <li key={g.id} class={spirit.growthGroupsUsed.includes(g.id) ? 'used' : ''}>
+                {g.actions.join(' · ')}
+                {g.energyChange !== 0 ? <span class="muted"> ({g.energyChange > 0 ? '+' : ''}{g.energyChange} energy)</span> : null}
+              </li>
+            ))}
+          </ul>
+
+          <h3>Innate powers</h3>
+          {info.innates.map(innate => (
+            <Innate key={innate.name} innate={innate} status={spirit.innates.find(i => i.name === innate.name)?.tierStatus ?? []}
+              option={innateOption(innate.name)} busy={busy} choose={choose} />
+          ))}
+
+          {info.specialRules.length > 0 && (
+            <details class="rules">
+              <summary>Special rules</summary>
+              {info.specialRules.map(r => <p key={r.title}><strong>{r.title}.</strong> {r.description}</p>)}
+            </details>
+          )}
+        </>
+      )}
+
+      <CardList title="Hand" cards={spirit.hand} optionFor={cardOption} busy={busy} choose={choose} />
+      <CardList title="In play" cards={spirit.inPlay} optionFor={cardOption} busy={busy} choose={choose} />
+      <details>
+        <summary>Discard ({spirit.discard.length})</summary>
+        <CardList title="" cards={spirit.discard} optionFor={cardOption} busy={busy} choose={choose} />
+      </details>
+    </section>
+  );
+}
+
+interface TrackProps {
+  title: string;
+  track: TrackName;
+  slots: readonly SlotView[];
+  /** Indexes of the slots whose presence has been taken: those are the ones whose benefit you now have. */
+  revealed: readonly number[];
+  optionFor(track: TrackName, slot: number): OptionView | undefined;
+  busy: boolean;
+  choose(o: OptionView | undefined): () => void;
+}
+
+function Track({ title, track, slots, revealed, optionFor, busy, choose }: TrackProps) {
+  return (
+    <div class="track">
+      <h3>{title}</h3>
+      <ol class="slots">
+        {slots.map((slot, i) => {
+          const open = revealed.includes(i);
+          const option = optionFor(track, i);
+          const classes = `slot ${open ? 'revealed' : 'covered'} ${option ? 'choosable' : ''}`;
+          const hint = open ? 'Revealed' : 'Presence still here';
+          return (
+            <li key={i}>
+              {option
+                ? <button type="button" class={classes} disabled={busy} onClick={choose(option)} title={hint}>{slot.label}</button>
+                : <span class={classes} title={hint}>{slot.label}</span>}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+interface InnateProps {
+  innate: InnateStatic;
+  /** For each tier: "Yes" if this turn's elements meet it, "AsPrepared" if they could with the elements being prepared, otherwise "No". */
+  status: readonly string[];
+  option: OptionView | undefined;
+  busy: boolean;
+  choose(o: OptionView | undefined): () => void;
+}
+
+function Innate({ innate, status, option, busy, choose }: InnateProps) {
+  return (
+    <div class="innate">
+      <h4>
+        {innate.name}
+        <span class="muted"> {innate.speed} · range {rangeText(innate.range)} · {innate.target}</span>
+        {option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
+      </h4>
+      <p class="muted">{innate.instructions}</p>
+      <ul class="tiers">
+        {innate.tiers.map((t, i) => (
+          <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`}>
+            <strong>{t.threshold}</strong> {t.effect}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+interface CardListProps {
+  title: string;
+  cards: readonly CardView[];
+  optionFor(card: string): OptionView | undefined;
+  busy: boolean;
+  choose(o: OptionView | undefined): () => void;
+}
+
+function CardList({ title, cards, optionFor, busy, choose }: CardListProps) {
+  return (
     <div>
-      <h3>{title} ({cards.length})</h3>
+      {title && <h3>{title} ({cards.length})</h3>}
       <ul class="cards">
         {cards.map(c => {
           const option = optionFor(c.id);
           return (
             <li key={c.id}>
-              <button type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={() => option && onChoose(option.id)}>
+              <button type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={choose(option)}>
                 {c.name} <span class="muted">${c.cost} {c.speed}{c.elements ? ` ${c.elements}` : ''}</span>
               </button>
+              <details class="card-text">
+                <summary>Text</summary>
+                <p class="muted">Range {rangeText(c.range)} · {c.target}</p>
+                <p>{c.instructions}</p>
+              </details>
             </li>
           );
         })}
       </ul>
     </div>
-  );
-
-  return (
-    <section class="panel spirit">
-      <h2>{spirit.name}{isViewer ? '' : ' (other player)'}</h2>
-      <p>Energy {spirit.energy} (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn} · Elements: {spirit.elements || 'none'}</p>
-      <p class="muted">Presence destroyed: {spirit.presence.destroyed} · Sacred sites: {spirit.presence.sacredSites.join(', ') || 'none'}</p>
-      {cardList('Hand', spirit.hand)}
-      {cardList('In play', spirit.inPlay)}
-      <p class="muted">Discard: {spirit.discard.length}</p>
-    </section>
   );
 }

@@ -104,6 +104,9 @@ export interface components {
             cost: number;
             speed: string;
             elements: string;
+            range: string;
+            target: string;
+            instructions: string;
         };
         DecideRequest: {
             /** Format: int32 */
@@ -209,6 +212,7 @@ export interface components {
             id: string;
             label: string;
             target: components["schemas"]["OptionTarget"];
+            card?: null | components["schemas"]["CardView"];
         };
         OracleResponse: {
             gameId: string;

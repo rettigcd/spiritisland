@@ -3,7 +3,7 @@ import type { GameView } from './api/model';
 export function StatusBar({ view }: { view: GameView }) {
   const { fear, blight, invaders } = view;
   const slot = (name: string, cards: string[]) => (
-    <span class="slot"><span class="slot-name">{name}</span> {cards.length > 0 ? cards.join(', ') : '-'}</span>
+    <span class="inv-slot"><span class="inv-name">{name}</span> {cards.length > 0 ? cards.join(', ') : '-'}</span>
   );
   return (
     <header class="status">

@@ -52,7 +52,10 @@ public record PresenceView( TrackView Energy, TrackView CardPlays, int EnergyPer
 public record TrackView( int[] Revealed );
 
 /// <param name="Id">The card's title, unique within a spirit.</param>
-public record CardView( string Id, string Name, int Cost, string Speed, string Elements );
+/// <param name="Range">How far from where it is used it can target, as printed on the card ("1", "-" for a spirit).</param>
+/// <param name="Target">What it can target, as printed on the card ("Any", "Jungle/Wetland", ...).</param>
+/// <param name="Instructions">What the card does.</param>
+public record CardView( string Id, string Name, int Cost, string Speed, string Elements, string Range, string Target, string Instructions );
 
 /// <param name="TierStatus">For each tier, whether this turn's elements meet it.</param>
 public record InnateView( string Name, string[] TierStatus );
@@ -71,7 +74,8 @@ public record DecisionView( string Prompt, OptionView[] Options, string? Details
 
 /// <param name="Id">The option's text, made unique within its decision. This is what a pick sends.</param>
 /// <param name="Target">What on the board or in a panel this option is, so the client can highlight it.</param>
-public record OptionView( string Id, string Label, OptionTarget Target );
+/// <param name="Card">When the option is a power card (choosing one to gain, play or forget), the card, so its text can be read before choosing.</param>
+public record OptionView( string Id, string Label, OptionTarget Target, CardView? Card = null );
 
 /// <summary>
 /// What an option points at. One record with a <paramref name="Kind"/> and the fields that kind uses, not a class

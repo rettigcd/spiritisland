@@ -1,4 +1,5 @@
 import type { DecisionView, OptionView, ResultView } from './api/model';
+import { rangeText } from './text';
 
 interface Props {
   decision: DecisionView | null;
@@ -42,6 +43,11 @@ export function DecisionPanel({ decision, result, picks, busy, onChoose, onUndo,
                 >
                   {o.label}
                 </button>
+                {o.card && (
+                  <p class="muted card-option">
+                    {o.card.elements ? `${o.card.elements} · ` : ''}range {rangeText(o.card.range)} · {o.card.target}. {o.card.instructions}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

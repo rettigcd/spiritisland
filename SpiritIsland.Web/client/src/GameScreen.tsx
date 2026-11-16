@@ -41,7 +41,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
             onChoose={actions.choose} onUndo={actions.undo} onHover={setHovered}
           />
           {response.view.spirits.map(s => (
-            <SpiritPanel key={s.id} spirit={s} isViewer={s.id === response.view.viewerSpiritId} options={options} busy={busy} onChoose={actions.choose} />
+            <SpiritPanel key={s.id} spirit={s} info={staticView?.spirits.find(x => x.id === s.id)} isViewer={s.id === response.view.viewerSpiritId} options={options} busy={busy} onChoose={actions.choose} />
           ))}
         </div>
       </div>

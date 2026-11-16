@@ -321,6 +321,39 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 
 	#endregion the log and prompt details
 
+	#region card text
+
+	[Fact]
+	public async Task CardsInHand_HaveTheirText() {
+		OracleResponse first = await new Player( factory ).NewAsync( River );
+
+		CardView[] hand = first.View.Spirits.Single().Hand;
+		hand.ShouldNotBeEmpty();
+		foreach( CardView card in hand ) {
+			card.Instructions.ShouldNotBeNullOrWhiteSpace( card.Name );
+			card.Range.ShouldNotBeNullOrWhiteSpace( card.Name );
+			card.Target.ShouldNotBeNullOrWhiteSpace( card.Name );
+		}
+	}
+
+	[Fact]
+	public async Task ChoosingACardToGain_ShowsEachCardsText() {
+		var player = new Player( factory );
+		await player.NewAsync( River );
+		// take the first option until the decision is a choice of cards (gaining a power card)
+		for( int i = 0; i < 60 && !player.Last.Decision!.Options.Any( o => o.Card is not null ); ++i )
+			await player.PickAsync( player.Last.Decision.Options[0].Id );
+
+		OptionView[] cards = [.. player.Last.Decision!.Options.Where( o => o.Card is not null )];
+		cards.ShouldNotBeEmpty( "no decision offered cards" );
+		foreach( OptionView option in cards ) {
+			option.Card!.Instructions.ShouldNotBeNullOrWhiteSpace( option.Label );
+			option.Label.ShouldContain( option.Card.Name );
+		}
+	}
+
+	#endregion card text
+
 	/// <summary> What a browser holds: the last response, whose pending picks it adds to. </summary>
 	sealed class Player( WebApplicationFactory<Program> host ) {
 		readonly HttpClient _http = host.CreateClient();

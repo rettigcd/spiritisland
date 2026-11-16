@@ -60,8 +60,8 @@ public static class GameViewBuilder {
 		return new TrackView( [.. track.Revealed.Select( slot => slots.IndexOf( slot ) )] );
 	}
 
-	static CardView CardOf( PowerCard c )
-		=> new( c.Title, c.Title, c.Cost, c.Speed.ToString(), c.Elements.BuildElementString( true ) );
+	internal static CardView CardOf( PowerCard c )
+		=> new( c.Title, c.Title, c.Cost, c.Speed.ToString(), c.Elements.BuildElementString( true ), c.RangeText, c.TargetFilter, c.Instructions );
 
 	/// <summary> Token positions come from the same layout the other UIs use, so they are always inside their space. </summary>
 	static SpaceView SpaceOf( Space space ) {

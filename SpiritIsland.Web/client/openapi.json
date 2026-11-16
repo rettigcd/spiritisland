@@ -287,7 +287,10 @@
           "name",
           "cost",
           "speed",
-          "elements"
+          "elements",
+          "range",
+          "target",
+          "instructions"
         ],
         "type": "object",
         "properties": {
@@ -305,6 +308,15 @@
             "type": "string"
           },
           "elements": {
+            "type": "string"
+          },
+          "range": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "instructions": {
             "type": "string"
           }
         }
@@ -714,6 +726,16 @@
           },
           "target": {
             "$ref": "#/components/schemas/OptionTarget"
+          },
+          "card": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CardView"
+              }
+            ]
           }
         }
       },

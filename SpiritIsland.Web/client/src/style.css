@@ -38,7 +38,7 @@ ul.saved button { width: 100%; }
 .game { padding: 12px 16px; }
 .topbar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
 .status { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; margin-bottom: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
-.slot-name { font-weight: 600; }
+.inv-name { font-weight: 600; }
 .columns { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 16px; align-items: start; }
 @media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
 .island-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
@@ -60,6 +60,28 @@ ul.saved button { width: 100%; }
 
 /* The island and the log share the left column. */
 .log { margin-top: 12px; }
+
+/* The spirit panel */
+.spirit h3 { margin-top: 12px; }
+.spirit h4 { margin: 10px 0 2px; }
+.spirit p { margin: 4px 0; }
+.card-option { margin: 2px 0 6px 4px; font-size: .85em; }
+ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.slot { display: inline-block; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: .85em; }
+.slot.revealed { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }
+.slot.covered { color: var(--muted); border-style: dashed; }
+button.slot { cursor: pointer; }
+ul.growth { margin: 0; padding-left: 18px; }
+ul.growth li.used { text-decoration: line-through; color: var(--muted); }
+ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; gap: 2px; font-size: .9em; }
+.tier { padding: 1px 6px; border-left: 3px solid var(--border); color: var(--muted); }
+.tier-yes { border-left-color: #2e7d32; color: var(--text); }
+.tier-asprepared { border-left-color: var(--accent); color: var(--text); }
+.card-text { font-size: .85em; margin: 0 0 4px 6px; }
+.card-text summary { cursor: pointer; color: var(--muted); }
+.card-text p { margin: 2px 0; }
+details.rules { margin-top: 8px; }
+details.rules p { font-size: .9em; }
 .log-lines { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }
 .log-lines li { padding: 1px 4px; border-left: 3px solid transparent; white-space: pre-line; }
 .log-lines .log-phase { color: var(--muted); font-weight: 600; border-left-color: var(--border); }

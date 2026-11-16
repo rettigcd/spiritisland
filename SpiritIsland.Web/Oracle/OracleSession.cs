@@ -118,7 +118,7 @@ public sealed class OracleSession : IDisposable {
 				SyncBaseline( ref moved, firstLook );
 			}
 			if( _pending is not null )
-				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ) ) )],
+				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ), o is PowerCard card ? GameViewBuilder.CardOf( card ) : null ) )],
 					PromptDetails.For( _pending.Prompt ) );
 			if( _game.EngineTask!.IsCompleted ) {
 				SyncBaseline( ref moved, firstLook );
