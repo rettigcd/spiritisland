@@ -5,6 +5,7 @@ import { Island } from './Island';
 import { describeSource, movesBySource } from './moves';
 import type { SourceKey } from './moves';
 import { LogPanel } from './LogPanel';
+import { Menu } from './Menu';
 import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
 import { StatusBar } from './StatusBar';
@@ -51,15 +52,16 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
 
   return (
     <div class="game">
-      <div class="topbar">
-        <button type="button" onClick={actions.leave}>Back to games</button>
-        <span class="muted">Game {response.gameId}</span>
-        {setup && <span title="The game's number: starting a game with the same spirit, board, adversary and seed plays it again">Seed <strong>{setup.seed}</strong></span>}
-        {setup && <button type="button" onClick={playAgain} disabled={state.busy}>Play again (same seed)</button>}
-        <button type="button" onClick={toggleSpiritFirst} title="Swap the order of the menu choices and the spirit panel">Swap spirit / choices</button>
-      </div>
-
-      <StatusBar view={response.view} />
+      <StatusBar view={response.view}>
+        <span class="muted" title="The game's number and its seed: starting a game with the same spirit, board, adversary and seed plays it again">
+          Game {response.gameId}{setup ? <> / Seed <strong>{setup.seed}</strong></> : null}
+        </span>
+        <Menu items={[
+          { label: 'Back to games', onSelect: actions.leave },
+          { label: 'Replay game', title: 'Start this game again from the beginning (same seed)', disabled: !setup || state.busy, onSelect: playAgain },
+          { label: 'Swap spirit / choices', title: 'Swap the order of the menu choices and the spirit panel', onSelect: toggleSpiritFirst },
+        ]} />
+      </StatusBar>
 
 
       {state.notice && <p class="notice" role="status">{state.notice} <button type="button" onClick={actions.dismissMessages}>OK</button></p>}

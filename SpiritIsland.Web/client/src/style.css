@@ -36,9 +36,15 @@ ul.saved, ul.options, ul.cards { list-style: none; margin: 0; padding: 0; displa
 ul.saved button { width: 100%; }
 
 .game { padding: 12px 16px; }
-.topbar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
 .status { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; margin-bottom: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
 .inv-name { font-weight: 600; }
+.status { align-items: center; }
+.status-end { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.menu { position: relative; }
+.menu-button { padding: 2px 10px; font-size: 1.2em; line-height: 1.2; }
+.menu-list { position: absolute; right: 0; top: calc(100% + 4px); z-index: 10; list-style: none; margin: 0; padding: 4px; min-width: 200px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); display: grid; gap: 2px; }
+.menu-list button { width: 100%; border-color: transparent; }
 /* The island has a fixed width (it shrinks only when the window is too narrow for it), so browser zoom makes it bigger or smaller. */
 .columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(280px, 440px); justify-content: start; gap: 16px; align-items: start; }
 /* The right column stays in view and scrolls on its own, so the board and the spirit panel can be seen together. */
