@@ -69,6 +69,27 @@ public class Finder_Tests : BoardAGame {
 		((FinderOfPathsUnseen)_spirit).GatewayToken.ShouldBeNull();
 	}
 
+	[Fact]
+	public async Task ACircuitousAndWendingJourney_PushesHalfOfEachKind() {
+		// (used to throw "Cannot set Quota twice": it set a quota per kind, and a selector takes only one)
+		// Given: a land with presence, 2 explorers and 2 dahan
+		Space a3 = _gameState.Tokens[_gameState.Island.Boards[0][3]];
+		a3.Given_HasTokens("2E@1,2D@2");
+
+		// When: the card is used on it
+		await _spirit.When_ResolvingCard<ACircuitousAndWendingJourney>( u => {
+			u.NextDecision.HasPrompt( "A Circuitous and Wending Journey: Target Space" ).Choose( "A3" );
+			// Then: up to half of each kind may be pushed - 1 explorer, 1 dahan, 1 presence
+			u.NextDecision.HasPrompt( "Push up to (3)" )
+				.HasOptions( "D@2 on A3 => A2,D@2 on A3 => A4,E@1 on A3 => A2,E@1 on A3 => A4,FoPU on A3 => A2,FoPU on A3 => A4,Done" )
+				.Choose( "E@1 on A3 => A2" );
+			// And: each kind has its own allowance - the explorer is used up, the others are still offered
+			u.NextDecision.HasPrompt( "Push up to (2)" )
+				.HasOptions( "D@2 on A3 => A2,D@2 on A3 => A4,FoPU on A3 => A2,FoPU on A3 => A4,Done" )
+				.Choose( "Done" );
+		} ).ShouldComplete();
+	}
+
 	async Task Do_Growth2( string fromTrack, string destination ){
 		await _spirit.DoGrowthForTestsAsync(_gameState).AwaitUser( u=>{
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(1)");

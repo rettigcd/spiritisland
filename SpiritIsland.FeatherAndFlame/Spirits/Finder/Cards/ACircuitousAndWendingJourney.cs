@@ -6,20 +6,21 @@ public class ACircuitousAndWendingJourney {
 	[Instructions( "Push up to half (round up) of Invaders from target land. Do likewise (separately) for Dahan, Presence, and Beasts." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-		var selector = ctx.SourceSelector;
+		// A selector takes one quota, so all 4 kinds are separate groups of that one quota.
+		var quota = new Quota();
 		// Push up to half( round up ) of Invaders from target land.
-		AddHalf( selector, ctx.Space, Human.Invader );
+		AddHalf( quota, ctx.Space, Human.Invader );
 		// Do likewise( separately) for dahan, presence, and beast.
-		AddHalf( selector, ctx.Space, Human.Dahan );
-		AddHalf( selector, ctx.Space, ctx.AllPresenceTokens );
-		AddHalf( selector, ctx.Space, Token.Beast );
+		AddHalf( quota, ctx.Space, Human.Dahan );
+		AddHalf( quota, ctx.Space, ctx.AllPresenceTokens );
+		AddHalf( quota, ctx.Space, Token.Beast );
 
-		return selector.PushUpToN( ctx.Self );
+		return ctx.SourceSelector.UseQuota( quota ).PushUpToN( ctx.Self );
 	}
 
-	static void AddHalf( SourceSelector source, Space space, params ITokenClass[] groups ) {
+	static void AddHalf( Quota quota, Space space, params ITokenClass[] groups ) {
 		int count = (space.SumAny( groups )+1) / 2; // +1 causes rounds up
-		source.UseQuota(new Quota().AddGroup( count, groups ));
+		quota.AddGroup( count, groups );
 	}
 
 }
