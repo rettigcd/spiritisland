@@ -40,8 +40,10 @@ public class TypedDecision<T> : IDecisionPlus where T:class {
 	){
 
 		var optionList = options.ToList();
-		if(optionList.Count != 0 && cancelPrompt != null )
-			optionList.Add(new TextOption(cancelPrompt));
+		if(optionList.Count != 0 && cancelPrompt != null ) {
+			_cancelOption = new TextOption(cancelPrompt);
+			optionList.Add(_cancelOption);
+		}
 
 		Prompt = prompt;
 		_allOptions = [..optionList];
@@ -49,8 +51,11 @@ public class TypedDecision<T> : IDecisionPlus where T:class {
 
 	}
 
+	/// <summary> The custom-text cancel option (when built with a cancelPrompt). Choosing it means "no result", same as Done. </summary>
+	readonly TextOption? _cancelOption;
+
 	public bool TryGetResultFromOption( IOption option, out T? t ) {
-		if( TextOption.Done.Matches(option)) {
+		if( TextOption.Done.Matches(option) || _cancelOption?.Matches(option) == true ) {
 			t = null;
 			return true;
 		}

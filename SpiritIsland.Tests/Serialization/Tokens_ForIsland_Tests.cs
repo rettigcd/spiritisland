@@ -25,6 +25,33 @@ public class Tokens_ForIsland_Tests {
 	}
 
 	[Fact]
+	public void RoundTrips_StubbornSolidity_KeepsSolidDahanAndTheWayBack() {
+		// Given: 2 Dahan made solid by Stubborn Solidity (differ from normal Dahan only by their image)
+		var gs = new SoloGameState();
+		Space space = gs.Board[2].ScopeSpace;
+		space.Given_HasTokens("2D@2");
+		new SpiritIsland.JaggedEarth.StubbornSolidityBehavior().InitOn( space );
+		space.AllHumanTokens().Single().Img.ShouldBe( Img.Dahan_Solid );
+		var serCtx = new GameStateSerializationContext(gs);
+
+		// When: saved and restored
+		JsonObject json = gs.Tokens.ToJson(serCtx);
+		var restored = new Tokens_ForIsland();
+		Tokens_ForIsland.FromJson(restored, json, serCtx);
+
+		// Then: still solid Dahan, with the behavior still on the space
+		Space restoredSpace = restored[gs.Board[2]];
+		restoredSpace.AllHumanTokens().Single().Img.ShouldBe( Img.Dahan_Solid );
+		restoredSpace.Sum(Human.Dahan).ShouldBe(2);
+		var behavior = restoredSpace.ModsOfType<SpiritIsland.JaggedEarth.StubbornSolidityBehavior>().Single();
+
+		// And: when time passes, they go back to normal Dahan
+		( (ICleanupSpaceWhenTimePasses)behavior ).CleanupSpace( restoredSpace );
+		restoredSpace.AllHumanTokens().Single().Img.ShouldBe( Img.Dahan );
+		restoredSpace.ModsOfType<SpiritIsland.JaggedEarth.StubbornSolidityBehavior>().ShouldBeEmpty();
+	}
+
+	[Fact]
 	public void RoundTrips_ITokenClassTokens() {
 		var gs = new SoloGameState();
 		var space = gs.Board[2].ScopeSpace;

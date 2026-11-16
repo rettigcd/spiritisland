@@ -112,11 +112,12 @@ public interface ISerializationContext {
 
 	HumanToken DeserializeHumanToken( JsonNode json ) => ResolveHumanToken( json.GetValue<string>() );
 
-	/// <summary> The full 7-field detail behind one HumanToken lookup-table entry - only called by
+	/// <summary> The full 8-field detail behind one HumanToken lookup-table entry - only called by
 	/// `InternSpaceEntity`/`ResolveSpaceEntity`'s own implementation now, never per-occurrence. </summary>
 	JsonArray SerializeHumanTokenDetails( HumanToken token ) {
 		HumanToken.Props p = token.GetProps();
-		return new JsonArray( p.Class.Label, p._rawFullHealth, p.Damage, p.StrifeCount, p.Attack, (int)p.RavageOrder, (int)p.RavageSide );
+		// Img is part of a token's identity (Equals/GetHashCode), e.g. Stubborn Solidity's Dahan differ from normal Dahan only by it.
+		return new JsonArray( p.Class.Label, p._rawFullHealth, p.Damage, p.StrifeCount, p.Attack, (int)p.RavageOrder, (int)p.RavageSide, p.Img.ToString() );
 	}
 
 	HumanToken DeserializeHumanTokenDetails( JsonArray json ) {
@@ -127,12 +128,14 @@ public interface ISerializationContext {
 		int attack = json[4]!.GetValue<int>();
 		var ravageOrder = (RavageOrder)json[5]!.GetValue<int>();
 		var ravageSide = (RavageSide)json[6]!.GetValue<int>();
-		return new HumanToken( tokenClass, rawFullHealth )
+		HumanToken token = new HumanToken( tokenClass, rawFullHealth )
 			.AddDamage( damage )
 			.HavingStrife( strifeCount )
 			.SetAttack( attack )
 			.SetRavageOrder( ravageOrder )
 			.SetRavageSide( ravageSide );
+		// Saves made before Img was stored have 7 fields; those keep the class's own image.
+		return json.Count > 7 ? token.ChangeImg( Enum.Parse<Img>( json[7]!.GetValue<string>() ) ) : token;
 	}
 
 	/// <summary>

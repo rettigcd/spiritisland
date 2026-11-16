@@ -9,6 +9,7 @@ public class PresenceDestroyed_Tests {
 		var gameState = new SoloGameState( spirit, Boards.A );
 		Space space = ActionScope.Current.Spaces.Single( x => x.Label == "A5" );
 		spirit.Given_IsOn( space );
+		spirit.Given_IsOn( ActionScope.Current.Spaces.Single( x => x.Label == "A6" ) ); // a 2nd presence, so destroying one does not lose the game
 		var log = new List<Log.ILogEntry>();
 		gameState.NewLogEntry += log.Add;
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );

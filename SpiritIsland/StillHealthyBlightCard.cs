@@ -4,6 +4,10 @@ public abstract class StillHealthyBlightCard( string title, string description, 
 	: BlightCard( title, description, additinalBlightWhenFlipped )
 {
 	protected override async Task Side2Depleted(  GameState gs ) {
+		// This card is being replaced, so its "each Invader Phase" effect (if any) ends with it.
+		if(this is IRunBeforeInvaderPhase hook)
+			gs.RemovePreInvaderPhaseAction( hook );
+
 		// If there is ever NO Blight here, draw a new Blight Card.
 		gs.BlightCard = gs.BlightCards[0];
 		gs.BlightCards.RemoveAt(0);

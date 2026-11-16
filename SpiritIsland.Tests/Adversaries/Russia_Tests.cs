@@ -133,6 +133,7 @@ public class Russia_Tests {
 		//  When: ravage
 		//  Then: we push 1
 		Spirit spirit = gameState.Spirits[0];
+		spirit.Given_IsOn( gameState.Tokens[boardA[3]] ); // presence elsewhere, so losing the one on A5 does not lose the game
 		await a5.SpaceSpec.When_CardRavages().AwaitUser( u => {
 			u.NextDecision.HasPrompt("Pending Disaster-Push Explorer")
 				.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A7,E@1 on A5 => A8")

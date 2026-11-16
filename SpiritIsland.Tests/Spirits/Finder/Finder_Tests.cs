@@ -38,6 +38,23 @@ public class Finder_Tests : BoardAGame {
 		_spirit.Energy.ShouldBe(2);
 	}
 
+	[Fact]
+	public async Task DestroyPresence_OfLastPresence_LosesImmediately() {
+		// Given: exactly 1 presence on the island
+		foreach(var space in _spirit.Presence.Lands.ToArray())
+			space.Init(_spirit.Presence.Token,0);
+		_gameState.Island.Boards[0][3].ScopeSpace.Init(_spirit.Presence.Token,1);
+
+		// When: asked to destroy 3
+		// Then: the game is lost as soon as the last one is destroyed (no 2nd prompt, no crash)
+		var ex = await Should.ThrowAsync<GameOverException>( async () =>
+			await Cmd.DestroyPresence(3).ActAsync(_spirit).AwaitUser( u=>
+				u.NextDecision.HasPrompt("Select Presence to Destroy").Choose("FoPU on A3")
+			)
+		);
+		_spirit.Presence.IsOnIsland.ShouldBeFalse();
+	}
+
 	async Task Do_Growth2( string fromTrack, string destination ){
 		await _spirit.DoGrowthForTestsAsync(_gameState).AwaitUser( u=>{
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(1)");

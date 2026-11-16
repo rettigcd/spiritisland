@@ -24,6 +24,7 @@ public class StubbornSolidityBehavior
 	, IModifyRemovingToken
 	, IAdjustDamageToDahan
 	, ICleanupSpaceWhenTimePasses
+	, ISerializableSpaceEntity
 {
 
 	public void InitOn( Space space) {
@@ -72,5 +73,24 @@ public class StubbornSolidityBehavior
 
 	// allows for multiple Dahan healths that may not heal at end of round.
 	readonly Dictionary<HumanToken, HumanToken> _solidToNormalMap = [];
+
+	#region Json
+
+	const string Tag = "StubbornSolidityBehavior";
+
+	/// <summary> [ tag, [ [solid, normal], ... ] ] - the solid-to-normal Dahan map, in insertion order. </summary>
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray( Tag,
+		new JsonArray( _solidToNormalMap.Select( p => (JsonNode)new JsonArray( ctx.SerializeHumanToken( p.Key ), ctx.SerializeHumanToken( p.Value ) ) ).ToArray() ) );
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			var behavior = new StubbornSolidityBehavior();
+			foreach( JsonArray? pair in json[1]!.AsArray() )
+				behavior._solidToNormalMap[ctx.DeserializeHumanToken( pair![0]! )] = ctx.DeserializeHumanToken( pair[1]! );
+			return behavior;
+		} );
+
+	#endregion Json
 
 }

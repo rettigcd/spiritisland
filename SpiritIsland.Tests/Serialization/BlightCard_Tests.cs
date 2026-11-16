@@ -74,6 +74,25 @@ public class BlightCard_Tests {
 	}
 
 	[Fact]
+	public async Task ReplacingStillHealthyCard_RemovesItsInvaderPhaseHook() {
+		// Given: a flipped "each Invader Phase" Still-Healthy card in play, with its hook registered
+		var gs = new SoloGameState();
+		var serCtx = new GameStateSerializationContext( gs );
+		var border = new SpiritIsland.NatureIncarnate.TheBorderOfLifeAndDeath { CardFlipped = true };
+		gs.BlightCard = border;
+		gs.BlightCards = [ new NullBlightCard() ];
+		gs.AddPreInvaderPhaseAction( border );
+		gs.PreInvaderPhaseActionsToJson( serCtx ).Count.ShouldBe( 1 );
+
+		// When: its blight runs out and it is replaced
+		await border.OnBlightDepleated( gs );
+
+		// Then: the replaced card's hook is gone
+		gs.BlightCard.ShouldBeOfType<NullBlightCard>();
+		gs.PreInvaderPhaseActionsToJson( serCtx ).Count.ShouldBe( 0 );
+	}
+
+	[Fact]
 	public void SlowDissolutionOfWillMod_RoundTrips_ViaPreInvaderPhaseActionRegistry() {
 		// SlowDissolutionOfWillMod is internal (IRunBeforeInvaderPhase-only, not ISpaceEntity - see the
 		// standing IRunBeforeInvaderPhase/ISpaceEntity correction) - reflection is needed to construct

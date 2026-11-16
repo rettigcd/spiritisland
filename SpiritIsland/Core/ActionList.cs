@@ -4,6 +4,8 @@ public abstract class ActionList<T> : IHaveMemento {
 
 	public virtual void Add(T action) => _actions.Add(action);
 
+	public void Remove(T action) => _actions.Remove(action);
+
 	public IReadOnlyList<T> Actions => _actions;
 
 	public async Task Run( GameState gs ){

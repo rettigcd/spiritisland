@@ -40,6 +40,8 @@ public class HeartOfWildFire_Tests {
 
 		// Given: presence on B8
 		tokens.Init( spirit.Presence.Token, 1 );
+		// And: presence elsewhere, so losing this one does not lose the game
+		spirit.Given_IsOn( boardB[7] );
 		// And: a town
 		tokens.InitDefault(Human.Town, 1);
 

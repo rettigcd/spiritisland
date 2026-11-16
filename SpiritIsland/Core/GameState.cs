@@ -262,6 +262,7 @@ public class GameState : IHaveMemento {
 
 	public Task RunPreInvaderActions() => _preInvaderPhaseActions.Run(this);
 	public void AddPreInvaderPhaseAction(IRunBeforeInvaderPhase action) => _preInvaderPhaseActions.Add(action);
+	public void RemovePreInvaderPhaseAction(IRunBeforeInvaderPhase action) => _preInvaderPhaseActions.Remove(action);
 	readonly PreInvaderPhaseActionList _preInvaderPhaseActions = new();
 
 	public Task RunPostInvaderActions() => _postInvaderPhaseActions.Run(this);

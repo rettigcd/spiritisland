@@ -148,6 +148,8 @@ public class OceanTerrain_Tests {
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();
+		//   And: more presence elsewhere, so the blight on A2 does not destroy the last one and lose the game
+		_primarySpirit.Given_IsOn( _gameState.Tokens[_boardA[4]] );
 
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns

@@ -70,6 +70,11 @@ public class SpiritPresenceToken
 			ActionScope.Current.Log( new Log.PresenceDestroyed( Self.SpiritName, args.From.Text, args.Count, args.Reason ) );
 			await Self.Presence.Destroyed.Location.SinkAsync(this,args.Count,AddReason.AddedToCard);
 			await OnPresenceDestroyed( args );
+
+			// Destroying the last presence loses the game immediately, not at the next win/loss check.
+			// (Only for Destroyed: Replaced/Removed may be followed by placing the replacement, e.g. Incarna.)
+			if( args.Reason == RemoveReason.Destroyed && !Self.Presence.IsOnIsland )
+				GameOverException.Lost( $"{Self.SpiritName} is Destroyed" );
 		}
 	}
 
