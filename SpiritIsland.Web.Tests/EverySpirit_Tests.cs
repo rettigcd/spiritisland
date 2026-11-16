@@ -2,36 +2,34 @@ using System.Net;
 using System.Net.Http.Json;
 using SpiritIsland.Web.Oracle;
 using SpiritIsland.Web.View;
+using Xunit.Abstractions;
 
 namespace SpiritIsland.Web.Tests;
 
 /// <summary>
 /// Plays every spirit with random picks and reports which ones the engine fails on. These are engine problems found while
-/// building the web server, not oracle problems: the SI01 ones also happen in plain in-memory play, and the others are
-/// state the engine can't save yet (the oracle saves a checkpoint at every action boundary, so it meets them sooner than
-/// the other UIs do). The test keeps this list honest: it fails when a new spirit starts failing, and when a listed one
-/// stops, so the entry gets removed.
+/// building the web server, not oracle problems: all of them are about saving or restoring state, which the oracle does at
+/// every action boundary, so it meets them sooner than the other UIs do. The test keeps this list honest: it fails when a
+/// new spirit starts failing, and when a listed one stops, so the entry gets removed.
 /// Deterministic: the same seeds and random picks every run.
 /// </summary>
 [Trait( "Speed", "Slow" )] // about 20 seconds: every spirit, a whole game each
-public class EverySpirit_Tests( GamesFactory factory ) : IClassFixture<GamesFactory> {
+public class EverySpirit_Tests( GamesFactory factory, ITestOutputHelper output ) : IClassFixture<GamesFactory> {
 
 	/// <summary> Spirit name to the start of the engine's error message. </summary>
 	static readonly Dictionary<string, string> KnownFailures = new() {
-		// Spirit.ToJson / SelfCmdRegistry / Tokens can't save these yet.
+		// Can't be saved yet.
 		["Finder Of Paths Unseen"] = "Spirit.ToJson doesn't support IActionFactory of type OpenTheWays",
 		["Fractured Days Split the Sky"] = "SelfCmdRegistry doesn't know how to serialize IActOn<Spirit> of type RepeatableSelfCmd",
 		["Stone's Unyielding Defiance"] = "Don't know how to serialize ISpaceEntity of type SpiritIsland.JaggedEarth.StubbornSolidityBehavior",
 		["Sun Bright Whirlwind"] = "Don't know how to serialize ISpaceEntity of type SpiritIsland.AdjustHealth",
 		["Towering Roots of the Jungle"] = "Sequence contains no elements",
 		["Volcano Looming High"] = "The given key 'M' was not present in the dictionary",
-		// An ActionScope is disposed out of order during a Ravage; plain in-memory play does it too.
-		["Many Minds Move as One"] = "Error SI01",
-		["Ocean's Hungry Grasp"] = "Error SI01",
-		["Relentless Gaze of the Sun"] = "Error SI01",
-		["River Surges in Sunlight"] = "Error SI01",
-		["Sharp Fangs Behind the Leaves"] = "Error SI01",
-		["Thunderspeaker"] = "Error SI01",
+		// Can't be restored: when a Still-Healthy blight card is replaced, the old card's start-of-Invader-Phase hook stays
+		// in PreInvaderPhaseActions, and restoring resolves a hook named for a card to the *current* card.
+		["Many Minds Move as One"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
+		["Relentless Gaze of the Sun"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
+		["Thunderspeaker"] = "to type 'SpiritIsland.IRunBeforeInvaderPhase'",
 	};
 
 	[Fact]
@@ -58,6 +56,8 @@ public class EverySpirit_Tests( GamesFactory factory ) : IClassFixture<GamesFact
 				last = ( await response.Content.ReadFromJsonAsync<OracleResponse>() )!;
 			}
 		}
+
+		foreach( var f in failed ) output.WriteLine( $"{f.Key}: {f.Value}" );
 
 		string[] unexpected = [.. failed.Where( f => !KnownFailures.TryGetValue( f.Key, out string? expected ) || !f.Value.Contains( expected ) )
 			.Select( f => $"{f.Key}: {f.Value}" )];

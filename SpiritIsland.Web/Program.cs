@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Diagnostics;
 using SpiritIsland.Web.Endpoints;
 using SpiritIsland.Web.Oracle;
+using SpiritIsland.Web.View;
 
 var builder = WebApplication.CreateBuilder( args );
 
@@ -9,6 +11,14 @@ builder.Services.AddSingleton<IGameFiles>( sp => new GameFiles(
 builder.Services.AddSingleton<OracleService>();
 
 WebApplication app = builder.Build();
+
+// Anything unexpected (an engine failure, a bug) is a 500 with the same JSON error body as the rest of the API, so a client can show it.
+app.UseExceptionHandler( errors => errors.Run( async context => {
+	Exception? failure = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+	context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+	await context.Response.WriteAsJsonAsync( new ErrorView( failure?.Message ?? "Something went wrong." ) );
+} ) );
+
 app.MapGameEndpoints();
 app.Run();
 
