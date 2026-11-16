@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Card is repeated, but does not cost energy
@@ -27,22 +25,17 @@ public class RepeatCardForFree : IActionFactory, ISerializableActionFactory {
 	public async Task ActivateAsync(Spirit self) {
 
 		var options = self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
+			.Distinct() // a card that was repeated is listed in UsedActions once for each time it resolved
 			.Where(card=>card.Cost <= maxCost)
 			.Where(card=> card.CouldActivateDuring(GameState.Current.Phase,self)) 
 			.ToArray(); 
 
 		if(options.Length == 0) return;
 
-		try {
+		PowerCard? factory = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Done );
+		if(factory is null) return;
 
-			PowerCard? factory = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Done );
-			if(factory is null) return;
-
-			self.AddActionFactory( factory );
-
-		} catch( Exception e ) {
-			Debug.WriteLine(e);
-		}
+		self.AddActionFactory( factory );
 
 	}
 
