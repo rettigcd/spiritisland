@@ -471,6 +471,25 @@ public class Spirit_Tests {
 	}
 
 	[Fact]
+	public void RoundTrips_AvailableAction_ReclaimN_KeepsItsCount() {
+		// Gather the Scattered Light of Stars adds a one-off GrowthAction(ReclaimN(n)), which is not in the GrowthTrack.
+		var gs = new SoloGameState();
+		var ctx = CtxFor( gs );
+
+		var original = new TestSpirit();
+		original.AddActionFactory( new GrowthAction( new ReclaimN( 3 ) ) );
+
+		JsonObject json = original.ToJson( ctx );
+
+		var target = new TestSpirit();
+		target.RestoreFromJson( json, ctx );
+
+		var restored = (GrowthAction)target.AllActions.Single();
+		restored.Cmd.ShouldBeOfType<ReclaimN>();
+		restored.Cmd.Description.ShouldBe( "Reclaim(3)" );
+	}
+
+	[Fact]
 	public void SelfCmdRegistry_ThrowsForUnregisteredIActOnSpirit() {
 		var ctx = CtxFor( new SoloGameState() );
 		Should.Throw<NotSupportedException>( () => SelfCmdRegistry.Serialize( SpiritAction.NoAction, ctx ) );
