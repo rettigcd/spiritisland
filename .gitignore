@@ -9,3 +9,6 @@ desktop.ini
 [Tt]est[Rr]esult*/
 
 SpiritIsland.Mcp/GAMELOG.md
+# Web client: dependencies, and the built client (npm run build in SpiritIsland.Web/client writes it)
+SpiritIsland.Web/client/node_modules/
+SpiritIsland.Web/wwwroot/

@@ -88,6 +88,18 @@ Not in the view yet, for Phases 3 and 4:
 
 Playing every spirit found failures in the engine, not in the oracle. They are all fixed. `EverySpirit_Tests` plays each spirit for 100 random picks and fails on any engine error. Its `KnownFailures` list is empty. Add a spirit there only while a known engine bug stops it, and the test fails when a listed one is fixed so it gets removed. The oracle reports an engine failure as a 500 with the engine's message.
 
+### Found by playing whole games in the browser
+
+The browser client (and then a script over the API) played one game per spirit on board A, with seed 100 plus the spirit's position and always taking the first option, until the game ended. 31 of 37 spirits reached a Victory/Defeat screen; the other six found these engine bugs. Each has a fix and a test on the `engine-bugs` branch (to be merged into `main`), after which all 37 spirits play to the end:
+- **Finder of Paths Unseen**: A Circuitous and Wending Journey set a source quota once per kind of token, and a selector takes only one ("Cannot set Quota twice").
+- **Grinning Trickster**: Let's See What Happens started a spirit-power scope with `ActionScope.Start`, which is for non-spirit actions.
+- **Relentless Gaze**: a repeated power is not targeted again, so powers that read their origin lands from the targetting details (Unbearable Gaze) crashed. The repeater now keeps the origins and sets those details.
+- **Starlight Seeks Its Form**: `ReclaimN` had no serializer, so the one-off Reclaim action from Gather the Scattered Light of Stars could not be saved.
+- **Vital Strength**: Earth's Vitality gave Defend 3 only when a sacred site formed, but Defend is cleared every round and the starting sacred site never got it, so losing a sacred site threw "Defend sync issue". It now re-grants Defend each round and at the start.
+- **Ember-Eyed Behemoth** and **Relentless Gaze (Scorching Convergence)**: a move from a land to the same land was offered; it moves nothing, leaves the token where it was selected from, and a mover with no limit asked for it again forever. `TokenMover` no longer offers it.
+
+Not changed, but looks wrong: Relentless Punishment adds the repeater when `Sources.Any(s => spirit.Presence.CountOn(s) >= 0)`, which is always true; the rule asks for at least 3 presence in the origin land.
+
 Also open:
 - **Every-spirit coverage is shallow.** `EverySpirit_Tests` stops each game after 100 picks, so it only finds failures reachable early. Late-game saves (many tokens, blight cascades) and games played to the end are untested, as is the oracle's cost late in a game (Phase 0 measured early game only).
 - **Prompts that time out.** The oracle gives up after 30 s waiting for the engine to reach a decision (`Settle`). `todo.txt` lists Ravage and Build prompts timing out as needing tests; they may surface here as 500s.
@@ -125,9 +137,22 @@ Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/
 
 Each phase ends with something that runs.
 
-### Phase 3: minimal client
-Vite + Preact + TypeScript, with types generated from the server's OpenAPI document, built into `wwwroot/` and served by `SpiritIsland.Web`. Includes the new-game screen, the island SVG with highlighted options, the decision panel with Undo, and `localStorage` for picks.
-- **Exit:** a whole game can be played in the browser, ugly but complete.
+### Phase 3: minimal client (built)
+Vite + Preact + TypeScript in `SpiritIsland.Web/client/`, with types generated from the server's OpenAPI document, built into `wwwroot/` and served by `SpiritIsland.Web`. It has the new-game screen (and a list of saved games), the island SVG with highlighted options, the decision panel with Undo, a plain status bar and spirit panel (energy, elements, cards), and `localStorage` for picks.
+- **Exit:** a whole game can be played in the browser, ugly but complete. Met: games were played from the new-game screen to a Victory/Defeat screen in a real browser (see "Found by playing whole games" above for the engine bugs that stopped six spirits).
+
+Running it:
+- `cd SpiritIsland.Web/client && npm install` once.
+- **Built:** `npm run build` (regenerates the types, type-checks, writes `wwwroot/`), then `dotnet run --project SpiritIsland.Web` and open http://localhost:5000.
+- **Hot reload:** `dotnet run --project SpiritIsland.Web --urls http://localhost:5080`, and in `client/` run `npm run dev`; Vite proxies `/api` to the server.
+- Building `SpiritIsland.Web` writes `client/openapi.json`; `npm run gen` turns it into `client/src/api/types.ts`. Both are committed.
+
+How the client works, in short:
+- It keeps `gameId`, `checkpointVersion`, `picks[]`, the static view and the last response. `localStorage` holds the version and picks per game, so a refresh replays the action in progress.
+- A pick is sent as `{ checkpointVersion, picks: [...picks, pick] }`. A 200 replaces the picks with the server's list; a 409 (stale) takes the server's state and drops the picks with a notice; a 400 shows the message and changes nothing.
+- Undo sends the picks without the last one. Every option is a button in the decision panel; options that are a space or a token are also highlighted and clickable on the island.
+- The island is drawn in the server's own units (about 1.5 wide), so strokes are in screen pixels (`vector-effect: non-scaling-stroke`).
+- Tokens are coloured circles with their text for now; pictures come with Phase 4.
 
 ### Phase 4: full player panels
 The spirit panel with tracks, growth and innates. Cards, status bar, log and token images.

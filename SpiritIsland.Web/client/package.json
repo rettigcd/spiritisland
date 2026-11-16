@@ -1,0 +1,22 @@
+{
+  "name": "spiritisland-web-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "openapi-fetch": "0.17.0",
+    "preact": "11.2.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "2.10.6",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.8"
+  },
+  "scripts": {
+    "gen": "openapi-typescript openapi.json -o src/api/types.ts",
+    "typecheck": "tsc --noEmit",
+    "dev": "vite",
+    "build": "npm run gen && npm run typecheck && vite build"
+  }
+}
