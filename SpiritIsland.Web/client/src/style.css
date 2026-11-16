@@ -41,7 +41,11 @@ ul.saved button { width: 100%; }
 .inv-name { font-weight: 600; }
 /* The island has a fixed width (it shrinks only when the window is too narrow for it), so browser zoom makes it bigger or smaller. */
 .columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(280px, 440px); justify-content: start; gap: 16px; align-items: start; }
-@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+/* The right column stays in view and scrolls on its own, so the board and the spirit panel can be seen together. */
+.side { display: flex; flex-direction: column; }
+.side.spirit-first > .decision { order: 1; }
+.side { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow-y: auto; padding-right: 4px; }
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } .side { position: static; max-height: none; overflow-y: visible; } }
 .island-wrap { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 .move-hint-bar { min-height: 2.4em; display: flex; align-items: center; }
 .move-hint { margin: 0; font-size: .9em; color: var(--notice); }
@@ -92,6 +96,9 @@ ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wr
 button.slot { cursor: pointer; }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }
+/* A track slot that can be picked now (or picked up): a thick solid border, with the padding reduced so the slot keeps its size. */
+.slot.choosable, .slot.movable { border: 3px solid var(--accent); padding: 1px 6px; font-weight: 600; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
+.slot.movable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(in srgb, #d33 35%, transparent); }
 ul.growth { margin: 0; padding-left: 18px; }
 ul.growth li.used { text-decoration: line-through; color: var(--muted); }
 ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; gap: 2px; font-size: .9em; }

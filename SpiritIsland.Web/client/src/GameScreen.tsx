@@ -9,8 +9,19 @@ import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
 import { StatusBar } from './StatusBar';
 
+/** Which of the two right-hand panels is on top is remembered by the browser (if it lets us). */
+function useSpiritFirst(): [boolean, () => void] {
+  const [first, setFirst] = useState(() => { try { return localStorage.getItem('spiritFirst') === '1'; } catch { return false; } });
+  const toggle = () => setFirst(f => {
+    try { localStorage.setItem('spiritFirst', f ? '0' : '1'); } catch { /* the choice just isn't remembered */ }
+    return !f;
+  });
+  return [first, toggle];
+}
+
 export function GameScreen({ state, actions }: { state: GameState; actions: GameActions }) {
   const [hovered, setHovered] = useState<OptionView | null>(null);
+  const [spiritFirst, toggleSpiritFirst] = useSpiritFirst();
   const [picked, setPicked] = useState<SourceKey | null>(null); // where the move being made starts, once the player has picked it
   const { response, staticView, busy } = state;
 
@@ -45,6 +56,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
         <span class="muted">Game {response.gameId}</span>
         {setup && <span title="The game's number: starting a game with the same spirit, board, adversary and seed plays it again">Seed <strong>{setup.seed}</strong></span>}
         {setup && <button type="button" onClick={playAgain} disabled={state.busy}>Play again (same seed)</button>}
+        <button type="button" onClick={toggleSpiritFirst} title="Swap the order of the menu choices and the spirit panel">Swap spirit / choices</button>
       </div>
 
       <StatusBar view={response.view} />
@@ -72,7 +84,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
           </div>
           <LogPanel log={response.log} />
         </div>
-        <div class="side">
+        <div class={`side ${spiritFirst ? 'spirit-first' : ''}`}>
           <DecisionPanel
             decision={response.decision} result={response.result} picks={state.picks} busy={busy}
             moves={moves} selected={selected} onSelect={setPicked}
