@@ -102,8 +102,8 @@ public class RelentlessGaze_Tests {
 		// When: it targets A5 (a sacred site itself, so it is one of the possible origins)
 		await spirit.When_ResolvingInnate("Scorching Convergence", user => {
 			user.NextDecision.HasPrompt("Scorching Convergence: Target Space").Choose("A5");
-			// Then: the presence on A6 can be moved to A5 - and the presence already on A5 is not offered a move to A5
-			user.NextDecision.HasPrompt("Move (4)").HasOptions("RGotS on A6 => A5").ChooseFirst();
+			// Then: the presence on A6 can be moved to A5 - and the presence already on A5 is neither offered a move to A5 nor counted
+			user.NextDecision.HasPrompt("Move (2)").HasOptions("RGotS on A6 => A5").ChooseFirst();
 			user.NextDecision.HasPrompt("Move (1)").HasOptions("RGotS on A6 => A5").ChooseFirst(); // all of it: 1 at a time
 		});
 
