@@ -29,7 +29,15 @@ public sealed class GameFiles( string directory ) : IGameFiles {
 		string path = PathOf( record.Id );
 		string temp = path + ".tmp"; // a crash mid-write leaves the previous save intact
 		File.WriteAllText( temp, record.ToJson().ToJsonString() );
-		File.Move( temp, path, overwrite: true );
+		// On Windows, a virus scanner or indexer can briefly hold the file we just wrote, so the replace is denied. Retry.
+		for( int attempt = 1; ; ++attempt ) {
+			try {
+				File.Move( temp, path, overwrite: true );
+				return;
+			} catch( Exception ex ) when( ex is UnauthorizedAccessException or IOException && attempt < 5 ) {
+				Thread.Sleep( 20 * attempt );
+			}
+		}
 	}
 
 	public IReadOnlyList<GameSummary> List() {
