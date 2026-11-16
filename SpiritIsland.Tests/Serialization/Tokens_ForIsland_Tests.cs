@@ -52,6 +52,32 @@ public class Tokens_ForIsland_Tests {
 	}
 
 	[Fact]
+	public async Task RoundTrips_AdjustHealth_KeepsBonusAndModOnSpace() {
+		// Given: Dahan with +2 health in a land until the end of the round
+		var gs = new SoloGameState();
+		Space space = gs.Board[2].ScopeSpace;
+		space.Given_HasTokens("2D@2");
+		await space.AdjustTokensHealthForRound( 2, Human.Dahan );
+		space.AllHumanTokens().Single().FullHealth.ShouldBe( 4 );
+		var serCtx = new GameStateSerializationContext(gs);
+
+		// When: saved and restored
+		JsonObject json = gs.Tokens.ToJson(serCtx);
+		var restored = new Tokens_ForIsland();
+		Tokens_ForIsland.FromJson(restored, json, serCtx);
+
+		// Then: the Dahan still have the bonus, and the mod is still on the space
+		Space restoredSpace = restored[gs.Board[2]];
+		restoredSpace.AllHumanTokens().Single().FullHealth.ShouldBe( 4 );
+		var mod = restoredSpace.ModsOfType<AdjustHealth>().Single();
+
+		// And: a new Dahan arriving gets the bonus too (the mod's delta and classes came back)
+		var arriving = new AddingTokenArgs( new HumanToken( Human.Dahan ), 1, restoredSpace, AddReason.Added );
+		await ( (IModifyAddingToken)mod ).ModifyAddingAsync( arriving );
+		( (HumanToken)arriving.Token ).FullHealth.ShouldBe( 4 );
+	}
+
+	[Fact]
 	public void RoundTrips_ITokenClassTokens() {
 		var gs = new SoloGameState();
 		var space = gs.Board[2].ScopeSpace;

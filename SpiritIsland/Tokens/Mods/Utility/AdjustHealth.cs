@@ -8,6 +8,7 @@ public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClass
 	: IModifyAddingToken
 	, IModifyRemovingToken
 	, ICleanupSpaceWhenTimePasses
+	, ISerializableSpaceEntity
 {
 
 	public async Task InitOn(Space space) {
@@ -59,6 +60,24 @@ public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClass
 		AdjustHealthOfAll(space, -_deltaHealth, _tokenClasses).Wait(); // This should be ok because tokens are healed.
 		space.Init(this,0);
 	}
+
+	#region Json
+
+	/// <summary> [ tag, deltaHealth, [ tokenClassLabel, ... ] ] - the mod has no other state. </summary>
+	JsonArray ISerializableSpaceEntity.ToJson( ISerializationContext ctx ) => new JsonArray(
+		Tag, _deltaHealth, new JsonArray( _tokenClasses.Select( c => (JsonNode)c.Label ).ToArray() )
+	);
+
+	const string Tag = "AdjustHealth";
+
+	[ModuleInitializer]
+	internal static void RegisterSerialization()
+		=> SpaceEntitySerialization.Register( Tag, ( json, ctx ) => {
+			HumanTokenClass[] classes = json[2]!.AsArray().Select( n => (HumanTokenClass)ctx.TokenClassByLabel( n!.GetValue<string>() ) ).ToArray();
+			return new AdjustHealth( json[1]!.GetValue<int>(), classes );
+		} );
+
+	#endregion Json
 
 	static public async Task AdjustHealthOfAll(Space space, int delta, params HumanTokenClass[] tokenClasses) {
 		if( delta == 0 ) return;
