@@ -77,6 +77,9 @@ public sealed class TokenMover(
 		// Drag and Drop way
 		Move[] options = sourceSelector.GetSourceOptions()
 			.BuildMoves(destinationSelector.GetDestinationOptions)
+			// Moving a token to the land it is already in moves nothing. It also leaves the token where it was selected
+			// from, so a mover with no limit would offer the same move again, forever.
+			.Where(move => !move.From.Equals(move.Destination))
 			.ToArray();
 
 		if(_firstMove == null)

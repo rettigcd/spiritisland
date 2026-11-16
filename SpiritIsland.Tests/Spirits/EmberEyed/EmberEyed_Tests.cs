@@ -42,6 +42,31 @@ public class EmberEyed_Tests {
 		}).ShouldComplete();
 	}
 
+	[Trait("spirit","eeb")]
+	[Fact]
+	public async Task TheBehemothRises_FromASacredSite_CannotMoveToWhereItAlreadyIs() {
+		// (used to offer "move to the same land"; that keeps the incarna on the land it is moving from, so the
+		//  move was asked for again and again and the action never ended)
+		var eeb = new EmberEyedBehemoth();
+		var gs = new SoloGameState(eeb);
+
+		// Given: the incarna is on a sacred site
+		Space a5 = gs.Board[5].ScopeSpace;
+		a5.Init(eeb.Presence.Token,2);
+		a5.Init(eeb.Presence.Incarna,1);
+		gs.Phase = Phase.Slow;
+
+		await eeb.SelectAndResolveActionsForTest(gs).AwaitUser(user => {
+			user.NextDecision.HasPrompt(slowPrompt).Choose(rise1);
+			// Then: it can go to adjacent lands, but not to the land it is already on
+			user.NextDecision.HasPrompt("Move/Push (1)")
+				.HasOptions("EEB- on A5 => A1,EEB- on A5 => A4,EEB- on A5 => A6,EEB- on A5 => A7,EEB- on A5 => A8")
+				.Choose("EEB- on A5 => A1");
+			// And: that is the one move (it is not asked for again)
+			user.NextDecision.HasPrompt(slowPrompt).Choose("Done");
+		}).ShouldComplete();
+	}
+
 	const string slowPrompt = "Select Slow to resolve";
 	const string innate = "Smash, Stomp, and Flatten";
 	const string rise1 = "The Behemoth Rises";

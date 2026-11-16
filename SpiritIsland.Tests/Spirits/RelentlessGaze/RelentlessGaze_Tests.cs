@@ -68,6 +68,32 @@ public class RelentlessGaze_Tests {
 
 	[Trait("spirit", "Relentless Gaze")]
 	[Fact]
+	public async Task ScorchingConvergence_CannotMovePresenceFromTheTargetLandToItself() {
+		// (used to offer "move from A5 to A5", which moves nothing, and asked for it again and again)
+		var spirit = new RelentlessGazeOfTheSun();
+		var gs = new SoloGameState(spirit);
+
+		// Given: 2 sacred sites, A5 and next to it A6, and enough sun for the first tier
+		foreach( Space s in spirit.Presence.Lands.ToArray() ) spirit.Given_IsOn(s,0);
+		spirit.Given_IsOn(gs.Board[5],2);
+		spirit.Given_IsOn(gs.Board[6],2);
+		spirit.Elements.Add( ElementStrings.Parse("2 sun") );
+
+		// When: it targets A5 (a sacred site itself, so it is one of the possible origins)
+		await spirit.When_ResolvingInnate("Scorching Convergence", user => {
+			user.NextDecision.HasPrompt("Scorching Convergence: Target Space").Choose("A5");
+			// Then: the presence on A6 can be moved to A5 - and the presence already on A5 is not offered a move to A5
+			user.NextDecision.HasPrompt("Move (4)").HasOptions("RGotS on A6 => A5").ChooseFirst();
+			user.NextDecision.HasPrompt("Move (1)").HasOptions("RGotS on A6 => A5").ChooseFirst(); // all of it: 1 at a time
+		});
+
+		// And: all the presence from A6 moved, and the action ended
+		gs.Board[5].ScopeSpace[spirit.Presence.Token].ShouldBe(4);
+		gs.Board[6].ScopeSpace[spirit.Presence.Token].ShouldBe(0);
+	}
+
+	[Trait("spirit", "Relentless Gaze")]
+	[Fact]
 	public async Task GainEnergyTwice() {
 		var spirit = new RelentlessGazeOfTheSun();
 		var gs = new SoloGameState(spirit);
