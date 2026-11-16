@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class FracturedDaysSplitTheSky : Spirit {
+public class FracturedDaysSplitTheSky : Spirit, ISpiritMod, IOwnedActionFactories {
 
 	public const string Name = "Fractured Days Split the Sky";
 	public override string SpiritName => Name;
@@ -10,9 +10,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 		"Many of your Powers require Time as an additional cost.  Spend it when you Resolve the Power. (Not when you play it.)  When you Gain1 Time, put 1 of your presence here from your presence track (or optinally, the island).  When you Spend 1 Time, return it to a presence track - or if you have to free spaces, Destroy it."
 	);
 
-	static GrowthTrack BuildGrowthTrack() {
-		var g2Repeater = new ActionRepeater( 2 );
-		var g3Repeater = new ActionRepeater( 3 );
+	/// <summary> The repeaters behind growth options 2 and 3, in that order. The spirit keeps them so they can be saved and restored. </summary>
+	static ActionRepeater[] BuildRepeaters() => [ new ActionRepeater( 2 ), new ActionRepeater( 3 ) ];
+
+	static GrowthTrack BuildGrowthTrack( ActionRepeater[] repeaters ) {
+		var g2Repeater = repeaters[0];
+		var g3Repeater = repeaters[1];
 
 		return new GrowthTrack(
 			new GrowthGroup(
@@ -37,17 +40,21 @@ public class FracturedDaysSplitTheSky : Spirit {
 		);
 	}
 
-	public FracturedDaysSplitTheSky():base(
+	public FracturedDaysSplitTheSky() : this( BuildRepeaters() ) { }
+
+	FracturedDaysSplitTheSky( ActionRepeater[] repeaters ):base(
 		x=> new SpiritPresence( x,
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)
-		,BuildGrowthTrack()
+		,BuildGrowthTrack( repeaters )
 		,PowerCard.ForDecorated(AbsoluteStasis.ActAsync)
 		,PowerCard.ForDecorated(BlurTheArcOfYears.ActAsync)
 		,PowerCard.ForDecorated(PourTimeSideways.ActAsync)
 		,PowerCard.ForDecorated(ThePastReturnsAgain.ActAsync)
 	) {
+		_repeaters = repeaters;
+		Mods.Add( this );
 		InnatePowers = [
 			InnatePower.For(typeof(SlipTheFlowOfTime)),
 			InnatePower.For(typeof(VisionsOfAShiftingFuture))
@@ -164,7 +171,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 	protected override JsonNode? CustomStateToJson( ISerializationContext ctx ) => new JsonArray(
 		_randomizer!.Position, Time,
 		new JsonArray( DtnwMinor.Select( c => (JsonNode)c.ToJson() ).ToArray() ),
-		new JsonArray( DtnwMajor.Select( c => (JsonNode)c.ToJson() ).ToArray() )
+		new JsonArray( DtnwMajor.Select( c => (JsonNode)c.ToJson() ).ToArray() ),
+		new JsonArray( _repeaters.Select( r => (JsonNode)r._remainingRepeats ).ToArray() ) // repeats left in a growth option that is part-way through
 	);
 
 	protected override void RestoreCustomStateFromJson( JsonNode? json, ISerializationContext ctx ) {
@@ -173,7 +181,33 @@ public class FracturedDaysSplitTheSky : Spirit {
 		Time = array[1]!.GetValue<int>();
 		DtnwMinor.SetItems( ( (JsonArray)array[2]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
 		DtnwMajor.SetItems( ( (JsonArray)array[3]! ).Select( n => PowerCardRegistry.Deserialize( n! ) ).ToArray() );
+		if( 4 < array.Count )
+			for( int i = 0; i < _repeaters.Length; ++i )
+				_repeaters[i]._remainingRepeats = array[4]![i]!.GetValue<int>();
 	}
+
+	#region IOwnedActionFactories
+
+	// The repeaters add their own GrowthAction instances (not the ones in the GrowthTrack) back to the available actions
+	// between repeats, and find them again by reference. Restoring must resolve to those same instances.
+	string IOwnedActionFactories.ModTag => "FracturedDaysSplitTheSky";
+
+	string? IOwnedActionFactories.KeyFor( IActionFactory factory ) {
+		for( int r = 0; r < _repeaters.Length; ++r )
+			for( int i = 0; i < _repeaters[r].Factories.Count; ++i )
+				if( _repeaters[r].Factories[i] == factory )
+					return $"repeater{r}-{i}";
+		return null;
+	}
+
+	IActionFactory IOwnedActionFactories.ResolveActionFactory( string key ) {
+		string[] parts = key.Replace( "repeater", "" ).Split( '-' );
+		return _repeaters[int.Parse( parts[0] )].Factories[int.Parse( parts[1] )];
+	}
+
+	#endregion IOwnedActionFactories
+
+	readonly ActionRepeater[] _repeaters;
 
 	/// <summary> Randomizer with a state that can be restored. </summary>
 	class OneOrTwoClass( int seed ) : IHaveMemento {
@@ -219,6 +253,9 @@ public class FracturedDaysSplitTheSky : Spirit {
 		public void Register(IHelpGrowActionFactory factory) {
 			_factories.Add(factory);
 		}
+
+		/// <summary> The factories this repeater puts back into the available actions, in registration order. </summary>
+		public IReadOnlyList<IHelpGrowActionFactory> Factories => _factories;
 
 		public void BeginAction() {
 			if( _remainingRepeats == 0 )

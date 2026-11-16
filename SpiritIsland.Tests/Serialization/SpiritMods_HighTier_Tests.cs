@@ -113,6 +113,25 @@ public class SpiritMods_HighTier_Tests {
 	}
 
 	[Fact]
+	public void FracturedDaysRepeaters_SurviveRestore_MidRepeat() {
+		// Between repeats, a repeater puts its own GrowthAction (not the GrowthTrack's) back into the available actions
+		// and remembers how many repeats are left.
+		static SpiritIsland.JaggedEarth.FracturedDaysSplitTheSky.ActionRepeater[] Repeaters( Spirit s )
+			=> (SpiritIsland.JaggedEarth.FracturedDaysSplitTheSky.ActionRepeater[])FindField( typeof( SpiritIsland.JaggedEarth.FracturedDaysSplitTheSky ), "_repeaters" ).GetValue( s )!;
+
+		Spirit spirit = BuildAndRestore( SpiritIsland.JaggedEarth.FracturedDaysSplitTheSky.Name, [], ( gs, s ) => {
+			var owner = OwnerByTag( s, "FracturedDaysSplitTheSky" );
+			s.AddActionFactory( owner.ResolveActionFactory( "repeater1-0" ) );
+			Repeaters( s )[1]._remainingRepeats = 2;
+		} );
+
+		var owner = OwnerByTag( spirit, "FracturedDaysSplitTheSky" );
+		spirit.AllActions.ShouldContain( owner.ResolveActionFactory( "repeater1-0" ) ); // the repeater's own instance, not a copy
+		Repeaters( spirit )[1]._remainingRepeats.ShouldBe( 2 );
+		Repeaters( spirit )[0]._remainingRepeats.ShouldBe( 0 );
+	}
+
+	[Fact]
 	public void UnrelentingStrides_SurvivesRestore() {
 		Spirit spirit = BuildAndRestore( SpiritIsland.NatureIncarnate.EmberEyedBehemoth.Name, [], ( gs, s ) => {
 			var owner = OwnerByTag( s, "UnrelentingStrides" );
