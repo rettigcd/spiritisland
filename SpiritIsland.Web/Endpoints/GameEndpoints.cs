@@ -16,15 +16,23 @@ public static class GameEndpoints {
 		api.MapPost( "/games", async ( NewGameRequest request, OracleService oracle ) => {
 			try { return Results.Ok( await oracle.CreateAsync( request ) ); }
 			catch( ArgumentException ex ) { return Results.BadRequest( new ErrorView( ex.Message ) ); }
+			catch( EngineStoppedException ex ) { return Results.Json( new ErrorView( ex.Message ), statusCode: StatusCodes.Status500InternalServerError ); }
 		} );
 
 		// picks: [] just reads the current decision
-		api.MapPost( "/games/{id}/decide", async ( string id, DecideRequest request, OracleService oracle )
-			=> await oracle.DecideAsync( id, request ) switch {
-				DecideOutcome.Ok ok => Results.Ok( ok.Response ),
-				DecideOutcome.Stale stale => Results.Conflict( stale.Current ),
-				DecideOutcome.BadPick bad => Results.BadRequest( new ErrorView( bad.Message ) ),
-				_ => Results.NotFound( new ErrorView( $"No game '{id}'." ) ),
-			} );
+		api.MapGet( "/games/{id}/static", async ( string id, OracleService oracle )
+			=> await oracle.StaticAsync( id ) is { } view ? Results.Ok( view ) : Results.NotFound( new ErrorView( $"No game '{id}'." ) ) );
+
+		api.MapPost( "/games/{id}/decide", async ( string id, DecideRequest request, OracleService oracle ) => {
+			try {
+				return await oracle.DecideAsync( id, request ) switch {
+					DecideOutcome.Ok ok => Results.Ok( ok.Response ),
+					DecideOutcome.Stale stale => Results.Conflict( stale.Current ),
+					DecideOutcome.BadPick bad => Results.BadRequest( new ErrorView( bad.Message ) ),
+					_ => Results.NotFound( new ErrorView( $"No game '{id}'." ) ),
+				};
+			}
+			catch( EngineStoppedException ex ) { return Results.Json( new ErrorView( ex.Message ), statusCode: StatusCodes.Status500InternalServerError ); }
+		} );
 	}
 }

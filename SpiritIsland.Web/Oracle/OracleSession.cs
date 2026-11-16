@@ -7,11 +7,14 @@ namespace SpiritIsland.Web.Oracle;
 /// <summary> A pick that isn't one of the offered options, or that comes after the game has ended. </summary>
 public sealed class InvalidPickException( string message ) : Exception( message ) { }
 
+/// <summary> The game engine ended without a result: it failed. The engine's own exception is the inner exception, when it logged one. </summary>
+public sealed class EngineStoppedException( string message, Exception? inner ) : Exception( message, inner ) { }
+
 /// <summary> What a session reached after replaying picks. </summary>
 /// <param name="Checkpoint">The newest action-boundary checkpoint.</param>
 /// <param name="CheckpointMoved">True if replaying crossed an action boundary, so <paramref name="Checkpoint"/> is newer than the one started from.</param>
 /// <param name="Picks">The picks made since <paramref name="Checkpoint"/>.</param>
-public record SessionState( JsonObject Checkpoint, bool CheckpointMoved, string[] Picks, GameView View, DecisionView? Decision, ResultView? Result );
+public record SessionState( JsonObject Checkpoint, bool CheckpointMoved, string[] Picks, StaticView Static, GameView View, DecisionView? Decision, ResultView? Result );
 
 /// <summary>
 /// Runs one game for the length of one request: loads a checkpoint, replays picks, and reports the decision the game is
@@ -24,7 +27,7 @@ public record SessionState( JsonObject Checkpoint, bool CheckpointMoved, string[
 /// </summary>
 public sealed class OracleSession : IDisposable {
 
-	/// <summary> Engines started and not yet finished. Zero between requests; a count that keeps growing means cancelling isn't working. </summary>
+	/// <summary> Engines of sessions in progress, plus any a finished session couldn't stop. Zero between requests; a count that keeps growing means cancelling isn't working. </summary>
 	public static int EnginesRunning => Volatile.Read( ref _enginesRunning );
 	static int _enginesRunning;
 
@@ -46,12 +49,16 @@ public sealed class OracleSession : IDisposable {
 		_game = game;
 		_game.LogExceptions = true;
 		_baseline = startedAt;
+		_game.GameState.NewLogEntry += entry => { if( entry is Log.ExceptionEntry failure ) _failure ??= failure.Ex; }; // before Start, so none is missed
 		_game.Start();
 		Interlocked.Increment( ref _enginesRunning );
-		_game.EngineTask!.ContinueWith( _ => Interlocked.Decrement( ref _enginesRunning ), TaskScheduler.Default );
 	}
 
-	public void Dispose() => Cancel();
+	public void Dispose() {
+		Cancel();
+		if( _game.EngineTask!.IsCompleted ) // counted out here, not from a callback, so the count is exact the moment a request ends
+			Interlocked.Decrement( ref _enginesRunning );
+	}
 
 	/// <summary>
 	/// Ends the engine task, which is waiting on a decision nobody is going to answer. A withdrawal (the engine's own way
@@ -70,11 +77,15 @@ public sealed class OracleSession : IDisposable {
 		bool moved = false;
 		DecisionView? decision = Settle( ref moved, firstLook: true );
 		foreach( string pick in picks ) {
-			if( decision is null ) throw new InvalidPickException( $"Cannot pick '{pick}': the game is over." );
+			if( decision is null ) {
+				ThrowIfEngineFailed();
+				throw new InvalidPickException( $"Cannot pick '{pick}': the game is over." );
+			}
 			Select( pick );
 			decision = Settle( ref moved );
 		}
-		return new SessionState( _baseline!, moved, [.. _picksSinceBaseline], new GameView( _game.GameState.RoundNumber, _game.GameState.Phase.ToString() ),
+		if( decision is null ) ThrowIfEngineFailed();
+		return new SessionState( _baseline!, moved, [.. _picksSinceBaseline], StaticViewBuilder.Build( _game.GameState ), GameViewBuilder.Build( _game.GameState, _game.Spirit ),
 			decision, Result() );
 	}
 
@@ -92,7 +103,7 @@ public sealed class OracleSession : IDisposable {
 				SyncBaseline( ref moved, firstLook );
 			}
 			if( _pending is not null )
-				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text ) )] );
+				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ) ) )] );
 			if( _game.EngineTask!.IsCompleted ) {
 				SyncBaseline( ref moved, firstLook );
 				return null;
@@ -100,6 +111,12 @@ public sealed class OracleSession : IDisposable {
 			if( Environment.TickCount64 > giveUpAt )
 				throw new TimeoutException( "The game engine did not reach a decision within 30 seconds." );
 		}
+	}
+
+	/// <summary> A game that is over has a result. An engine that ended without one stopped because something went wrong. </summary>
+	void ThrowIfEngineFailed() {
+		if( _game.GameState.Result is null )
+			throw new EngineStoppedException( "The game engine stopped without finishing the game" + (_failure is null ? "." : ": " + _failure.Message), _failure );
 	}
 
 	void SyncBaseline( ref bool moved, bool firstLook ) {
@@ -149,6 +166,7 @@ public sealed class OracleSession : IDisposable {
 
 	readonly SoloGame _game;
 	IDecision? _pending;
+	Exception? _failure;
 	JsonObject? _baseline;
 	int _baselineVersion;
 	readonly List<string> _picksSinceBaseline = [];

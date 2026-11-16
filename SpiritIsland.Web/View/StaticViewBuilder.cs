@@ -1,0 +1,55 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+
+namespace SpiritIsland.Web.View;
+
+/// <summary> Projects the parts of the game that rarely change. See <see cref="StaticView"/>. Plain engine reads, no web types. </summary>
+public static class StaticViewBuilder {
+
+	public static StaticView Build( GameState gs ) {
+		ActionScope.Initialize( gs.RootScope ); // engine state is read through the AsyncLocal scope
+		SpaceSpec[] specs = [.. gs.SpaceSpecs_Unfiltered];
+		var content = new StaticView(
+			StaticVersion: "",
+			new SetupView( [.. gs.Island.Boards.Select( b => b.Name )], AdversaryOf( gs ) ),
+			Bounds( new BoundsBuilder( specs.Select( s => s.Layout.Bounds ) ).GetBounds() ),
+			[.. gs.Spaces_Unfiltered.Select( GeometryOf )],
+			[.. gs.Spirits.Select( SpiritOf )] );
+		return content with { StaticVersion = Version( content ) };
+	}
+
+	/// <summary> The version is a hash of everything else, so it changes exactly when something here does. </summary>
+	static string Version( StaticView content )
+		=> Convert.ToHexString( SHA256.HashData( Encoding.UTF8.GetBytes( JsonSerializer.Serialize( content ) ) ) )[..8].ToLowerInvariant();
+
+	static AdversaryView? AdversaryOf( GameState gs )
+		=> gs.Adversary is { Level: var level } adversary && adversary.Builder is not NullAdversaryBuilder
+			? new AdversaryView( adversary.Name, level, adversary.Describe() ) : null;
+
+	static SpaceGeometry GeometryOf( Space space ) {
+		SpaceLayout layout = space.SpaceSpec.Layout;
+		ManageInternalPoints points = new( layout );
+		return new SpaceGeometry(
+			space.SpaceSpec.Label,
+			string.Join( "/", Enum.GetValues<Terrain>().Where( t => t != Terrain.None && space.SpaceSpec.Is( t ) ) ),
+			[.. layout.Corners.Select( Point )],
+			Point( points.NameLocation ),
+			points.TokenSize,
+			[.. space.Adjacent_Existing.Select( a => a.SpaceSpec.Label )] );
+	}
+
+	static SpiritStatic SpiritOf( Spirit s ) => new(
+		s.SpiritName, s.SpiritName,
+		[.. s.Presence.Energy.Slots.Select( SlotOf )], [.. s.Presence.CardPlays.Slots.Select( SlotOf )],
+		[.. s.GrowthTrack.Groups.Select( g => new GrowthGroupView( g.ToString(), [.. g.GrowthActionFactories.Select( f => ((IOption)f).Text )], g.GainEnergy ) )],
+		[.. s.InnatePowers.Select( p => new InnateStatic( p.Title, p.Speed.ToString(), p.TargetFilter, p.RangeText, p.GeneralInstructions,
+			[.. p.DrawableOptions.Select( t => new TierView( t.ThresholdString, t.Description ) )] ) )],
+		[.. s.SpecialRules.Select( r => new RuleView( r.Title, r.Description ) )] );
+
+	static SlotView SlotOf( Track slot )
+		=> new( slot.Code, ((IOption)slot).Text, slot.Energy, slot.CardPlay, [.. slot.Elements.Select( e => e.ToString() )] );
+
+	static PointView Point( XY p ) => new( p.X, p.Y );
+	static BoundsView Bounds( Bounds b ) => new( b.X, b.Y, b.Width, b.Height );
+}

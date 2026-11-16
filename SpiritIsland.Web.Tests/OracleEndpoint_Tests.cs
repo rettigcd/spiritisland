@@ -153,7 +153,7 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 		var result = ( await response.Content.ReadFromJsonAsync<OracleResponse>() )!;
 
 		result.Decision.ShouldBe( stepwise.Last.Decision, new DecisionComparer() );
-		result.View.ShouldBe( stepwise.Last.View );
+		Json( result.View ).ShouldBe( Json( stepwise.Last.View ) );
 	}
 
 	[Fact]
@@ -285,6 +285,8 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 	}
 
 	// Records holding arrays don't compare by value, so compare the parts that matter.
+	static string Json<T>( T value ) => System.Text.Json.JsonSerializer.Serialize( value );
+
 	sealed class DecisionComparer : IEqualityComparer<DecisionView?> {
 		public bool Equals( DecisionView? a, DecisionView? b )
 			=> a is null ? b is null : b is not null && a.Prompt == b.Prompt && a.Options.SequenceEqual( b.Options );
@@ -295,7 +297,7 @@ public class OracleEndpoint_Tests( GamesFactory factory ) : IClassFixture<GamesF
 		public bool Equals( OracleResponse? a, OracleResponse? b )
 			=> a is null ? b is null : b is not null
 				&& a.GameId == b.GameId && a.CheckpointVersion == b.CheckpointVersion && a.Picks.SequenceEqual( b.Picks )
-				&& a.View == b.View && new DecisionComparer().Equals( a.Decision, b.Decision ) && a.Result == b.Result;
+				&& Json( a.View ) == Json( b.View ) && new DecisionComparer().Equals( a.Decision, b.Decision ) && a.Result == b.Result;
 		public int GetHashCode( OracleResponse r ) => HashCode.Combine( r.GameId, r.CheckpointVersion );
 	}
 }

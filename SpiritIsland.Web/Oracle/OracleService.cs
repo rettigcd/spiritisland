@@ -65,8 +65,21 @@ public sealed class OracleService( IGameFiles files ) {
 		}
 	}
 
+	/// <summary> The island's geometry and the spirits' rules as of the game's checkpoint; null if there is no such game. </summary>
+	public async Task<StaticView?> StaticAsync( string id ) {
+		SemaphoreSlim gate = _gates.GetOrAdd( id, _ => new SemaphoreSlim( 1, 1 ) );
+		await gate.WaitAsync();
+		try {
+			GameRecord? record = files.Read( id );
+			return record is null ? null : ( await Task.Run( () => OracleSession.Resume( record, record.Over ? record.FinishingPicks! : [] ) ) ).Static;
+		}
+		finally {
+			gate.Release();
+		}
+	}
+
 	static OracleResponse Respond( GameRecord record, SessionState state, string[] picks )
-		=> new( record.Id, record.CheckpointVersion, picks, state.View, state.Decision, state.Result );
+		=> new( record.Id, record.CheckpointVersion, picks, state.Static.StaticVersion, state.View, state.Decision, state.Result );
 
 	readonly ConcurrentDictionary<string, SemaphoreSlim> _gates = new();
 }
