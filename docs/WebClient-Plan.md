@@ -85,7 +85,7 @@ Not in the view yet, for Phases 3 and 4:
 - **Picture keys: done.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name). The client's `images.ts` maps those to the pictures in `client/public/img` (copied from `SpiritIsland.Utilities/images` by `npm run copy-images`; the copies are committed). A key with no picture is drawn as a labelled circle. Presence is the one red picture turned to a hue worked out from the spirit's name; the desktop apps instead build it from the spirit's artwork, which is a possible upgrade (about 3 MB of pictures).
 - **Arrows: done, for moves.** Hovering a move option draws an arrow on the island from the token (or its land) to the destination, and outlines both lands. Other decisions that carry arrows in the desktop apps (`IHaveArrows`) are not drawn.
 - **Moving tokens on the board: done.** A move option already says where it starts and where it ends, so once the player has picked a start every place it can go is known; the client needs nothing more from the server. Click a token (or a presence track slot, or the pile of destroyed presence in the spirit panel) to pick it up: the lands it can reach are highlighted, and clicking one sends the matching move. Dragging a token from the board and dropping it on a highlighted land does the same, and dropping anywhere else puts it down; Escape or Cancel also puts it down. What is sent is still the one option, so the request shape is unchanged. `moves.ts` groups a decision's moves by their start. Not done: dragging from the spirit panel onto the board (it is click then click), and touch screens have not been tried.
-- **Growth options** arrive as kind "action". The client matches them to the static view's growth groups by text.
+- **Actions together with their targets: done (pick or point at, not yet drag).** The engine can offer a power or growth action together with what it targets as one choice (`Spirit.CombineActionsAndTargets`, `TargetedAction`; off by default in the engine, on for every web game, set by `OracleSession` each time it builds or replays a game). `OptionTargets` reports it as kind "act": the card (or the growth group and action) plus `ToSpace`, a land it targets, or `ToSpirit`, a spirit it targets. A growth action targets the spirit growing, so every action has the same form. The client groups acts by their action like moves (`moves.ts`): pointing at a card, an innate's "Use" button or the power's entry in the decision panel highlights the lands (or the spirit) it could target; clicking picks it, and then clicking a highlighted land or the spirit's "Use it on this spirit" button sends the one option. An action with a single target is chosen when it is clicked. Powers that must ask something before they know where they can target (element thresholds that change the range) and Shroud of Silent Mist (it gathers presence while it targets) stay as two steps, so they arrive as kind "card" or "innate" as before.
 
 ## Engine problems found by playing every spirit
 
@@ -137,13 +137,24 @@ Views:
 The player should be able to see all the information they need to make the current decision at once, without scrolling the page. That means the board, the decision and its options, the spirit's panel (tracks, growth, innates, hand) and the status line (round, phase, fear, blight, invader cards) are always on screen together.
 
 Anything that does not help with the decision is kept off the screen until asked for, and shown on top of the game while it is open:
-- **The log** is hidden by default. A menu item opens it as a modal dialog that the player closes when done. (Today it sits under the board, which pushes the page past one screen.)
+- **The log** is hidden by default. A menu item opens it as a modal dialog that the player closes when done.
 - Other reference material gets the same treatment: the discard pile, special rules, card text, and the game's number and seed. The hamburger menu in the status line is where these open from.
 
 Rules of thumb that follow from it:
 - A new element on the main screen has to be something the player acts on or needs to see to act. If it only explains what happened, it goes off-screen.
 - Where the screen is too small for everything, the panels scroll inside themselves (the right-hand column already does), and the page itself does not.
 - The page is checked at a normal laptop window size (about 1400 x 900) and zoomed out, since browser zoom is how players fit more on screen.
+
+### Design goal: every decision is something you drag
+
+For many players it is more natural when everything they do in a UI is moving something physical, so every decision should, where it can, read as "drag this onto that". Moving tokens already works that way (drag a token onto a land). The goal is to carry it through every decision the game asks for, not only moving tokens. In particular **powers are dragged onto their targets**: a power card or an innate power dropped on a land it can target, or on a spirit it can target, depending on what the power targets. Other decisions follow the same idea where there is a natural thing and place for it, for example dragging a card you may gain onto your hand, or dragging a presence from a track onto the land it is placed on.
+
+The engine and server are shaped for this already:
+- A decision's options say *a thing together with where it goes*, never two separate decisions: a move is a token with its destination, and a power is an action with its target (`TargetedAction`, the "act" option kind). The client does not need to ask the server anything while the player drags, because everything a thing can be dropped on is known from the decision's options.
+- Targets have one generic form. A power that targets a spirit is offered with each spirit it can target, even when there is only one (solo play), and a growth action targets the spirit growing, so a UI can treat every power and action the same way: drop it on its target. That is why spirit targets are kept in the options even though a solo player has no choice.
+- Dropping something where it cannot go, or releasing it away from any target, puts it back (the same as tokens today).
+
+What is built now is the click path (pick the action, then click its target) and highlighting what a power can target while the pointer is on it. Dragging a card or an innate power onto a land or a spirit, and dragging a growth action onto the spirit, is not built. When it is, the drop targets are the lands on the island and the spirit panels, and the option the pair names is what is sent. Decisions that are not yet a thing-and-where (a plain list of choices such as "Done", picking which card to gain, answering a yes or no) need looking at one by one: some have a natural thing and place to drag between, and some will stay as buttons.
 
 Client state: `gameId`, `checkpointVersion`, `picks[]`, the cached `StaticView` and the last response. Everything else comes from the server.
 
@@ -176,6 +187,7 @@ The log, prompt details, the spirit panel (tracks, growth, innate powers, specia
 ### Phase 5: polish (pick as needed)
 - **One screen.** Move the log into a modal dialog opened from the hamburger menu, and check the rest of the main screen against the "everything needed to act fits on one screen" goal (first candidates: the discard list and the special rules).
 - **Tokens jumping.** Positions are computed fresh each request, so tokens may move when others come or go. If that's distracting, send ordered slot lists and port the slot-assignment part of `ManageInternalPoints` (~100 lines) to TypeScript.
+- **Drag every decision.** Drag a power card or an innate power onto the land or spirit it targets, and a growth action onto the spirit; then go through the other decisions one by one and make each a drag where it has a natural thing and place (see "every decision is something you drag").
 - Island rotation to fit the screen (Maui computes this from the corners).
 - Response diffs (`ObservationHistory` pattern) if the payload size matters.
 - Mobile layout.
