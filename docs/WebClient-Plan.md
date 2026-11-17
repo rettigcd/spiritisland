@@ -130,7 +130,20 @@ Views:
 - **Spirit panel**: energy, elements, presence tracks (revealed and clickable when they are options), growth and innates.
 - **Cards**: hand, in play and discard. Cards that are options are highlighted.
 - **Status bar**: round, phase, fear, blight, and the invader explore, build and ravage slots.
-- **Log**.
+- **Log**: off the main screen, opened from the menu as a modal dialog (see the design goal below).
+
+### Design goal: everything needed to act fits on one screen
+
+The player should be able to see all the information they need to make the current decision at once, without scrolling the page. That means the board, the decision and its options, the spirit's panel (tracks, growth, innates, hand) and the status line (round, phase, fear, blight, invader cards) are always on screen together.
+
+Anything that does not help with the decision is kept off the screen until asked for, and shown on top of the game while it is open:
+- **The log** is hidden by default. A menu item opens it as a modal dialog that the player closes when done. (Today it sits under the board, which pushes the page past one screen.)
+- Other reference material gets the same treatment: the discard pile, special rules, card text, and the game's number and seed. The hamburger menu in the status line is where these open from.
+
+Rules of thumb that follow from it:
+- A new element on the main screen has to be something the player acts on or needs to see to act. If it only explains what happened, it goes off-screen.
+- Where the screen is too small for everything, the panels scroll inside themselves (the right-hand column already does), and the page itself does not.
+- The page is checked at a normal laptop window size (about 1400 x 900) and zoomed out, since browser zoom is how players fit more on screen.
 
 Client state: `gameId`, `checkpointVersion`, `picks[]`, the cached `StaticView` and the last response. Everything else comes from the server.
 
@@ -161,6 +174,7 @@ How the client works, in short:
 The log, prompt details, the spirit panel (tracks, growth, innate powers, special rules, cards with their text), token pictures and move arrows. What is left from the original list is a fuller status bar and the other arrows.
 
 ### Phase 5: polish (pick as needed)
+- **One screen.** Move the log into a modal dialog opened from the hamburger menu, and check the rest of the main screen against the "everything needed to act fits on one screen" goal (first candidates: the discard list and the special rules).
 - **Tokens jumping.** Positions are computed fresh each request, so tokens may move when others come or go. If that's distracting, send ordered slot lists and port the slot-assignment part of `ManageInternalPoints` (~100 lines) to TypeScript.
 - Island rotation to fit the screen (Maui computes this from the corners).
 - Response diffs (`ObservationHistory` pattern) if the payload size matters.
