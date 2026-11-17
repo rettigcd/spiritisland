@@ -51,6 +51,9 @@ public sealed class OracleSession : IDisposable {
 	OracleSession( SoloGame game, JsonObject? startedAt ) {
 		_game = game;
 		_game.LogExceptions = true;
+		// Actions are offered together with what they target, so the client can show everything a power could hit and let the
+		// player pick the power and its target in one go. Set on every replay, because picks are matched by option text.
+		_game.EnableCombinedActions = true;
 		_baseline = startedAt;
 		_resumed = startedAt is not null;
 		_game.GameState.NewLogEntry += entry => { // before Start, so none is missed. Runs on the engine's thread.
@@ -118,7 +121,7 @@ public sealed class OracleSession : IDisposable {
 				SyncBaseline( ref moved, firstLook );
 			}
 			if( _pending is not null )
-				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ), o is PowerCard card ? GameViewBuilder.CardOf( card ) : null ) )],
+				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ), CardOf( o ) ) )],
 					PromptDetails.For( _pending.Prompt ) );
 			if( _game.EngineTask!.IsCompleted ) {
 				SyncBaseline( ref moved, firstLook );
@@ -128,6 +131,10 @@ public sealed class OracleSession : IDisposable {
 				throw new TimeoutException( "The game engine did not reach a decision within 30 seconds." );
 		}
 	}
+
+	/// <summary> The card's details, for an option that is a card (or a card together with what it targets). </summary>
+	static CardView? CardOf( IOption option )
+		=> ( option is TargetedAction act ? act.Action : option ) is PowerCard card ? GameViewBuilder.CardOf( card ) : null;
 
 	/// <summary> A game that is over has a result. An engine that ended without one stopped because something went wrong. </summary>
 	void ThrowIfEngineFailed() {
@@ -167,13 +174,16 @@ public sealed class OracleSession : IDisposable {
 	string[] OptionIds( IDecision decision ) {
 		var seen = new Dictionary<string, int>();
 		return [.. decision.Options.Select( o => {
-			string text = decision is A.GrowthDecision ? GrowthLabel( o ) : o.Text;
+			string text = decision is A.GrowthDecision or A.TargetedGrowthDecision ? GrowthLabel( o ) : o.Text;
 			int n = seen[text] = seen.GetValueOrDefault( text ) + 1;
 			return n == 1 ? text : $"{text} [{n}]";
 		} )];
 	}
 
 	string GrowthLabel( IOption option ) {
+		// a growth action together with the spirit it grows: label the action, keep what follows
+		if( option is TargetedAction act )
+			return $"{GrowthLabel( act.Action )} => {act.Target.Text}";
 		GrowthGroup? group = _game.GameState.Spirits.Single().GrowthTrack.Groups
 			.FirstOrDefault( g => g.GrowthActionFactories.Contains( option ) );
 		return group is null || group.GrowthActionFactories.Length < 2 ? option.Text

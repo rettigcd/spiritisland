@@ -6,6 +6,11 @@ public static class OptionTargets {
 	/// <param name="viewer">The spirit making the decision: what is offered to it (cards, innates, track slots) is its own.</param>
 	public static OptionTarget For( IOption option, Spirit viewer ) => option switch {
 		Move move => For( move.Source, viewer ) with { Kind = "move", ToSpace = (move.Destination as Space)?.SpaceSpec.Label },
+		TargetedAction act => For( act.Action, viewer ) with {
+			Kind = "act",
+			ToSpace = (act.Target as Space)?.SpaceSpec.Label,
+			ToSpirit = (act.Target as Spirit)?.SpiritName,
+		},
 		Space space => new( "space", Space: space.SpaceSpec.Label ),
 		SpaceSpec spec => new( "space", Space: spec.Label ),
 		SpaceToken st => new( "spaceToken", Space: st.Space.SpaceSpec.Label, Token: st.Token.Text ),

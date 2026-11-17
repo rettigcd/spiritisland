@@ -714,6 +714,12 @@
               "integer"
             ],
             "format": "int32"
+          },
+          "toSpirit": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

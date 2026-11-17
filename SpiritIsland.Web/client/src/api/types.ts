@@ -210,6 +210,7 @@ export interface components {
             group?: null | number;
             /** Format: int32 */
             action?: null | number;
+            toSpirit?: null | string;
         };
         OptionView: {
             id: string;

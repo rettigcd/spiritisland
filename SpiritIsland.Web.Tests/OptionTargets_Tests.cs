@@ -113,6 +113,35 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 	}
 
 	[Fact]
+	public void ACardTogetherWithALand_IsAnActPointingAtBoth() {
+		var (gs, spirit) = NewGame();
+		PowerCard card = spirit.Hand.First();
+		Space land = gs.Spaces_Existing.First( s => s.SpaceSpec.Label.EndsWith( "4" ) );
+
+		OptionTargets.For( new TargetedAction( card, land ), spirit )
+			.ShouldBe( new OptionTarget( "act", Spirit: spirit.SpiritName, Card: card.Title, ToSpace: land.SpaceSpec.Label ) );
+	}
+
+	[Fact]
+	public void AnInnateTogetherWithASpirit_IsAnActPointingAtBoth() {
+		var (_, spirit) = NewGame();
+		InnatePower innate = spirit.InnatePowers.First();
+
+		OptionTargets.For( new TargetedAction( innate, spirit ), spirit )
+			.ShouldBe( new OptionTarget( "act", Spirit: spirit.SpiritName, Card: innate.Title, ToSpirit: spirit.SpiritName ) );
+	}
+
+	[Fact]
+	public void AGrowthActionTogetherWithTheSpirit_IsAnActWithItsGroupAndAction() {
+		var (_, spirit) = NewGame();
+		GrowthGroup[] groups = spirit.GrowthTrack.Groups;
+		int g = Array.FindIndex( groups, grp => 2 <= grp.GrowthActionFactories.Length );
+
+		OptionTargets.For( new TargetedAction( groups[g].GrowthActionFactories[1], spirit ), spirit )
+			.ShouldBe( new OptionTarget( "act", Spirit: spirit.SpiritName, Group: g, Action: 1, ToSpirit: spirit.SpiritName ) );
+	}
+
+	[Fact]
 	public void ChoicesWithNothingToPointAt_AreOther() {
 		var (_, spirit) = NewGame();
 
@@ -156,7 +185,7 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 		}
 
 		// so this can't pass by looking at nothing
-		foreach( string kind in new[] { "space", "spaceToken", "move", "card", "growth", "other" } )
+		foreach( string kind in new[] { "space", "spaceToken", "move", "card", "act", "other" } )
 			kinds.GetValueOrDefault( kind ).ShouldBeGreaterThan( 0, $"no '{kind}' option was ever offered" );
 	}
 
@@ -207,6 +236,13 @@ public class OptionTargets_Tests( GamesFactory factory ) : IClassFixture<GamesFa
 				t.Spirit.ShouldBe( view.ViewerSpiritId, where );
 				t.Group.ShouldNotBeNull( where );
 				t.Action.ShouldNotBeNull( where );
+				break;
+			case "act":
+				t.Spirit.ShouldBe( view.ViewerSpiritId, where );
+				( t.Card is not null || t.Group is not null ).ShouldBeTrue( $"{where}: '{option.Id}' is an act of nothing" );
+				( t.ToSpace is not null || t.ToSpirit is not null ).ShouldBeTrue( $"{where}: '{option.Id}' is an act with no target" );
+				if( t.ToSpace is not null ) Space( t.ToSpace ).ShouldNotBeNull( $"{where}: '{option.Id}' targets {t.ToSpace}, which isn't in the view" );
+				if( t.ToSpirit is not null ) t.ToSpirit.ShouldBe( view.ViewerSpiritId, $"{where}: '{option.Id}' targets another spirit" );
 				break;
 			case "action" or "other" or "destroyedPresence":
 				break;
