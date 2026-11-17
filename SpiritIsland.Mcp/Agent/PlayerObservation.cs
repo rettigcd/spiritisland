@@ -55,7 +55,6 @@ public static class PlayerObservation {
 			["card"] = card.CardFlipped ? card.Name : null,
 			["blightedIslandEffect"] = card.CardFlipped ? card.Description : null,
 			["blightRemainingOnCard"] = (int)card.Memento, // only public accessor of the count
-			["blightCardsRemaining"] = gs.BlightCards.Count,
 		};
 	}
 

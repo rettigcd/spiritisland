@@ -29,7 +29,7 @@ public record GameView(
 public record FearView( int TerrorLevel, int FearPool, int FearPoolMax, int FacedownCardsRemaining, int EarnedCardsPending );
 
 /// <param name="Card">Null until the card flips: it is set up healthy side up without looking at the back.</param>
-public record BlightView( bool CardFlipped, string? Card, string? BlightedIslandEffect, int BlightRemainingOnCard, int BlightCardsRemaining );
+public record BlightView( bool CardFlipped, string? Card, string? BlightedIslandEffect, int BlightRemainingOnCard );
 
 /// <summary>
 /// Invader cards by their text, in the order of their slot. The deck's order and contents stay hidden.

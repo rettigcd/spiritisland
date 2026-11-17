@@ -33,8 +33,7 @@ public static class GameViewBuilder {
 			card.CardFlipped,
 			card.CardFlipped ? card.Name : null,
 			card.CardFlipped ? card.Description : null,
-			(int)card.Memento, // the only public accessor of the count
-			gs.BlightCards.Count );
+			(int)card.Memento ); // the only public accessor of the count
 	}
 
 	static InvadersView InvadersOf( GameState gs ) {

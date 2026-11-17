@@ -224,8 +224,7 @@
           "cardFlipped",
           "card",
           "blightedIslandEffect",
-          "blightRemainingOnCard",
-          "blightCardsRemaining"
+          "blightRemainingOnCard"
         ],
         "type": "object",
         "properties": {
@@ -245,10 +244,6 @@
             ]
           },
           "blightRemainingOnCard": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "blightCardsRemaining": {
             "type": "integer",
             "format": "int32"
           }

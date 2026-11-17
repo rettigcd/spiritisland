@@ -84,8 +84,6 @@ export interface components {
             blightedIslandEffect: null | string;
             /** Format: int32 */
             blightRemainingOnCard: number;
-            /** Format: int32 */
-            blightCardsRemaining: number;
         };
         BoundsView: {
             /** Format: double */
