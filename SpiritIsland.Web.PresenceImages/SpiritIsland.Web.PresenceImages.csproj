@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Draws each spirit's presence token like the desktop apps and saves it for the web client. Run it when a spirit is added or its
+       look in SpiritMarkerBuilder changes (run this project, see Program.cs). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpiritIsland.Utilities\SpiritIsland.Utilities.csproj" />
+    <ProjectReference Include="..\SpiritIsland.Web\SpiritIsland.Web.csproj" />
+  </ItemGroup>
+
+</Project>
