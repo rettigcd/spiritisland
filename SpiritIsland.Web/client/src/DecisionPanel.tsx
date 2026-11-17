@@ -1,6 +1,6 @@
 import type { DecisionView, OptionView, ResultView } from './api/model';
 import { rangeText } from './text';
-import { describeDestination, describeSource, sourceOf } from './moves';
+import { describeDestination, describeSource, isAction, sourceOf } from './moves';
 import type { SourceKey } from './moves';
 
 interface Props {
@@ -8,9 +8,13 @@ interface Props {
   result: ResultView | null;
   picks: readonly string[];
   busy: boolean;
-  moves: ReadonlyMap<SourceKey, OptionView[]>; // the decision's moves, grouped by where they start
-  selected: SourceKey | null; // the start of the move being made, if one has been picked
+  moves: ReadonlyMap<SourceKey, OptionView[]>; // the decision's moves and actions, grouped by where they start
+  selected: SourceKey | null; // the start of the move or action being made, if one has been picked
   onSelect(source: SourceKey | null): void;
+  /** Picks where a move or an action starts (an action with one target is simply chosen). */
+  onPickSource(source: SourceKey): void;
+  /** Pointing at a start (or leaving it): what it could reach is shown on the board and the spirit panels. */
+  onHoverSource(source: SourceKey | null): void;
   onChoose(optionId: string): void;
   onUndo(): void;
   onHover(option: OptionView | null): void;
@@ -27,7 +31,7 @@ function cardDetails(o: OptionView): string | undefined {
  * player through the action). Every option is a button here, including the ones that can also be clicked on the island,
  * so nothing is ever out of reach.
  */
-export function DecisionPanel({ decision, result, picks, busy, moves, selected, onSelect, onChoose, onUndo, onHover }: Props) {
+export function DecisionPanel({ decision, result, picks, busy, moves, selected, onSelect, onPickSource, onHoverSource, onChoose, onUndo, onHover }: Props) {
   // Moves are offered in two steps: first where the move starts (one entry per start), then where it goes.
   const destinations = selected !== null ? moves.get(selected) : undefined;
   const seen = new Set<SourceKey>();
@@ -45,7 +49,7 @@ export function DecisionPanel({ decision, result, picks, busy, moves, selected, 
           {decision.details && <p class="muted details">{decision.details}</p>}
           {destinations && (
             <>
-              <p class="muted details">Move {describeSource(destinations)} to:</p>
+              <p class="muted details">{isAction(selected ?? '') ? 'Use' : 'Move'} {describeSource(destinations)} {isAction(selected ?? '') ? 'on' : 'to'}:</p>
               <ul class="options">
                 {destinations.map(o => (
                   <li key={o.id}>
@@ -69,7 +73,11 @@ export function DecisionPanel({ decision, result, picks, busy, moves, selected, 
                 seen.add(source);
                 return (
                   <li key={source}>
-                    <button type="button" disabled={busy} onClick={() => onSelect(source)}>
+                    <button
+                      type="button" disabled={busy} onClick={() => onPickSource(source)} title={cardDetails(o)}
+                      onMouseEnter={() => onHoverSource(source)} onMouseLeave={() => onHoverSource(null)}
+                      onFocus={() => onHoverSource(source)} onBlur={() => onHoverSource(null)}
+                    >
                       {describeSource(moves.get(source) ?? [o])}
                     </button>
                   </li>

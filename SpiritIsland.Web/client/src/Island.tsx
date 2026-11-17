@@ -11,6 +11,8 @@ interface Props {
   options: readonly OptionView[];
   /** The option the player is pointing at in the decision panel, so the island can show where it applies. */
   hovered: OptionView | null;
+  /** The action the pointer is on (a card, an innate power): the lands it could target are shown. */
+  hoveredSource: SourceKey | null;
   /** The decision's moves by where they start, and the start the player has picked (if any). */
   moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
   selected: SourceKey | null;
@@ -66,7 +68,7 @@ function useUnitsPerPixel(svg: { current: SVGSVGElement | null }, worldWidth: nu
   return unit;
 }
 
-export function Island({ staticView, view, options, hovered, moves, selected, onSelect, disabled, onChoose }: Props) {
+export function Island({ staticView, view, options, hovered, hoveredSource, moves, selected, onSelect, disabled, onChoose }: Props) {
   const { x, y, width, height } = staticView.worldBounds;
   const { bySpace, byToken } = boardOptions(options);
   const tokensBySpace = new Map(view.spaces.map(s => [s.id, s.tokens]));
@@ -75,8 +77,11 @@ export function Island({ staticView, view, options, hovered, moves, selected, on
   const [drag, setDrag] = useState<Drag | null>(null);
   const [over, setOver] = useState<string | null>(null); // the land the pointer is over while a move is being made
 
-  // Once a start is picked, every land its moves can reach is known.
-  const destinations = selected ? destinationsOf(moves.get(selected) ?? []) : new Map<string, OptionView>();
+  // Once a start is picked, every land its moves can reach is known. Pointing at an action (a card, an innate power) shows
+  // the lands it could target as well, without picking it.
+  const reachFrom = selected ?? hoveredSource;
+  const reach = reachFrom ? destinationsOf(moves.get(reachFrom) ?? []) : new Map<string, OptionView>();
+  const destinations = selected ? reach : new Map<string, OptionView>(); // only a picked start can be clicked through to a land
   const overMove = over ? destinations.get(over) : undefined;
   const shown = overMove ?? hovered; // what the island shows the effect of: the land the pointer is over, or the hovered button
   const hoveredSpaces = new Set(spacesOf(shown));
@@ -158,14 +163,15 @@ export function Island({ staticView, view, options, hovered, moves, selected, on
       {staticView.spaces.map(space => {
         const option = bySpace.get(space.id);
         const destination = destinations.get(space.id);
+        const reachable = reach.has(space.id);
         const onClick = option ? () => choose(option) : destination ? () => choose(destination) : selected ? () => onSelect(null) : undefined;
         return (
           <g key={space.id} data-space={space.id}>
             <polygon
               points={space.corners.map(c => `${c.x},${c.y}`).join(' ')}
               fill={fillOf(space.terrain)}
-              stroke-width={pixel * (destination || option ? 4 : hoveredSpaces.has(space.id) ? 5 : 1.5)}
-              class={['space', option ? 'choosable' : '', destination ? 'destination' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
+              stroke-width={pixel * (reachable || option ? 4 : hoveredSpaces.has(space.id) ? 5 : 1.5)}
+              class={['space', option ? 'choosable' : '', reachable ? 'destination' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
               onClick={onClick}
               onPointerEnter={selected ? () => setOver(space.id) : undefined}
               onPointerLeave={selected && !drag ? () => setOver(null) : undefined}

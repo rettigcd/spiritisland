@@ -1,5 +1,6 @@
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
-import { destroyedSource, slotSource } from './moves';
+import { destroyedSource, slotSource, sourceOf } from './moves';
+import type { OptionTarget } from './api/model';
 import type { SourceKey } from './moves';
 import { rangeText } from './text';
 import { Coin, Elements, Speed } from './icons';
@@ -15,6 +16,14 @@ interface Props {
   moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
   selected: SourceKey | null;
   onSelect(source: SourceKey | null): void;
+  /** Picks an action (a card, an innate power, a growth action) to use on a target; with one target it is simply chosen. */
+  onPickSource(source: SourceKey): void;
+  /** Pointing at an action shows what it could target. */
+  onHoverSource(source: SourceKey | null): void;
+  /** The chosen action targets spirits, and this one is among them: shown highlighted. */
+  reached: boolean;
+  /** The picked action's option for this spirit as its target: choosing it uses the action on this spirit. */
+  targetOption?: OptionView;
   busy: boolean;
   onChoose(optionId: string): void;
 }
@@ -26,7 +35,7 @@ type TrackName = 'energy' | 'cardPlays';
  * decision is asking about (a track slot, a card, an innate power) is highlighted and can be clicked here as well as in the
  * decision panel.
  */
-export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, onSelect, busy, onChoose }: Props) {
+export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, onSelect, onPickSource, onHoverSource, reached, targetOption, busy, onChoose }: Props) {
   const optionWhere = (kinds: readonly string[], match: (o: OptionView) => boolean) =>
     options.find(o => kinds.includes(o.target.kind) && o.target.spirit === spirit.id && match(o));
 
@@ -36,13 +45,29 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   // A growth action is picked by which action of which group it is (several can read the same, like two "Place Presence (1)").
   const growthOption = (group: number, action: number) => optionWhere(['growth'], o => o.target.group === group && o.target.action === action);
 
+  // An action offered with its targets is picked (then its target) and pointing at it shows what it could target.
+  const actionStart = (match: (t: OptionTarget) => boolean): SourceKey | undefined => {
+    const o = options.find(o => o.target.kind === 'act' && o.target.spirit === spirit.id && match(o.target));
+    return o ? sourceOf(o.target) ?? undefined : undefined;
+  };
+  const cardStart = (card: string) => actionStart(t => t.card === card && t.group == null);
+  const growthStart = (group: number, action: number) => actionStart(t => t.group === group && t.action === action);
+  const useStart = (source: SourceKey) => () => { if (!busy) onPickSource(source); };
+  const pointing = (source: SourceKey) => ({
+    onMouseEnter: () => onHoverSource(source), onMouseLeave: () => onHoverSource(null),
+    onFocus: () => onHoverSource(source), onBlur: () => onHoverSource(null),
+  });
+
   const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
   const pick = (source: SourceKey) => () => { if (!busy) onSelect(selected === source ? null : source); };
   const pile = destroyedSource(spirit.id);
 
   return (
-    <section class="panel spirit" style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}>
-      <h2>{spirit.name}{isViewer ? '' : ' (other player)'}</h2>
+    <section class={`panel spirit ${reached ? 'reached' : ''}`} style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}>
+      <h2>
+        {spirit.name}{isViewer ? '' : ' (other player)'}
+        {targetOption && <button type="button" class="choosable target-spirit" disabled={busy} onClick={choose(targetOption)}>Use it on this spirit</button>}
+      </h2>
       {info && (
         <>
           <h3>Growth</h3>
@@ -51,12 +76,15 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
               <li key={g.id} class={spirit.growthGroupsUsed.includes(g.id) ? 'used' : ''}>
                 {g.actions.map((action, ai) => {
                   const option = growthOption(gi, ai);
+                  const start = growthStart(gi, ai);
                   return (
                     <span key={ai}>
                       {ai > 0 && ' · '}
-                      {option
-                        ? <button type="button" class="choosable growth-action" disabled={busy} onClick={choose(option)}>{action}</button>
-                        : action}
+                      {start
+                        ? <button type="button" class={`choosable growth-action ${selected === start ? 'selected' : ''}`} disabled={busy} onClick={useStart(start)} {...pointing(start)}>{action}</button>
+                        : option
+                          ? <button type="button" class="choosable growth-action" disabled={busy} onClick={choose(option)}>{action}</button>
+                          : action}
                     </span>
                   );
                 })}
@@ -87,16 +115,17 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           <h3>Innate powers</h3>
           {info.innates.map(innate => (
             <Innate key={innate.name} innate={innate} status={spirit.innates.find(i => i.name === innate.name)?.tierStatus ?? []}
-              option={innateOption(innate.name)} busy={busy} choose={choose} />
+              option={innateOption(innate.name)} start={actionStart(t => t.card === innate.name && t.group == null)} selected={selected}
+              useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
           ))}
         </>
       )}
 
-      <CardList title="Hand" cards={spirit.hand} optionFor={cardOption} busy={busy} choose={choose} />
-      <CardList title="In play" cards={spirit.inPlay} optionFor={cardOption} busy={busy} choose={choose} />
+      <CardList title="Hand" cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
+      <CardList title="In play" cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
       <details>
         <summary>Discard ({spirit.discard.length})</summary>
-        <CardList title="" cards={spirit.discard} optionFor={cardOption} busy={busy} choose={choose} />
+        <CardList title="" cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
       </details>
       {info && info.specialRules.length > 0 && (
         <details class="rules">
@@ -150,7 +179,18 @@ function Track({ title, track, slots, revealed, optionFor, spirit, moves, select
   );
 }
 
-interface InnateProps {
+interface PickProps {
+  /** Set when the power is offered with its targets: the start of its choices. */
+  selected: SourceKey | null;
+  useStart(source: SourceKey): () => void;
+  pointing(source: SourceKey): Pointing;
+}
+
+/** The handlers that make pointing at (or focusing) an action show what it could target. */
+interface Pointing { onMouseEnter(): void; onMouseLeave(): void; onFocus(): void; onBlur(): void }
+
+interface InnateProps extends PickProps {
+  start: SourceKey | undefined;
   innate: InnateStatic;
   /** For each tier: "Yes" if this turn's elements meet it, "AsPrepared" if they could with the elements being prepared, otherwise "No". */
   status: readonly string[];
@@ -159,13 +199,15 @@ interface InnateProps {
   choose(o: OptionView | undefined): () => void;
 }
 
-function Innate({ innate, status, option, busy, choose }: InnateProps) {
+function Innate({ innate, status, option, start, selected, useStart, pointing, busy, choose }: InnateProps) {
   return (
     <div class="innate">
       <h4 title={innate.instructions}>
         {innate.name}
         <span class="muted"> <Speed speed={innate.speed} /> · range {rangeText(innate.range)} · {innate.target}</span>
-        {option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
+        {start
+          ? <button type="button" class={`choosable ${selected === start ? 'selected' : ''}`} disabled={busy} onClick={useStart(start)} {...pointing(start)}>Use</button>
+          : option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
       </h4>
       {/* Which tiers are met is what matters while acting, so that stays on screen; what each one does is in its tooltip. */}
       <ul class="tiers">
@@ -179,25 +221,28 @@ function Innate({ innate, status, option, busy, choose }: InnateProps) {
   );
 }
 
-interface CardListProps {
+interface CardListProps extends PickProps {
   title: string;
   cards: readonly CardView[];
   optionFor(card: string): OptionView | undefined;
+  startFor(card: string): SourceKey | undefined;
   busy: boolean;
   choose(o: OptionView | undefined): () => void;
 }
 
-function CardList({ title, cards, optionFor, busy, choose }: CardListProps) {
+function CardList({ title, cards, optionFor, startFor, selected, useStart, pointing, busy, choose }: CardListProps) {
   return (
     <div>
       {title && <h3>{title} ({cards.length})</h3>}
       <ul class="cards">
         {cards.map(c => {
           const option = optionFor(c.id);
+          const start = startFor(c.id);
           return (
             <li key={c.id}>
               <button
-                type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={choose(option)}
+                type="button" class={`${option || start ? 'choosable' : ''} ${start && selected === start ? 'selected' : ''}`} disabled={busy || !(option || start)}
+                onClick={start ? useStart(start) : choose(option)} {...(start ? pointing(start) : {})}
                 title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
               >
                 {c.name} <span class="muted"><Coin value={c.cost} title="energy to play" /> <Speed speed={c.speed} /> <Elements text={c.elements} /></span>

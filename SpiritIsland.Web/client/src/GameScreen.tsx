@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { GameActions, GameState } from './game';
 import type { OptionView } from './api/model';
 import { Island } from './Island';
-import { describeSource, movesBySource } from './moves';
+import { describeSource, isAction, movesBySource, spiritDestinationsOf } from './moves';
 import type { SourceKey } from './moves';
 import { LogPanel } from './LogPanel';
 import { Menu } from './Menu';
@@ -15,11 +15,12 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
   const [hovered, setHovered] = useState<OptionView | null>(null);
   const [sideWidth, setSideWidth] = useSideWidth();
   const [logOpen, setLogOpen] = useState(false);
-  const [picked, setPicked] = useState<SourceKey | null>(null); // where the move being made starts, once the player has picked it
+  const [picked, setPicked] = useState<SourceKey | null>(null); // where the move or action being made starts, once the player has picked it
+  const [pointedAt, setPointedAt] = useState<SourceKey | null>(null); // the action the pointer is on: what it could target is shown
   const { response, staticView, busy } = state;
 
   // Whatever was picked belongs to the decision it was picked in.
-  useEffect(() => { setPicked(null); }, [response]);
+  useEffect(() => { setPicked(null); setPointedAt(null); }, [response]);
   // Escape puts a picked token down.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPicked(null); };
@@ -31,6 +32,16 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
   const moves = useMemo(() => movesBySource(options), [response]);
   if (!response) return <main><p>Loading the game...</p></main>;
   const selected = picked !== null && moves.has(picked) ? picked : null;
+
+  // An action with one target is simply chosen (nothing to pick between); otherwise picking it shows what it could target.
+  const pickSource = (source: SourceKey) => {
+    const choices = moves.get(source) ?? [];
+    if (isAction(source) && choices.length === 1 && choices[0]) actions.choose(choices[0].id);
+    else setPicked(source === selected ? null : source);
+  };
+  // The spirits the picked (or pointed at) action could target.
+  const reachFrom = selected ?? pointedAt;
+  const spiritReach = spiritDestinationsOf(reachFrom ? moves.get(reachFrom) ?? [] : []);
 
   // The game's number (its seed) with its spirit, board and adversary is all it takes to play the same game again.
   const setup = staticView?.setup;
@@ -68,24 +79,27 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
             <div class="move-hint-bar">
               {selected && (
                 <p class="move-hint" role="status">
-                  Moving {describeSource(moves.get(selected) ?? [])}: click or drop on a highlighted land.{' '}
+                  {isAction(selected)
+                    ? <>Using {describeSource(moves.get(selected) ?? [])}: click a highlighted land{spiritReach.size > 0 ? ' or the spirit' : ''}.{' '}</>
+                    : <>Moving {describeSource(moves.get(selected) ?? [])}: click or drop on a highlighted land.{' '}</>}
                   <button type="button" onClick={() => setPicked(null)}>Cancel</button>
                 </p>
               )}
             </div>
             {staticView
-              ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} moves={moves} selected={selected} onSelect={setPicked} disabled={busy} onChoose={actions.choose} />
+              ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} hoveredSource={pointedAt} moves={moves} selected={selected} onSelect={setPicked} disabled={busy} onChoose={actions.choose} />
               : <p>Loading the board...</p>}
           </div>
           <DecisionPanel
             decision={response.decision} result={response.result} picks={state.picks} busy={busy}
-            moves={moves} selected={selected} onSelect={setPicked}
+            moves={moves} selected={selected} onSelect={setPicked} onPickSource={pickSource} onHoverSource={setPointedAt}
             onChoose={actions.choose} onUndo={actions.undo} onHover={setHovered}
           />
         </div>
         <div class="side">
           {response.view.spirits.map(s => (
-            <SpiritPanel key={s.id} spirit={s} info={staticView?.spirits.find(x => x.id === s.id)} isViewer={s.id === response.view.viewerSpiritId} options={options} moves={moves} selected={selected} onSelect={setPicked} busy={busy} onChoose={actions.choose} />
+            <SpiritPanel key={s.id} spirit={s} info={staticView?.spirits.find(x => x.id === s.id)} isViewer={s.id === response.view.viewerSpiritId} options={options} moves={moves} selected={selected} onSelect={setPicked} onPickSource={pickSource} onHoverSource={setPointedAt}
+              reached={spiritReach.has(s.id)} targetOption={selected ? spiritReach.get(s.id) : undefined} busy={busy} onChoose={actions.choose} />
           ))}
         </div>
         <Resizer width={sideWidth} onResize={setSideWidth} />
