@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using SpiritIsland.Web;
 using SpiritIsland.Web.Endpoints;
 using SpiritIsland.Web.Oracle;
 using SpiritIsland.Web.View;
@@ -39,6 +40,17 @@ app.UseExceptionHandler( errors => errors.Run( async context => {
 	context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 	await context.Response.WriteAsJsonAsync( new ErrorView( failure?.Message ?? "Something went wrong." ) );
 } ) );
+
+// The API needs the access token (a header, so it can only be checked on the calls the client makes). The page itself, its scripts and
+// pictures are served to anyone: they hold no game data, and they are what lets the client ask for the token.
+app.Use( async ( context, next ) => {
+	if( context.Request.Path.StartsWithSegments( "/api" ) && !AccessToken.IsValid( context.Request.Headers[AccessToken.HeaderName] ) ) {
+		context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+		await context.Response.WriteAsJsonAsync( new ErrorView( "A valid access token is required." ) );
+		return;
+	}
+	await next();
+} );
 
 app.UseDefaultFiles(); // the built client (client/ builds into wwwroot)
 app.UseStaticFiles();

@@ -13,6 +13,9 @@ public sealed class GamesFactory : WebApplicationFactory<Program> {
 
 	protected override void ConfigureWebHost( IWebHostBuilder builder ) => builder.UseSetting( "GamesDir", GamesDir );
 
+	/// <summary> Every client carries the access token, as the real client does. </summary>
+	protected override void ConfigureClient( HttpClient client ) => client.DefaultRequestHeaders.Add( AccessToken.HeaderName, AccessToken.Value );
+
 	protected override void Dispose( bool disposing ) {
 		base.Dispose( disposing );
 		if( disposing && Directory.Exists( GamesDir ) ) Directory.Delete( GamesDir, recursive: true );

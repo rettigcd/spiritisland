@@ -1,8 +1,26 @@
 import createClient from 'openapi-fetch';
+import { ACCESS_HEADER, accessNeeded, forgetToken, savedToken } from './access';
 import type { paths } from './types';
 import type { GameSummary, NewGameRequest, OracleResponse, SetupOptions, StaticView } from './model';
 
 const http = createClient<paths>({ baseUrl: '' });
+
+// Every call carries the saved access token. A call the server turns down for it (401) clears the saved token and tells the app to ask again.
+http.use({
+  onRequest({ request }) {
+    const token = savedToken();
+    if (token) request.headers.set(ACCESS_HEADER, token);
+    return request;
+  },
+  onResponse({ response }) {
+    if (response.status === 401) {
+      const hadToken = savedToken() !== null; // a token was sent and was wrong, as opposed to none saved yet
+      forgetToken();
+      accessNeeded(hadToken);
+    }
+    return undefined;
+  },
+});
 
 /** Pulls the server's { error } message out of a failed response, whatever shape came back. */
 function messageOf(error: unknown, fallback: string): string {
