@@ -6,6 +6,8 @@ class MistsShiftAndFlow(Spirit spirit) : Targetter(spirit) {
 	const string Description = "When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements.";
 	static public readonly SpecialRule Rule = new SpecialRule(Name, Description);
 
+	public override bool CanCommitTarget => false; // asks about gathering presence while it targets
+
 	public override Task<TargetSpaceResults?> TargetsSpace(string prompt, IPreselect? preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
 		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
 		return presenceIsFrozen

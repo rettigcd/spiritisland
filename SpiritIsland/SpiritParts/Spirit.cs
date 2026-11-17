@@ -60,6 +60,7 @@ public abstract partial class Spirit
 
 
 	public event Action<object?>? SelectionMade; // hook for: Reach Through the Efemeral Distance
+	internal void NotifySelectionMade( object? selection ) => SelectionMade?.Invoke( selection );
 
 	public void PreSelect( SpaceToken? st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;
@@ -97,6 +98,103 @@ public abstract partial class Spirit
 
 	#endregion Select
 
+	#region Actions together with their targets
+
+	/// <summary>
+	/// Off (the default): the user picks an action (a card or an innate power) and then, in a second decision, what to target.
+	/// On: the user picks one choice that is the action together with its target (<see cref="TargetedAction"/>), the way a Move is a
+	/// token together with where it goes, so a UI can let them drag the action onto its target and everything an action could
+	/// target is visible at once. The target is a land for a power that targets a land, a spirit for a power that targets a spirit
+	/// (even when only one can be chosen), and the growing spirit for a growth action. Powers that cannot say where they could target
+	/// without asking something first, and every other kind of action, stay as they were. Offered for Growth, Fast and Slow actions.
+	/// </summary>
+	public bool CombineActionsAndTargets { get; set; }
+
+	/// <summary>
+	/// The actions, with each one that can say what it could target replaced by one <see cref="TargetedAction"/> for each of those
+	/// targets (an action with nothing to target is kept as it is, so it can still be used). What a user picks from this goes to
+	/// <see cref="ResolveActionAsync"/>: the action, and the target if it was a <see cref="TargetedAction"/>.
+	/// </summary>
+	public async Task<IOption[]> GetCombinedActionMenu( IActionFactory[] actions ) {
+		if( !Targetter.CanCommitTarget ) return [.. actions];
+
+		List<IOption> menu = [];
+		TargetPreview.IsActive = true;
+		try {
+			foreach( IActionFactory action in actions ) {
+				IOption[]? targets = await GetPreviewTargets( action );
+				if( targets is { Length: > 0 } )
+					menu.AddRange( targets.Select( t => new TargetedAction( action, t ) ) );
+				else
+					menu.Add( action );
+			}
+		}
+		finally { TargetPreview.IsActive = false; }
+		return [.. menu];
+	}
+
+	/// <summary> What an action could target right now, or null if it is not one that can say (or has to ask something first). </summary>
+	async Task<IOption[]?> GetPreviewTargets( IActionFactory action ) {
+		switch( action ) {
+			case PowerCard card when card.CanPreviewTargets:
+				return card.GetTargetSpirits( this ) is Spirit[] cardSpirits ? [.. cardSpirits]
+					: await card.GetTargetSpaceOptions( this ) is Space[] cardSpaces ? SortedByLabel( cardSpaces ) : null;
+			case InnatePower innate when innate.CanPreviewTargets:
+				return innate.GetTargetSpirits( this ) is Spirit[] innateSpirits ? [.. innateSpirits]
+					: await innate.GetTargetSpaceOptions( this ) is Space[] innateSpaces ? SortedByLabel( innateSpaces ) : null;
+			case IHelpGrowActionFactory:
+				return [this]; // growth is done by the spirit, to the spirit
+			default:
+				return null;
+		}
+
+		static IOption[] SortedByLabel( Space[] spaces ) => [.. spaces.OrderBy( s => s.SpaceSpec.Label )];
+	}
+
+	/// <summary>
+	/// Asks the user to pick one of the actions, as one choice with its target when <see cref="CombineActionsAndTargets"/> is on.
+	/// </summary>
+	/// <returns>The action (null when they decline, if present allows it) and, if they chose it with a target, that target.</returns>
+	public async Task<(IActionFactory? Action, IOption? Target)> SelectActionAsync( string prompt, IActionFactory[] options, Present present ) {
+		if( !CombineActionsAndTargets )
+			return (await Select( new A.TypedDecision<IActionFactory>( prompt, options, present ) ), null);
+
+		IOption[] choices = await GetCombinedActionMenu( options );
+		IOption? picked = await Select( new A.TypedDecision<IOption>( prompt, choices, present ) );
+		return Unpack( picked );
+	}
+
+	/// <summary> The Growth menu: the same, with a decision the UI can tell is for growth. </summary>
+	public async Task<(IActionFactory Action, IOption? Target)> SelectGrowthAsync( IActionFactory[] options ) {
+		if( !CombineActionsAndTargets )
+			return (await SelectAlways( new A.GrowthDecision( "Select Growth", options, Present.Always ) ), null);
+
+		IOption[] choices = await GetCombinedActionMenu( options );
+		IOption picked = await SelectAlways( new A.TargetedGrowthDecision( "Select Growth", choices, Present.Always ) );
+		var (action, target) = Unpack( picked );
+		return action is not null ? (action, target) : throw new InvalidOperationException( "Not a growth action: " + picked.Text );
+	}
+
+	static (IActionFactory? Action, IOption? Target) Unpack( IOption? picked ) => picked switch {
+		TargetedAction t => (t.Action, t.Target),
+		IActionFactory a => (a, null),
+		_ => (null, null)
+	};
+
+	/// <summary>
+	/// What the user chose together with the action now being resolved (a land or a spirit); handed to the first targeting that action
+	/// does. Whatever asks for it takes it, whether it uses it or not, so it can only apply once. Not part of a save: it only lives while
+	/// an action resolves.
+	/// </summary>
+	internal T? TakeCommittedTarget<T>() where T : class, IOption {
+		IOption? target = _committedTarget;
+		_committedTarget = null;
+		return target as T;
+	}
+	IOption? _committedTarget;
+
+	#endregion Actions together with their targets
+
 	public ElementMgr Elements;
 	public DrawCardStrategy Draw;
 	public ForgettingStrategy Forget;
@@ -116,7 +214,7 @@ public abstract partial class Spirit
 	/// case).
 	/// </summary>
 	public async Task SelectAndResolveNextGrowthAction() {
-		IActionFactory selectedAction = await SelectAlways( new A.GrowthDecision( "Select Growth", GetGrowthMenu(), Present.Always ) );
+		var (selectedAction, _) = await SelectGrowthAsync( GetGrowthMenu() );
 		await ResolveGrowthActionAsync( selectedAction );
 	}
 
@@ -195,10 +293,13 @@ public abstract partial class Spirit
 		if( options.Length == 0 ) return false;
 
 		Present present = gs.Phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
-		IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>(ResolvePrompt(gs.Phase), options, present));
+		bool fastOrSlow = gs.Phase is Phase.Fast or Phase.Slow;
+		var (option, target) = fastOrSlow
+			? await SelectActionAsync( ResolvePrompt( gs.Phase ), options, present )
+			: (await Select( new A.TypedDecision<IActionFactory>( ResolvePrompt( gs.Phase ), options, present ) ), null);
 		if( option is null ) return false;
 
-		await ResolveActionAsync(option, gs.Phase);
+		await ResolveActionAsync(option, gs.Phase, target);
 		return true;
 	}
 
@@ -311,11 +412,16 @@ public abstract partial class Spirit
 	/// <summary>
 	/// Starts ActionScope, marks as Resolved, Resolves, checks win/los
 	/// </summary>
-	public async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
+	/// <param name="target">What the user chose together with the action (see <see cref="CombineActionsAndTargets"/>): a land or a spirit, if they did.</param>
+	public async Task ResolveActionAsync(IActionFactory factory, Phase phase, IOption? target = null) {
 
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );
 		MarkAsResolved( factory ); // removing first, so action can restore it if desired
-		await factory.ActivateAsync( this );
+		_committedTarget = target;
+		try {
+			await factory.ActivateAsync( this );
+		}
+		finally { _committedTarget = null; }
 
 		// Send event
 		foreach(var x in Mods.OfType<IHandleActivatedActions>() )

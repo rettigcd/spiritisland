@@ -23,6 +23,9 @@ public class SoloGame {
 	// User preferences
 	public bool EnablePreselects; // Tokens and spaces together
 
+	/// <summary> Offer each Growth, Fast and Slow action together with its target, as one choice (see <see cref="Spirit.CombineActionsAndTargets"/>). </summary>
+	public bool EnableCombinedActions { get => Spirit.CombineActionsAndTargets; set => Spirit.CombineActionsAndTargets = value; }
+
 	#region constructor
 
 	public SoloGame(GameState gameState){
@@ -68,8 +71,8 @@ public class SoloGame {
 					if( menu.Kind is MenuKind.GameOver or MenuKind.Suspended ) break;
 
 					_stateStack.Add( _checkpoint! ); // the state as of this menu - what a Rewind returns to
-					int choice = await UserPicksAsync( menu );
-					menu = await ChooseAsync( choice );
+					var (choice, target) = await UserPicksAsync( menu );
+					menu = await ChooseAsync( choice, target );
 				}
 				catch( RewindException rewind ) {
 					RewindOneAction( rewind );
@@ -207,7 +210,8 @@ public class SoloGame {
 	/// position in <see cref="PendingMenu.Options"/>, or <see cref="Done"/> to finish a Fast/Slow phase.
 	/// The menu is re-derived from game state rather than remembered, so this works on a freshly Loaded game.
 	/// </summary>
-	public async Task<PendingMenu> ChooseAsync( int index ) {
+	/// <param name="target">For a Fast or Slow action the user picked together with its target (<see cref="EnableCombinedActions"/>): that land or spirit.</param>
+	public async Task<PendingMenu> ChooseAsync( int index, IOption? target = null ) {
 		_checkpoint = Save(); // game is sitting at the menu - what a PromptTimeout inside the action rolls back to
 		try {
 			switch( _step ) {
@@ -228,12 +232,12 @@ public class SoloGame {
 
 				case RoundStep.Fast:
 					if( index == Done ) EndFast();
-					else await Spirit.ResolveActionAsync( Spirit.GetActionMenu( Phase.Fast )[index], Phase.Fast );
+					else await Spirit.ResolveActionAsync( Spirit.GetActionMenu( Phase.Fast )[index], Phase.Fast, target );
 					break;
 
 				case RoundStep.Slow:
 					if( index == Done ) _step = RoundStep.TimePasses;
-					else await Spirit.ResolveActionAsync( Spirit.GetActionMenu( Phase.Slow )[index], Phase.Slow );
+					else await Spirit.ResolveActionAsync( Spirit.GetActionMenu( Phase.Slow )[index], Phase.Slow, target );
 					break;
 
 				default:
@@ -311,18 +315,22 @@ public class SoloGame {
 	/// long-lived StartAsync loop working with the existing prompts; a suspend/resume driver would skip
 	/// this and pass the user's pick straight to <see cref="ChooseAsync"/>.
 	/// </summary>
-	async Task<int> UserPicksAsync( PendingMenu menu ) {
+	async Task<(int Index, IOption? Target)> UserPicksAsync( PendingMenu menu ) {
 		switch( menu.Kind ) {
 			case MenuKind.PlayCards:
-				return 0;
+				return (0, null);
 			case MenuKind.Growth:
-				IActionFactory growth = await Spirit.SelectAlways( new A.GrowthDecision( "Select Growth", menu.Options, Present.Always ) );
-				return Array.IndexOf( menu.Options, growth );
+				var (growth, growthTarget) = await Spirit.SelectGrowthAsync( menu.Options );
+				return (Array.IndexOf( menu.Options, growth ), growthTarget);
 			default:
 				Phase phase = menu.Kind switch { MenuKind.Init => Phase.Init, MenuKind.Fast => Phase.Fast, _ => Phase.Slow };
-				Present present = phase == Phase.Init ? Present.Always : Present.Done;
-				IActionFactory? option = await Spirit.Select( new A.TypedDecision<IActionFactory>( "Select " + phase + " to resolve", menu.Options, present ) );
-				return option is null ? Done : Array.IndexOf( menu.Options, option );
+				string prompt = "Select " + phase + " to resolve";
+				if( phase == Phase.Init ) {
+					IActionFactory? initial = await Spirit.Select( new A.TypedDecision<IActionFactory>( prompt, menu.Options, Present.Always ) );
+					return (initial is null ? Done : Array.IndexOf( menu.Options, initial ), null);
+				}
+				var (option, target) = await Spirit.SelectActionAsync( prompt, menu.Options, Present.Done );
+				return (option is null ? Done : Array.IndexOf( menu.Options, option ), target);
 		}
 	}
 

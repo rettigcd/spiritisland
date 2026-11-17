@@ -28,6 +28,8 @@ public class SpreadingWilds {
 	public class FromPresenceAttribute : SpiritIsland.FromPresenceAttribute {
 		public FromPresenceAttribute() : base(1, Filter.NoBlight ) { }
 
+		public override bool CanPreviewTargets => false; // asks about its element thresholds before it knows the range
+
 		protected override async Task<int> CalcRange( Spirit self ) => _range
 			// 3 plant    this power has +1 range
 			+ (await self.Elements.YouHave( "3 plant" ) ? 1 : 0)
