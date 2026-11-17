@@ -48,10 +48,15 @@ ul.saved button { width: 100%; }
 /* The island has a fixed width (it shrinks only when the window is too narrow for it), so browser zoom makes it bigger or smaller. */
 .columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(280px, 440px); justify-content: start; gap: 16px; align-items: start; }
 /* The right column stays in view and scrolls on its own, so the board and the spirit panel can be seen together. */
-.side { display: flex; flex-direction: column; }
-.side.spirit-first > .decision { order: 1; }
-.side { position: sticky; top: 8px; max-height: calc(100vh - 16px); overflow-y: auto; padding-right: 4px; }
-@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } .side { position: static; max-height: none; overflow-y: visible; } }
+.side { padding-right: 4px; }
+/* One screen: on a wide window the game fills the window exactly. The page does not scroll; the board column and the right column
+   each scroll inside themselves if their contents are taller than what is left under the status line. */
+@media (min-width: 901px) {
+  .game { height: 100vh; display: flex; flex-direction: column; }
+  .columns { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+  .main, .side { min-height: 0; overflow-y: auto; }
+}
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
 .island-wrap { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 .move-hint-bar { min-height: 2.4em; display: flex; align-items: center; }
 .move-hint { margin: 0; font-size: .9em; color: var(--notice); }
@@ -84,17 +89,23 @@ ul.saved button { width: 100%; }
 .island .space.destination { stroke: #2e7d32; cursor: pointer; }
 .island .token.choosable .ring-choose { display: inline; stroke: var(--accent); }
 
-.decision .options button { width: 100%; }
+/* The choices are as wide as their text and wrap, so more fit in the space under the board. */
+.decision ul.options { display: flex; flex-wrap: wrap; gap: 6px; }
+.decision .options button { width: auto; }
+.main > .decision { margin-top: 12px; }
 .decision .details { margin: -4px 0 8px; }
 
-/* The island and the log share the left column. */
-.log { margin-top: 12px; }
+/* The log is a dialog over the game: big, but not the whole screen. */
+.log { width: min(900px, 90vw); height: 80vh; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); }
+.log[open] { display: flex; flex-direction: column; }
+.log::backdrop { background: rgba(0, 0, 0, .45); }
+.log-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.log-head h2 { margin: 0; }
 
 /* The spirit panel */
 .spirit h3 { margin-top: 12px; }
 .spirit h4 { margin: 10px 0 2px; }
 .spirit p { margin: 4px 0; }
-.card-option { margin: 2px 0 6px 4px; font-size: .85em; }
 ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
 .slot { display: inline-block; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: .85em; }
 .slot.revealed { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }
@@ -116,7 +127,7 @@ ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; ga
 .card-text p { margin: 2px 0; }
 details.rules { margin-top: 8px; }
 details.rules p { font-size: .9em; }
-.log-lines { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }
+.log-lines { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }
 .log-lines li { padding: 1px 4px; border-left: 3px solid transparent; white-space: pre-line; }
 .log-lines .log-phase { color: var(--muted); font-weight: 600; border-left-color: var(--border); }
 .log-lines .log-invaders { border-left-color: #c47f00; }

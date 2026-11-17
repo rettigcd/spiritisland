@@ -10,19 +10,9 @@ import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
 import { StatusBar } from './StatusBar';
 
-/** Which of the two right-hand panels is on top is remembered by the browser (if it lets us). */
-function useSpiritFirst(): [boolean, () => void] {
-  const [first, setFirst] = useState(() => { try { return localStorage.getItem('spiritFirst') === '1'; } catch { return false; } });
-  const toggle = () => setFirst(f => {
-    try { localStorage.setItem('spiritFirst', f ? '0' : '1'); } catch { /* the choice just isn't remembered */ }
-    return !f;
-  });
-  return [first, toggle];
-}
-
 export function GameScreen({ state, actions }: { state: GameState; actions: GameActions }) {
   const [hovered, setHovered] = useState<OptionView | null>(null);
-  const [spiritFirst, toggleSpiritFirst] = useSpiritFirst();
+  const [logOpen, setLogOpen] = useState(false);
   const [picked, setPicked] = useState<SourceKey | null>(null); // where the move being made starts, once the player has picked it
   const { response, staticView, busy } = state;
 
@@ -59,9 +49,10 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
         <Menu items={[
           { label: 'Back to games', onSelect: actions.leave },
           { label: 'Replay game', title: 'Start this game again from the beginning (same seed)', disabled: !setup || state.busy, onSelect: playAgain },
-          { label: 'Swap spirit / choices', title: 'Swap the order of the menu choices and the spirit panel', onSelect: toggleSpiritFirst },
+          { label: 'Log', title: 'What has happened in this game', onSelect: () => setLogOpen(true) },
         ]} />
       </StatusBar>
+      {logOpen && <LogPanel log={response.log} onClose={() => setLogOpen(false)} />}
 
 
       {state.notice && <p class="notice" role="status">{state.notice} <button type="button" onClick={actions.dismissMessages}>OK</button></p>}
@@ -84,14 +75,13 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
               ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} moves={moves} selected={selected} onSelect={setPicked} disabled={busy} onChoose={actions.choose} />
               : <p>Loading the board...</p>}
           </div>
-          <LogPanel log={response.log} />
-        </div>
-        <div class={`side ${spiritFirst ? 'spirit-first' : ''}`}>
           <DecisionPanel
             decision={response.decision} result={response.result} picks={state.picks} busy={busy}
             moves={moves} selected={selected} onSelect={setPicked}
             onChoose={actions.choose} onUndo={actions.undo} onHover={setHovered}
           />
+        </div>
+        <div class="side">
           {response.view.spirits.map(s => (
             <SpiritPanel key={s.id} spirit={s} info={staticView?.spirits.find(x => x.id === s.id)} isViewer={s.id === response.view.viewerSpiritId} options={options} moves={moves} selected={selected} onSelect={setPicked} busy={busy} onChoose={actions.choose} />
           ))}

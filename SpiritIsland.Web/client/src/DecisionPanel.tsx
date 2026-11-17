@@ -16,6 +16,12 @@ interface Props {
   onHover(option: OptionView | null): void;
 }
 
+/** What an option that is a card says about itself, shown when the pointer rests on it. */
+function cardDetails(o: OptionView): string | undefined {
+  const c = o.card;
+  return c ? `${c.name}: ${c.elements ? `${c.elements} · ` : ''}range ${rangeText(c.range)} · ${c.target}. ${c.instructions}` : undefined;
+}
+
 /**
  * Shows whatever prompt and options arrive; it does not know what a growth phase or a card play is (the server walks the
  * player through the action). Every option is a button here, including the ones that can also be clicked on the island,
@@ -74,6 +80,7 @@ export function DecisionPanel({ decision, result, picks, busy, moves, selected, 
                 <button
                   type="button"
                   disabled={busy}
+                  title={cardDetails(o)}
                   onClick={() => onChoose(o.id)}
                   onMouseEnter={() => onHover(o)}
                   onMouseLeave={() => onHover(null)}
@@ -82,11 +89,6 @@ export function DecisionPanel({ decision, result, picks, busy, moves, selected, 
                 >
                   {o.label}
                 </button>
-                {o.card && (
-                  <p class="muted card-option">
-                    {o.card.elements ? `${o.card.elements} · ` : ''}range {rangeText(o.card.range)} · {o.card.target}. {o.card.instructions}
-                  </p>
-                )}
               </li>
               );
             })}
