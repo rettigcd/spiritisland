@@ -171,6 +171,7 @@ Vite + Preact + TypeScript in `SpiritIsland.Web/client/`, with types generated f
 Running it:
 - `cd SpiritIsland.Web/client && npm install` once.
 - **Built:** `npm run build` (regenerates the types, type-checks, writes `wwwroot/`), then `dotnet run --project SpiritIsland.Web` and open http://localhost:5000.
+- **From other devices on your network:** add `--lan` after `--`, as in `dotnet run --project SpiritIsland.Web -- --lan`. The server then listens on every network interface (keeping the port it would have used, 5000 unless `--urls` says otherwise) and prints the addresses to type on the other device. Windows asks to allow the program through its firewall the first time. There is no login, so anyone who can reach the computer on that network can play and see the games; without `--lan` only this computer can connect.
 - **Hot reload:** `dotnet run --project SpiritIsland.Web --urls http://localhost:5080`, and in `client/` run `npm run dev`; Vite proxies `/api` to the server.
 - Building `SpiritIsland.Web` writes `client/openapi.json`; `npm run gen` turns it into `client/src/api/types.ts`. Both are committed.
 
