@@ -12,6 +12,11 @@ public static class AccessToken {
 
 	public const string Value = "blue32";
 
+	const string StartingValue = "blue32";
+
+	/// <summary> Whether the token has still not been changed from the one it shipped with (the server warns about it when it is reachable from the internet). </summary>
+	public static bool IsStillTheStartingValue => Value == StartingValue;
+
 	/// <summary> The request header the client sends it in. </summary>
 	public const string HeaderName = "X-Access-Token";
 
