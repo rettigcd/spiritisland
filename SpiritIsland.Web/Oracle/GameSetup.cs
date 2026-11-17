@@ -17,7 +17,8 @@ public static class GameSetup {
 	);
 
 	public static string[] Spirits => Builder.SpiritNames;
-	public static string[] Boards => BoardFactory.AvailableBoards;
+	/// <summary> The engine builds G and H (Horizons' boards) too, but its own list of boards to choose from stops at F, so they are added here. </summary>
+	public static string[] Boards => [.. BoardFactory.AvailableBoards, "G", "H"];
 
 	public static Dictionary<string, int[]> Adversaries => Builder.AdversaryNames.ToDictionary(
 		name => name,

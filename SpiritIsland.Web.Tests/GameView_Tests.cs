@@ -122,6 +122,20 @@ public class GameView_Tests( GamesFactory factory ) : IClassFixture<GamesFactory
 
 	#endregion hidden information
 
+	[Theory]
+	[InlineData( "G" )]
+	[InlineData( "H" )]
+	public void HorizonsBoards_AreOffered_AndBuildAGame( string board ) {
+		GameSetup.Boards.ShouldContain( board );
+
+		GameState gs = GameSetup.Builder.BuildGame( GameSetup.Configure( new( RiverSurges.Name, board, Seed: 1 ) ) );
+		ActionScope.Initialize( gs.RootScope );
+		GameView view = GameViewBuilder.Build( gs, gs.Spirits.Single() );
+
+		view.Spaces.ShouldNotBeEmpty();
+		view.Spaces.ShouldAllBe( s => s.Id.StartsWith( board ) || s.Id.StartsWith( "Ocean", StringComparison.OrdinalIgnoreCase ) );
+	}
+
 	#region tokens
 
 	[Fact]
