@@ -29,6 +29,14 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 
 	public IPreselect? Preselect { get; set; }
 
+	/// <summary>
+	/// Whether <see cref="GetTargetOptions"/> says the lands this power can target, without asking the user anything, and
+	/// <see cref="GetTargetCtx"/> then accepts one of them as already chosen. False for powers that ask something first (an element
+	/// threshold that changes the range) or target in their own way: they are chosen in two steps even when actions and
+	/// targets are combined.
+	/// </summary>
+	public virtual bool CanPreviewTargets => true;
+
 	public override string TargetFilterName { get; } = 0 < targetFilterOptions.Length ? string.Join( "/", targetFilterOptions ) : "Any";
 
 	#region constructor
@@ -41,7 +49,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 
 	public override async Task<object?> GetTargetCtx( string powerName, Spirit self ){
 
-		TargetCriteria targetCriteria = await ApplySpiritModsToGetTargetCriteria(self);
+		TargetCriteria[] targetCriteria = await ApplySpiritModsToGetTargetCriteria(self);
 		var result = await self.Targetter.TargetsSpace( 
 			powerName+": Target Space", 
 			Preselect,
@@ -73,8 +81,9 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 	/// <summary>
 	/// Apply Spirit modes to Card attributes to get actual TargetCriteria
 	/// </summary>
-	protected virtual async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria(Spirit self)
-		=> new TargetCriteria(await CalcRange(self), self, _targetFilterOptions);
+	/// <returns>Usually one set of criteria. A power with more than one way to be targeted (Carapaced Land: range 0, or range 1 for a land with Beast) returns one for each.</returns>
+	protected virtual async Task<TargetCriteria[]> ApplySpiritModsToGetTargetCriteria(Spirit self)
+		=> [new TargetCriteria(await CalcRange(self), self, _targetFilterOptions)];
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
 	protected virtual Task<int> CalcRange(Spirit self) => Task.FromResult(_range);

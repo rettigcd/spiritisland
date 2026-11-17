@@ -15,9 +15,11 @@ public class FromPresenceThresholdAlternate( int range, string[] target, string 
 	readonly CountDictionary<Element> _threshold = ElementStrings.Parse( threshold );
 	readonly TargetCriteriaFactory _altTarget = new TargetCriteriaFactory( altRange, altTarget );
 
-	protected override async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria( Spirit self ) {
+	public override bool CanPreviewTargets => false; // asks whether to meet the threshold before it knows the target
+
+	protected override async Task<TargetCriteria[]> ApplySpiritModsToGetTargetCriteria( Spirit self ) {
 		return await self.Elements.AskToMeetThreshold( _threshold, $"Target {_altTarget}" )
-			? _altTarget.Bind(self)
+			? [_altTarget.Bind(self)]
 			: await base.ApplySpiritModsToGetTargetCriteria( self );
 	}
 

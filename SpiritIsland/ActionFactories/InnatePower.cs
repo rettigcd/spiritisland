@@ -89,6 +89,12 @@ public class InnatePower : IPowerActionFactory {
 
 	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
 
+	/// <summary> Whether <see cref="GetTargetSpaceOptions"/> can say where this innate could target without asking anything (it targets a land in the usual way). </summary>
+	public bool CanPreviewTargets => _targetAttr is TargetSpaceAttribute tsa ? tsa.CanPreviewTargets : _targetAttr is AnySpiritAttribute;
+
+	/// <summary> The spirits this innate could target right now; null if it targets a land. </summary>
+	public Spirit[]? GetTargetSpirits( Spirit self ) => _targetAttr is AnySpiritAttribute any ? any.GetTargetSpirits( self ) : null;
+
 	/// <summary> Lands this innate could target right now (see TargetSpaceAttribute.GetTargetOptions); null if it targets a Spirit. </summary>
 	public async Task<Space[]?> GetTargetSpaceOptions( Spirit self )
 		=> _targetAttr is TargetSpaceAttribute tsa ? await tsa.GetTargetOptions( self ) : null;

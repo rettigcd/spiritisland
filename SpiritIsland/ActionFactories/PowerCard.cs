@@ -74,6 +74,12 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	public LandOrSpirit LandOrSpirit => _targetCtxFactory.LandOrSpirit;
 
+	/// <summary> Whether <see cref="GetTargetSpaceOptions"/> can say where this card could target without asking anything (it targets a land in the usual way). </summary>
+	public bool CanPreviewTargets => _targetCtxFactory is TargetSpaceAttribute tsa ? tsa.CanPreviewTargets : _targetCtxFactory is AnySpiritAttribute;
+
+	/// <summary> The spirits this card could target right now; null if it targets a land. </summary>
+	public Spirit[]? GetTargetSpirits( Spirit self ) => _targetCtxFactory is AnySpiritAttribute any ? any.GetTargetSpirits( self ) : null;
+
 	/// <summary> Lands this card could target right now (see TargetSpaceAttribute.GetTargetOptions); null if it targets a Spirit. </summary>
 	public async Task<Space[]?> GetTargetSpaceOptions( Spirit self )
 		=> _targetCtxFactory is TargetSpaceAttribute tsa ? await tsa.GetTargetOptions( self ) : null;

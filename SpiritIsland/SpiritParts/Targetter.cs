@@ -19,6 +19,14 @@ public class Targetter(Spirit spirit) {
 		var routes = GetPowerTargetOptions(sourceCriteria, targetCriteria);
 		var spaceOptions = routes.Targets;
 
+		// The user already chose this action together with its target (see Spirit.CombineActionsAndTargets): don't ask again.
+		// Taken whether or not it still fits, so it can only ever apply to the first land the action targets.
+		Space? committed = _spirit.TakeCommittedTarget<Space>();
+		if( committed is not null && spaceOptions.Contains(committed) ) {
+			_spirit.NotifySelectionMade(committed); // same as if they had picked it from the list
+			return routes.MakeResult(committed);
+		}
+
 		// 0
 		if( spaceOptions.Length == 0 ) {
 			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
@@ -38,6 +46,9 @@ public class Targetter(Spirit spirit) {
 			: await _spirit.Select(prompt, spaceOptions, Present.Always);
 		return mySpace is not null ? routes.MakeResult(mySpace) : null;
 	}
+
+	/// <summary> False for a targetter that asks its own questions while targeting, so it cannot be handed a target that was already chosen. </summary>
+	public virtual bool CanCommitTarget => true;
 
 	public virtual TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
 

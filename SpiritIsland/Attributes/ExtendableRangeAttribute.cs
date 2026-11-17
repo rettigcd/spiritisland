@@ -17,6 +17,8 @@ public class ExtendableRangeAttribute(
 
 	public override string RangeText => "+"+_extension;
 
+	public override bool CanPreviewTargets => false; // asks whether to use the threshold before it knows the range
+
 	protected override async Task<int> CalcRange( Spirit self ) => _range
 		+ (await self.Elements.YouHave( _triggeringElements ) ? _extension : 0);
 

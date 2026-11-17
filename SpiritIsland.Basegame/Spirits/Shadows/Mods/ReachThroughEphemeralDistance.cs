@@ -26,7 +26,7 @@ class ReachThroughEphemeralDistance(Spirit spirit) : DefaultRangeCalculator, ISp
 		var gs = GameState.Current;
 		if( !_usedThisRound ) {
 			var moreTargets = gs.Spaces.Except(routes.Targets).ToArray();
-			_bonusTargets.AddRange(moreTargets);
+			if( !TargetPreview.IsActive ) _bonusTargets.AddRange(moreTargets); // a preview isn't a choice, so it must not mark anything as used
 			routes.AddRoutes(routes.Sources.SelectMany(s => moreTargets.Select(t => new TargetRoute(s, t))));
 		}
 		return routes;
