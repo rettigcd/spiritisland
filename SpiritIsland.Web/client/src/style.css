@@ -33,6 +33,9 @@ h3 { font-size: 1em; }
 .lobby label { display: grid; gap: 4px; }
 .lobby select, .lobby input { padding: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
 ul.saved, ul.options, ul.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+/* A hand is a wrapped row of cards (the details are in the tooltip), not a column of them. */
+.spirit ul.cards { display: flex; flex-wrap: wrap; gap: 4px; }
+.spirit ul.cards button { padding: 3px 8px; font-size: .9em; }
 ul.saved button { width: 100%; }
 
 .game { padding: 12px 16px; }
@@ -46,7 +49,10 @@ ul.saved button { width: 100%; }
   background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, .25); display: grid; gap: 2px; }
 .menu-list button { width: 100%; border-color: transparent; }
 /* The island has a fixed width (it shrinks only when the window is too narrow for it), so browser zoom makes it bigger or smaller. */
-.columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(280px, 440px); justify-content: start; gap: 16px; align-items: start; }
+.columns { display: grid; grid-template-columns: minmax(0, 760px) minmax(0, var(--side-width, 440px)) 10px; justify-content: start; gap: 16px; align-items: start; }
+/* The handle for resizing the right column. */
+.resizer { margin-left: -12px; width: 10px; align-self: stretch; cursor: col-resize; touch-action: none; border-radius: 4px; }
+.resizer:hover, .resizer:focus-visible, .resizer.resizing { background: color-mix(in srgb, var(--accent) 45%, transparent); outline: none; }
 /* The right column stays in view and scrolls on its own, so the board and the spirit panel can be seen together. */
 .side { padding-right: 4px; }
 /* One screen: on a wide window the game fills the window exactly. The page does not scroll; the board column and the right column
@@ -56,7 +62,7 @@ ul.saved button { width: 100%; }
   .columns { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
   .main, .side { min-height: 0; overflow-y: auto; }
 }
-@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } .resizer { display: none; } }
 .island-wrap { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 .move-hint-bar { min-height: 2.4em; display: flex; align-items: center; }
 .move-hint { margin: 0; font-size: .9em; color: var(--notice); }
@@ -103,28 +109,25 @@ ul.saved button { width: 100%; }
 .log-head h2 { margin: 0; }
 
 /* The spirit panel */
-.spirit h3 { margin-top: 12px; }
-.spirit h4 { margin: 10px 0 2px; }
+.spirit h3 { margin: 8px 0 4px; }
+.spirit h4 { margin: 6px 0 2px; }
 .spirit p { margin: 4px 0; }
 ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
-.slot { display: inline-block; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: .85em; }
+.slot { display: inline-block; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); font-size: .8em; }
 .slot.revealed { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }
 .slot.covered { color: var(--muted); border-style: dashed; }
 button.slot { cursor: pointer; }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }
 /* A track slot that can be picked now (or picked up): a thick solid border, with the padding reduced so the slot keeps its size. */
-.slot.choosable, .slot.movable { border: 3px solid var(--accent); padding: 1px 6px; font-weight: 600; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
+.slot.choosable, .slot.movable { border: 3px solid var(--accent); padding: 0 4px; font-weight: 600; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
 .slot.movable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(in srgb, #d33 35%, transparent); }
 ul.growth { margin: 0; padding-left: 18px; }
 ul.growth li.used { text-decoration: line-through; color: var(--muted); }
-ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: grid; gap: 2px; font-size: .9em; }
-.tier { padding: 1px 6px; border-left: 3px solid var(--border); color: var(--muted); }
+ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; font-size: .85em; }
+.tier { padding: 1px 6px; border: 1px solid var(--border); border-left-width: 3px; border-radius: 4px; color: var(--muted); cursor: help; }
 .tier-yes { border-left-color: #2e7d32; color: var(--text); }
 .tier-asprepared { border-left-color: var(--accent); color: var(--text); }
-.card-text { font-size: .85em; margin: 0 0 4px 6px; }
-.card-text summary { cursor: pointer; color: var(--muted); }
-.card-text p { margin: 2px 0; }
 details.rules { margin-top: 8px; }
 details.rules p { font-size: .9em; }
 .log-lines { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }

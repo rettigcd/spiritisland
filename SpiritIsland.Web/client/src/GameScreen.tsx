@@ -6,12 +6,14 @@ import { describeSource, movesBySource } from './moves';
 import type { SourceKey } from './moves';
 import { LogPanel } from './LogPanel';
 import { Menu } from './Menu';
+import { Resizer, useSideWidth } from './Resizer';
 import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
 import { StatusBar } from './StatusBar';
 
 export function GameScreen({ state, actions }: { state: GameState; actions: GameActions }) {
   const [hovered, setHovered] = useState<OptionView | null>(null);
+  const [sideWidth, setSideWidth] = useSideWidth();
   const [logOpen, setLogOpen] = useState(false);
   const [picked, setPicked] = useState<SourceKey | null>(null); // where the move being made starts, once the player has picked it
   const { response, staticView, busy } = state;
@@ -58,7 +60,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
       {state.notice && <p class="notice" role="status">{state.notice} <button type="button" onClick={actions.dismissMessages}>OK</button></p>}
       {state.error && <p class="error" role="alert">{state.error} <button type="button" onClick={actions.dismissMessages}>OK</button></p>}
 
-      <div class="columns">
+      <div class="columns" style={{ '--side-width': `${sideWidth}px` }}>
         <div class="main">
           <div class="island-wrap">
             {/* A strip above the board that is always there (empty when nothing is picked up), so showing the hint never moves the
@@ -86,6 +88,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
             <SpiritPanel key={s.id} spirit={s} info={staticView?.spirits.find(x => x.id === s.id)} isViewer={s.id === response.view.viewerSpiritId} options={options} moves={moves} selected={selected} onSelect={setPicked} busy={busy} onChoose={actions.choose} />
           ))}
         </div>
+        <Resizer width={sideWidth} onResize={setSideWidth} />
       </div>
     </div>
   );

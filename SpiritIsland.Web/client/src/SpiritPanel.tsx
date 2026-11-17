@@ -87,13 +87,6 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
             <Innate key={innate.name} innate={innate} status={spirit.innates.find(i => i.name === innate.name)?.tierStatus ?? []}
               option={innateOption(innate.name)} busy={busy} choose={choose} />
           ))}
-
-          {info.specialRules.length > 0 && (
-            <details class="rules">
-              <summary>Special rules</summary>
-              {info.specialRules.map(r => <p key={r.title}><strong>{r.title}.</strong> {r.description}</p>)}
-            </details>
-          )}
         </>
       )}
 
@@ -103,6 +96,12 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         <summary>Discard ({spirit.discard.length})</summary>
         <CardList title="" cards={spirit.discard} optionFor={cardOption} busy={busy} choose={choose} />
       </details>
+      {info && info.specialRules.length > 0 && (
+        <details class="rules">
+          <summary>Special rules</summary>
+          {info.specialRules.map(r => <p key={r.title}><strong>{r.title}.</strong> {r.description}</p>)}
+        </details>
+      )}
     </section>
   );
 }
@@ -161,16 +160,16 @@ interface InnateProps {
 function Innate({ innate, status, option, busy, choose }: InnateProps) {
   return (
     <div class="innate">
-      <h4>
+      <h4 title={innate.instructions}>
         {innate.name}
         <span class="muted"> {innate.speed} · range {rangeText(innate.range)} · {innate.target}</span>
         {option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
       </h4>
-      <p class="muted">{innate.instructions}</p>
+      {/* Which tiers are met is what matters while acting, so that stays on screen; what each one does is in its tooltip. */}
       <ul class="tiers">
         {innate.tiers.map((t, i) => (
-          <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`}>
-            <strong>{t.threshold}</strong> {t.effect}
+          <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`} title={t.effect}>
+            {t.threshold}
           </li>
         ))}
       </ul>
@@ -195,14 +194,12 @@ function CardList({ title, cards, optionFor, busy, choose }: CardListProps) {
           const option = optionFor(c.id);
           return (
             <li key={c.id}>
-              <button type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={choose(option)}>
+              <button
+                type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={choose(option)}
+                title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
+              >
                 {c.name} <span class="muted">${c.cost} {c.speed}{c.elements ? ` ${c.elements}` : ''}</span>
               </button>
-              <details class="card-text">
-                <summary>Text</summary>
-                <p class="muted">Range {rangeText(c.range)} · {c.target}</p>
-                <p>{c.instructions}</p>
-              </details>
             </li>
           );
         })}
