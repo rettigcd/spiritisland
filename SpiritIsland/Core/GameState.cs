@@ -323,7 +323,21 @@ public class GameState : IHaveMemento {
 	/// BlightCardRegistry; no new registration needed since every concrete BlightCard already registers
 	/// itself there.
 	/// </summary>
-	public JsonArray BlightCardsToJson( ISerializationContext ctx ) => new JsonArray( BlightCards.Select( bc => (JsonNode)bc.ToJson( ctx ) ).ToArray() );
+	public JsonArray BlightCardsToJson( ISerializationContext ctx ) => new JsonArray( DrawableBlightCards.Select( bc => (JsonNode)bc.ToJson( ctx ) ).ToArray() );
+
+	/// <summary>
+	/// The cards of the pool that can ever be drawn. A card is only drawn when a Still Healthy card runs out of blight a second time;
+	/// depleting any other card loses the game, so no card after the first one that is not Still Healthy (which can itself still
+	/// be drawn) is ever reached. A save keeps only these.
+	/// </summary>
+	public IEnumerable<BlightCard> DrawableBlightCards {
+		get {
+			foreach( BlightCard card in BlightCards ) {
+				yield return card;
+				if( card is not StillHealthyBlightCard ) yield break;
+			}
+		}
+	}
 
 	public void RestoreBlightCardsFromJson( JsonArray json, ISerializationContext ctx ) => BlightCards = json.Select( n => BlightCard.FromJson( (JsonArray)n!, ctx ) ).ToList();
 

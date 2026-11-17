@@ -61,16 +61,43 @@ public class BlightCard_Tests {
 		var gs = new SoloGameState();
 		var serCtx = new GameStateSerializationContext( gs );
 
-		gs.BlightCards = [ new SpiritIsland.JaggedEarth.AllThingsWeaken() { CardFlipped = true }, new NullBlightCard() ];
+		gs.BlightCards = [ new SpiritIsland.NatureIncarnate.ThrivingCrops() { CardFlipped = true }, new SpiritIsland.JaggedEarth.AllThingsWeaken(), new NullBlightCard() ];
 
 		JsonArray json = gs.BlightCardsToJson( serCtx );
 
 		var target = new SoloGameState();
 		target.RestoreBlightCardsFromJson( json, serCtx );
 
-		target.BlightCards.Select( bc => bc.GetType() ).ShouldBe( [ typeof( SpiritIsland.JaggedEarth.AllThingsWeaken ), typeof( NullBlightCard ) ] );
+		// (the Null card is after a card that is not Still Healthy, so it could never be drawn and is not saved)
+		target.BlightCards.Select( bc => bc.GetType() ).ShouldBe( [ typeof( SpiritIsland.NatureIncarnate.ThrivingCrops ), typeof( SpiritIsland.JaggedEarth.AllThingsWeaken ) ] );
 		target.BlightCards[0].CardFlipped.ShouldBeTrue();
 		target.BlightCards[1].CardFlipped.ShouldBeFalse();
+	}
+
+	[Fact]
+	public void GameState_BlightCards_SaveOnlyTheCardsThatCanBeDrawn() {
+		// A card is only drawn when a Still Healthy card runs out of blight a second time; any other card running out loses the
+		// game. So the pool is saved up to and including its first card that is not Still Healthy, and no further.
+		var gs = new SoloGameState();
+		var serCtx = new GameStateSerializationContext( gs );
+		var stillHealthy1 = new SpiritIsland.NatureIncarnate.ThrivingCrops();
+		var stillHealthy2 = new SpiritIsland.JaggedEarth.InvadersFindTheLandToTheirLiking();
+		var normal = new SpiritIsland.BranchAndClaw.ErosionOfWill();
+
+		gs.BlightCards = [ stillHealthy1, stillHealthy2, normal, new SpiritIsland.JaggedEarth.AllThingsWeaken(), new SpiritIsland.BranchAndClaw.DisintegratingEcosystem() ];
+		gs.DrawableBlightCards.ShouldBe( [ stillHealthy1, stillHealthy2, normal ] );
+		gs.BlightCardsToJson( serCtx ).Count.ShouldBe( 3 );
+
+		// all still healthy: every card can be drawn
+		gs.BlightCards = [ stillHealthy1, stillHealthy2 ];
+		gs.BlightCardsToJson( serCtx ).Count.ShouldBe( 2 );
+
+		// the first one is normal: only it
+		gs.BlightCards = [ normal, stillHealthy1 ];
+		gs.BlightCardsToJson( serCtx ).Count.ShouldBe( 1 );
+
+		gs.BlightCards = [];
+		gs.BlightCardsToJson( serCtx ).Count.ShouldBe( 0 );
 	}
 
 	[Fact]
