@@ -1,3 +1,4 @@
+import { spiritImageUrl } from './spiritImage';
 import { useEffect, useState } from 'preact/hooks';
 import { getSetupOptions, listGames } from './api/client';
 import type { GameSummary, NewGameRequest, SetupOptions } from './api/model';
@@ -25,8 +26,6 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
     getSetupOptions().then(r => {
       if (!r.ok) { setLoadError(r.message); return; }
       setOptions(r.value);
-      setSpirit(s => s || r.value.spirits[0] || '');
-      setBoard(b => b || r.value.boards[0] || '');
     });
     listGames().then(r => { if (r.ok) setGames(r.value); });
   }, []);
@@ -36,8 +35,11 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
   const submit = (e: Event) => {
     e.preventDefault();
     const parsed = seed.trim() === '' ? undefined : Number(seed);
+    // No board chosen means any board: pick one now, so the game says which it is.
+    const boards = options?.boards ?? [];
+    const chosenBoard = board || boards[Math.floor(Math.random() * boards.length)] || '';
     onStart({
-      spirit, board,
+      spirit, board: chosenBoard,
       seed: parsed !== undefined && Number.isInteger(parsed) ? parsed : undefined,
       adversary: adversary || undefined,
       adversaryLevel: adversary ? level : 0,
@@ -52,12 +54,15 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
       <form class="panel" onSubmit={submit}>
         <h2>New game</h2>
         <label>Spirit
-          <select value={spirit} onChange={e => setSpirit(e.currentTarget.value)}>
+          <select value={spirit} required onChange={e => setSpirit(e.currentTarget.value)}>
+            <option value="" disabled>(choose a spirit)</option>
             {options?.spirits.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
+        {spirit && <img key={spirit} class="spirit-preview" src={spiritImageUrl(spirit)} alt={spirit} onError={e => { e.currentTarget.style.display = 'none'; }} />}
         <label>Board
           <select value={board} onChange={e => setBoard(e.currentTarget.value)}>
+            <option value="">(random)</option>
             {options?.boards.map(b => <option key={b} value={b}>{b}</option>)}
           </select>
         </label>

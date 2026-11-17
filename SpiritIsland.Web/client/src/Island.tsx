@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { GameView, OptionView, SpaceGeometry, StaticView, TokenView } from './api/model';
-import { isPresence, PRESENCE_IMAGE, presenceHue, STRIFE_IMAGE, tokenImageUrl } from './images';
+import { isPresence, PRESENCE_IMAGE, presenceHue, presenceImageUrl, STRIFE_IMAGE, tokenImageUrl } from './images';
 import { destinationsOf, tokenSource } from './moves';
 import type { SourceKey } from './moves';
 import { boardOptions, spacesOf, tokenKey } from './options';
@@ -147,6 +147,14 @@ export function Island({ staticView, view, options, hovered, moves, selected, on
       ref={svg} class={['island', drag?.moved ? 'dragging' : ''].join(' ')} viewBox={`${x} ${y} ${width} ${height}`} role="img" aria-label="The island"
       onPointerMove={dragTo} onPointerUp={endDrag} onPointerCancel={() => { setDrag(null); setOver(null); }}
     >
+      <defs>
+        {/* The glow behind presence on a sacred site: bright gold in the middle, fading to nothing at the edge. */}
+        <radialGradient id="sacred-glow">
+          <stop offset="0%" stop-color="#ffd23f" stop-opacity="0.95" />
+          <stop offset="55%" stop-color="#ffc400" stop-opacity="0.75" />
+          <stop offset="100%" stop-color="#ffc400" stop-opacity="0" />
+        </radialGradient>
+      </defs>
       {staticView.spaces.map(space => {
         const option = bySpace.get(space.id);
         const destination = destinations.get(space.id);
@@ -250,7 +258,7 @@ interface TokenProps {
 
 function Token({ token, space, option, choose, movable, selected, quiet, flat, onPointerDown }: TokenProps) {
   const r = space.tokenSize / 2;
-  const url = isPresence(token.image) ? (flat ? null : PRESENCE_IMAGE) : tokenImageUrl(token.image);
+  const url = isPresence(token.image) ? (presenceImageUrl(token.image) ?? (flat ? null : PRESENCE_IMAGE)) : tokenImageUrl(token.image);
   const small = space.tokenSize * 0.3; // the size of the badges and counts
   const title = `${token.label}${token.count > 1 ? ` x${token.count}` : ''}${token.strife > 0 ? ` (strife ${token.strife})` : ''}`;
   return (
@@ -263,29 +271,34 @@ function Token({ token, space, option, choose, movable, selected, quiet, flat, o
       {0 < token.strife && url && (
         <image href={STRIFE_IMAGE} x={token.x - r} y={token.y - r} width={r * 0.9} height={r * 0.9} />
       )}
-      {token.badge && url && <Badge x={token.x + r * 0.55} y={token.y + r * 0.7} text={token.badge} size={small} />}
-      {token.count > 1 && <Badge x={token.x + r * 0.75} y={token.y - r * 0.75} text={String(token.count)} size={small} bold />}
+      {token.badge && url && <Badge x={token.x + r * 0.55} y={token.y + r * 0.7} text={token.badge} size={small} health />}
+      {token.count > 1 && <Badge x={token.x + r * 0.75} y={token.y - r * 0.75} text={`x${token.count}`} size={small} />}
     </g>
   );
 }
 
-/** A token's picture, with a ring for a sacred site and (when it is an option) a ring to click. */
+/** A token's picture, with a glow behind it for a sacred site and (when it is an option) a ring to click. */
 function Picture({ token, url, r, small }: { token: TokenView; url: string; r: number; small: number }) {
   const presence = isPresence(token.image);
   return (
     <>
-      {token.sacredSite && <circle class="ring-sacred" cx={token.x} cy={token.y} r={r * 1.05} fill="none" stroke="#a06000" stroke-width={r * 0.18} />}
+      {token.sacredSite && <Glow x={token.x} y={token.y} r={r} />}
       <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
       <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <image
         href={url} x={token.x - r} y={token.y - r} width={r * 2} height={r * 2}
-        style={presence ? { filter: `hue-rotate(${presenceHue(token.image)}deg)` } : undefined}
+        style={presence && !presenceImageUrl(token.image) ? { filter: `hue-rotate(${presenceHue(token.image)}deg)` } : undefined}
       />
       {presence && (
         <text class="presence-label" x={token.x} y={token.y} font-size={small * 0.9} stroke-width={small * 0.3} text-anchor="middle" dominant-baseline="central">{token.label}</text>
       )}
     </>
   );
+}
+
+/** The glow of a sacred site: a soft golden disc, bigger than the token, behind it. */
+function Glow({ x, y, r }: { x: number; y: number; r: number }) {
+  return <circle class="sacred-glow" cx={x} cy={y} r={r * 1.8} fill="url(#sacred-glow)" pointer-events="none" />;
 }
 
 /** What is drawn for a token that has no picture. */
@@ -295,7 +308,8 @@ function Circle({ token, r }: { token: TokenView; r: number }) {
   const fill = isPresence(token.image) ? `hsl(${presenceHue(token.image)} 85% 30%)` : colourOf(token.image, 72);
   return (
     <>
-      <circle cx={token.x} cy={token.y} r={r} fill={fill} stroke={token.sacredSite ? '#a06000' : '#444'} stroke-width={token.sacredSite ? r * 0.2 : r * 0.08} />
+      {token.sacredSite && <Glow x={token.x} y={token.y} r={r} />}
+      <circle cx={token.x} cy={token.y} r={r} fill={fill} stroke="#444" stroke-width={r * 0.08} />
       <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
       <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <text x={token.x} y={token.y} font-size={size} text-anchor="middle" dominant-baseline="central">{token.label}</text>
@@ -303,13 +317,12 @@ function Circle({ token, r }: { token: TokenView; r: number }) {
   );
 }
 
-/** A small number or word on a token (its health, or how many are stacked). */
-function Badge({ x, y, text, size, bold }: { x: number; y: number; text: string; size: number; bold?: boolean }) {
-  const width = size * (0.7 + 0.6 * text.length);
+/** A small number on a token (its health, or how many are stacked): outlined text, with no box, like the numbers on the energy coins. */
+function Badge({ x, y, text, size, health }: { x: number; y: number; text: string; size: number; health?: boolean }) {
   return (
-    <>
-      <rect class="badge" x={x - width / 2} y={y - size * 0.6} width={width} height={size * 1.2} rx={size * 0.3} stroke-width={size * 0.08} />
-      <text class={bold ? 'badge-text bold' : 'badge-text'} x={x} y={y} font-size={size} text-anchor="middle" dominant-baseline="central">{text}</text>
-    </>
+    <text
+      class={health ? 'badge-text health' : 'badge-text'} x={x} y={y} font-size={size * 1.15} stroke-width={size * 0.4}
+      text-anchor="middle" dominant-baseline="central"
+    >{text}</text>
   );
 }

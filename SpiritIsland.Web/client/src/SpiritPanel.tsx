@@ -2,6 +2,8 @@ import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, Spirit
 import { destroyedSource, slotSource } from './moves';
 import type { SourceKey } from './moves';
 import { rangeText } from './text';
+import { Coin, Elements, Speed } from './icons';
+import { spiritImageUrl } from './spiritImage';
 
 interface Props {
   spirit: SpiritView;
@@ -39,7 +41,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   const pile = destroyedSource(spirit.id);
 
   return (
-    <section class="panel spirit">
+    <section class="panel spirit" style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}>
       <h2>{spirit.name}{isViewer ? '' : ' (other player)'}</h2>
       {info && (
         <>
@@ -65,8 +67,8 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         </>
       )}
       <p>
-        Energy <strong>{spirit.energy}</strong> (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn}
-        {' '}· Elements: {spirit.elements || 'none'}
+        Energy <Coin value={spirit.energy} /> (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn}
+        {' '}· Elements: <Elements text={spirit.elements} />
       </p>
       <p class="muted">Presence destroyed: {spirit.presence.destroyed} · Sacred sites: {spirit.presence.sacredSites.join(', ') || 'none'}</p>
       {moves.has(pile) && (
@@ -162,14 +164,14 @@ function Innate({ innate, status, option, busy, choose }: InnateProps) {
     <div class="innate">
       <h4 title={innate.instructions}>
         {innate.name}
-        <span class="muted"> {innate.speed} · range {rangeText(innate.range)} · {innate.target}</span>
+        <span class="muted"> <Speed speed={innate.speed} /> · range {rangeText(innate.range)} · {innate.target}</span>
         {option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
       </h4>
       {/* Which tiers are met is what matters while acting, so that stays on screen; what each one does is in its tooltip. */}
       <ul class="tiers">
         {innate.tiers.map((t, i) => (
           <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`} title={t.effect}>
-            {t.threshold}
+            <Elements text={t.threshold} />
           </li>
         ))}
       </ul>
@@ -198,7 +200,7 @@ function CardList({ title, cards, optionFor, busy, choose }: CardListProps) {
                 type="button" class={option ? 'choosable' : ''} disabled={busy || !option} onClick={choose(option)}
                 title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
               >
-                {c.name} <span class="muted">${c.cost} {c.speed}{c.elements ? ` ${c.elements}` : ''}</span>
+                {c.name} <span class="muted"><Coin value={c.cost} title="energy to play" /> <Speed speed={c.speed} /> <Elements text={c.elements} /></span>
               </button>
             </li>
           );

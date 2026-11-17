@@ -24,8 +24,8 @@ const tokens = [
 ];
 
 /** Shrinks a picture so its longer side is at most MAX_SIZE, averaging the pixels that each new one covers (weighted by their opacity). */
-function shrink(png) {
-  const scale = MAX_SIZE / Math.max(png.width, png.height);
+function shrink(png, max = MAX_SIZE) {
+  const scale = max / Math.max(png.width, png.height);
   if (scale >= 1) return png;
   const width = Math.max(1, Math.round(png.width * scale));
   const height = Math.max(1, Math.round(png.height * scale));
@@ -51,15 +51,35 @@ function shrink(png) {
   return out;
 }
 
-function copy(folder, file) {
-  mkdirSync(join(target, folder), { recursive: true });
+function copy(folder, file, max = MAX_SIZE, targetFolder = folder, targetFile = file) {
+  mkdirSync(join(target, targetFolder), { recursive: true });
   const png = PNG.sync.read(readFileSync(join(source, folder, file)));
-  const small = shrink(png);
-  if (small === png) copyFileSync(join(source, folder, file), join(target, folder, file));
-  else writeFileSync(join(target, folder, file), PNG.sync.write(small, { colorType: 6 }));
+  const small = shrink(png, max);
+  if (small === png) copyFileSync(join(source, folder, file), join(target, targetFolder, targetFile));
+  else writeFileSync(join(target, targetFolder, targetFile), PNG.sync.write(small, { colorType: 6 }));
   console.log(`${folder}/${file}  ${png.width}x${png.height} -> ${small.width}x${small.height}`);
 }
 
 for (const name of tokens) copy('tokens', `${name}.png`);
 for (const file of readdirSync(join(source, 'incarna'))) if (file.endsWith('.png')) copy('incarna', file);
 copy('presence', 'red.png');
+
+// Small icons, drawn in text (an element, a speed, a terrain), so a smaller size does: img/icons/<name>.png
+const ICON_SIZE = 64;
+for (const el of ['sun', 'moon', 'fire', 'air', 'water', 'plant', 'earth', 'animal'])
+  copy('icons/Elements', `${el}.png`, ICON_SIZE, 'icons', `${el}.png`);
+copy('icons', 'Fasticon.png', ICON_SIZE, 'icons', 'fast.png');
+copy('icons', 'Slowicon.png', ICON_SIZE, 'icons', 'slow.png');
+copy('icons', 'Coastal.png', ICON_SIZE, 'icons', 'coastal.png');
+copy('tokens', 'coin.png', ICON_SIZE, 'icons', 'coin.png');
+for (const [name, file] of [['jungle', 'Jungle'], ['mountain', 'Mountain'], ['ocean', 'Ocean'], ['sands', 'Sands'], ['wetland', 'Wetlandland']])
+  copy('icons/Terrain', `${file}.png`, ICON_SIZE, 'icons', `${name}.png`);
+copy('invaders', 'escalation.png', ICON_SIZE, 'icons', 'escalation.png');
+
+// The spirits' pictures (JPEGs about 600 pixels wide, used as they are): img/spirits/<name>.jpg
+mkdirSync(join(target, 'spirits'), { recursive: true });
+for (const file of readdirSync(join(source, 'spirits')))
+  if (file.endsWith('.jpg')) {
+    copyFileSync(join(source, 'spirits', file), join(target, 'spirits', file));
+    console.log(`spirits/${file}`);
+  }

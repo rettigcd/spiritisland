@@ -1,11 +1,12 @@
 import type { ComponentChildren } from 'preact';
 import type { GameView } from './api/model';
+import { InvaderCard } from './icons';
 
 /** The round, fear, blight and invader cards; whatever else is passed goes at the far right of the same line. */
 export function StatusBar({ view, children }: { view: GameView; children?: ComponentChildren }) {
   const { fear, blight, invaders } = view;
   const slot = (name: string, cards: string[]) => (
-    <span class="inv-slot"><span class="inv-name">{name}</span> {cards.length > 0 ? cards.join(', ') : '-'}</span>
+    <span class="inv-slot"><span class="inv-name">{name}</span> {cards.length > 0 ? cards.map((c, i) => <span key={i}>{i > 0 && ', '}<InvaderCard code={c} /></span>) : '-'}</span>
   );
   return (
     <header class="status">
