@@ -9,6 +9,7 @@ import { Menu } from './Menu';
 import { Resizer, useSideWidth } from './Resizer';
 import { DecisionPanel } from './DecisionPanel';
 import { SpiritPanel } from './SpiritPanel';
+import { useFavicon } from './favicon';
 import { StatusBar } from './StatusBar';
 
 export function GameScreen({ state, actions }: { state: GameState; actions: GameActions }) {
@@ -52,6 +53,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
 
   // The game's number (its seed) with its spirit, board and adversary is all it takes to play the same game again.
   const setup = staticView?.setup;
+  useFavicon(response.view.spirits.find(s => s.id === response.view.viewerSpiritId)?.name);
   const playAgain = () => {
     if (!setup || !window.confirm('Start this game again from the beginning? This game stays saved.')) return;
     void actions.start({

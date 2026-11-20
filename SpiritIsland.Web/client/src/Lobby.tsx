@@ -2,6 +2,7 @@ import { spiritImageUrl } from './spiritImage';
 import { useEffect, useState } from 'preact/hooks';
 import { getSetupOptions, listGames } from './api/client';
 import type { GameSummary, NewGameRequest, SetupOptions } from './api/model';
+import { useFavicon } from './favicon';
 import { gamesPlayedHere, noteSpirit, recentSpirits } from './recent';
 
 interface Props {
@@ -38,6 +39,7 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
     });
   }, []);
 
+  useFavicon(spirit || null); // the tab shows the spirit being picked
   const levels = options?.adversaries[adversary] ?? [];
   const spiritChoices = [...recent.filter(s => options?.spirits.includes(s)), ...(options?.spirits ?? []).filter(s => !recent.includes(s))];
 
