@@ -99,6 +99,13 @@ for (const [folder, file] of [['growth', 'reclaim_1z'], ['growth', 'gain_1_energ
   console.log(`tracks/${file}.png  ${png.width}x${png.height} -> ${small.width}x${small.height}`);
 }
 
+// EXPERIMENT: the terrain pictures, repeated as the background of each land: img/terrain/<name>.jpg
+mkdirSync(join(target, 'terrain'), { recursive: true });
+for (const name of ['ocean', 'jungle', 'wetlands', 'sand', 'mountains', 'none']) {
+  copyFileSync(join(source, 'terrain', `${name}.jpg`), join(target, 'terrain', `${name}.jpg`));
+  console.log(`terrain/${name}.jpg`);
+}
+
 // The spirits' pictures (JPEGs about 600 pixels wide, used as they are): img/spirits/<name>.jpg
 mkdirSync(join(target, 'spirits'), { recursive: true });
 for (const file of readdirSync(join(source, 'spirits')))

@@ -73,7 +73,7 @@ ul.saved button { width: 100%; }
 .island .space { stroke: #555; }
 .island .space.choosable { stroke: var(--accent); cursor: pointer; }
 .island .space.hovered { stroke: #d33; }
-.island .space-name { fill: #333; text-anchor: middle; pointer-events: none; opacity: .7; }
+.island .space-name { fill: #222; text-anchor: middle; pointer-events: none; opacity: .85; paint-order: stroke; stroke: #fff; stroke-width: .18em; stroke-linejoin: round; } /* the outline keeps the name readable over a terrain picture */
 .island .token text { fill: #111; pointer-events: none; }
 /* Stroke widths on text are in the island's own units, so the outline is sized in the component (stroke-width attribute). */
 .island .token .presence-label { fill: #fff; stroke: #000; paint-order: stroke; font-weight: 700; }

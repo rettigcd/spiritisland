@@ -49,6 +49,13 @@ const terrainFill: [RegExp, string][] = [
 ];
 const fillOf = (terrain: string) => terrainFill.find(([re]) => re.test(terrain))?.[1] ?? '#dddddd';
 
+// EXPERIMENT (easy to roll back): each land is filled with its terrain's picture, repeated, instead of a flat colour.
+const terrainPicture: [RegExp, string][] = [
+  [/ocean/i, 'ocean'], [/jungle/i, 'jungle'], [/wetland/i, 'wetlands'], [/sands/i, 'sand'], [/mountain/i, 'mountains'],
+];
+const pictureOf = (terrain: string) => terrainPicture.find(([re]) => re.test(terrain))?.[1];
+const TILES_ACROSS = 6; // how many times the picture repeats across the board's width
+
 /**
  * How many of the island's own units one screen pixel is. The island is drawn in the server's units (about 1.5 wide), so an
  * outline that should be a few pixels thick is a few of these. (CSS's `vector-effect: non-scaling-stroke` would do this, but on
@@ -153,6 +160,11 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
       onPointerMove={dragTo} onPointerUp={endDrag} onPointerCancel={() => { setDrag(null); setOver(null); }}
     >
       <defs>
+        {terrainPicture.map(([, name]) => (
+          <pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width={width / TILES_ACROSS} height={width / TILES_ACROSS}>
+            <image href={`/img/terrain/${name}.jpg`} width={width / TILES_ACROSS} height={width / TILES_ACROSS} preserveAspectRatio="none" />
+          </pattern>
+        ))}
         {/* The glow behind presence on a sacred site: bright gold in the middle, fading to nothing at the edge. */}
         <radialGradient id="sacred-glow">
           <stop offset="0%" stop-color="#ffd23f" stop-opacity="0.95" />
@@ -169,7 +181,7 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
           <g key={space.id} data-space={space.id}>
             <polygon
               points={space.corners.map(c => `${c.x},${c.y}`).join(' ')}
-              fill={fillOf(space.terrain)}
+              fill={pictureOf(space.terrain) ? `url(#terrain-${pictureOf(space.terrain)})` : fillOf(space.terrain)}
               stroke-width={pixel * (reachable || option ? 4 : hoveredSpaces.has(space.id) ? 5 : 1.5)}
               class={['space', option ? 'choosable' : '', reachable ? 'destination' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
               onClick={onClick}
