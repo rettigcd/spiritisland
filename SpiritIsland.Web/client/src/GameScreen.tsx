@@ -67,7 +67,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
           Game {response.gameId}{setup ? <> / Seed <strong>{setup.seed}</strong></> : null}
         </span>
         <Menu items={[
-          { label: 'Back to games', onSelect: actions.leave },
+          { label: 'Games', onSelect: actions.leave },
           { label: 'Replay game', title: 'Start this game again from the beginning (same seed)', disabled: !setup || state.busy, onSelect: playAgain },
           { label: `Land backgrounds: ${landPictures ? 'pictures' : 'flat colours'}`, title: 'Switch between terrain pictures and flat colours', onSelect: toggleLandPictures },
           { label: 'Log', title: 'What has happened in this game', onSelect: () => setLogOpen(true) },
