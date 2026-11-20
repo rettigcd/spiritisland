@@ -28,6 +28,22 @@ const incarna = /^(.+)_Incarna(_Empowered)?$/;
 export const STRIFE_IMAGE = '/img/tokens/strife.png';
 export const PRESENCE_IMAGE = '/img/presence/red.png';
 
+/**
+ * The picture for a presence track slot, named from the slot's code the way the desktop app does (SpiritIsland's ToResourceName):
+ * lowercase, quotes dropped, anything but letters and digits an underscore, trailing underscores dropped, starting and ending in a letter.
+ */
+export function trackImageUrl(code: string): string {
+  let name = '';
+  for (const ch of code) {
+    if (ch === "'") continue;
+    name += /[a-z0-9]/i.test(ch) ? ch.toLowerCase() : '_';
+  }
+  while (name.length > 1 && name.endsWith('_')) name = name.slice(0, -1);
+  if (!/^[a-z]/.test(name)) name = 'z' + name;
+  if (!/[a-z]$/.test(name)) name += 'z';
+  return `/img/tracks/${name}.png`;
+}
+
 export const isPresence = (image: string) => image.startsWith('Presence:');
 
 /**

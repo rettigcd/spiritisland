@@ -111,16 +111,33 @@ ul.saved button { width: 100%; }
 .spirit h3 { margin: 8px 0 4px; }
 .spirit h4 { margin: 6px 0 2px; }
 .spirit p { margin: 4px 0; }
-ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
-.slot { display: inline-block; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); font-size: .8em; }
-.slot.revealed { background: color-mix(in srgb, var(--accent) 25%, var(--panel)); }
-.slot.covered { color: var(--muted); border-style: dashed; }
-button.slot { cursor: pointer; }
+ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 3px; }
+/* A presence track slot: its picture, with the presence sitting on it a little above, so the bottom of the picture still shows. */
+.track-row { display: flex; gap: 6px; margin-top: 4px; }
+.track-row .track { flex: 1; min-width: 0; margin-top: 0; }
+.track-side { flex: none; width: 56px; display: flex; align-items: center; justify-content: center; }
+.big-coin { font-size: 2em; } /* the current energy, as a large coin */
+.destroyed-pile { position: relative; width: 54px; height: 54px; padding: 0; border: 0; border-radius: 50%; background: #f1e7d0; display: block; }
+.destroyed-pile img { width: 100%; height: 100%; display: block; pointer-events: none; }
+.destroyed-count { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; color: #fff; font-weight: 700; text-shadow: 0 0 3px #000, 0 0 3px #000; pointer-events: none; }
+button.destroyed-pile { cursor: pointer; }
+.destroyed-pile.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
+.destroyed-pile.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
+.track { position: relative; margin-top: 4px; }
+/* The label sits in the corner of the slots with no row of its own, over the presence floating above them so the number stays readable. */
+.track-label { position: absolute; left: 2px; top: 0; z-index: 2; pointer-events: none; text-shadow: 0 0 3px var(--panel), 0 0 3px var(--panel); font-size: .75em; font-weight: 700; color: var(--muted);
+  display: flex; align-items: center; gap: 3px; text-shadow: 0 0 3px var(--panel), 0 0 3px var(--panel); }
+.slot { position: relative; width: 40px; height: 66px; }
+.slot-icon { position: absolute; left: 0; bottom: 0; width: 40px; height: 53px; object-fit: contain; object-position: bottom; }
+.slot-token { position: absolute; left: 0; top: 0; z-index: 1; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; display: block; }
+.slot-token img { width: 100%; height: 100%; display: block; pointer-events: none; }
+.slot-token.gone { opacity: .35; } /* presence that could be put back here */
+button.slot-token { cursor: pointer; }
+/* A slot whose presence can be picked now (or picked up): a thick ring around the presence. */
+.slot-token.choosable, .slot-token.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
+.slot-token.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }
-/* A track slot that can be picked now (or picked up): a thick solid border, with the padding reduced so the slot keeps its size. */
-.slot.choosable, .slot.movable { border: 3px solid var(--accent); padding: 0 4px; font-weight: 600; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
-.slot.movable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(in srgb, #d33 35%, transparent); }
 ul.growth { margin: 0; padding-left: 18px; }
 ul.growth li.used { text-decoration: line-through; color: var(--muted); }
 ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; font-size: .85em; }

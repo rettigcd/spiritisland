@@ -2,6 +2,7 @@ import type { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
 import { destroyedSource, slotSource, sourceOf } from './moves';
+import { PRESENCE_IMAGE, presenceHue, presenceImageUrl, trackImageUrl } from './images';
 import type { OptionTarget } from './api/model';
 import type { SourceKey } from './moves';
 import { rangeText } from './text';
@@ -96,23 +97,26 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           </ul>
         </>
       )}
-      <p>
-        Energy <Coin value={spirit.energy} /> (+{spirit.presence.energyPerTurn}/turn) · Card plays {spirit.presence.cardPlaysPerTurn}
-        {' '}· Elements: <Elements text={spirit.elements} />
-      </p>
-      <p class="muted">Presence destroyed: {spirit.presence.destroyed} · Sacred sites: {spirit.presence.sacredSites.join(', ') || 'none'}</p>
-      {moves.has(pile) && (
-        <p>
-          <button type="button" class={`movable ${selected === pile ? 'selected' : ''}`} disabled={busy} onClick={pick(pile)}>
-            Place destroyed presence ({spirit.presence.destroyed} in the pile)
-          </button>
-        </p>
-      )}
+      {spirit.elements && <p><Elements text={spirit.elements} /></p>}
 
       {info && (
         <>
-          <Track title="Energy track" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
-          <Track title="Card plays track" track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+          {/* Beside the tracks: the energy there is now, and the presence that has been destroyed (click it to place it). */}
+          <div class="track-row">
+            <Track title="Energy" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+            <div class="track-side big-coin"><Coin value={spirit.energy} /></div>
+          </div>
+          <div class="track-row">
+            <Track title={`Card plays: ${spirit.presence.cardPlaysPerTurn}`} track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+            <div class="track-side">
+              {0 < spirit.presence.destroyed && (() => {
+                const picture = <><img src="/img/icons/destroyed.png" alt="" width={54} height={54} /><span class="destroyed-count">{spirit.presence.destroyed}</span></>;
+                return moves.has(pile)
+                  ? <button type="button" class={`destroyed-pile pickable ${selected === pile ? 'selected' : ''}`} disabled={busy} onClick={pick(pile)} title={`Place destroyed presence (${spirit.presence.destroyed} in the pile), then choose a land`}>{picture}</button>
+                  : <span class="destroyed-pile" title={`${spirit.presence.destroyed} presence destroyed`}>{picture}</span>;
+              })()}
+            </div>
+          </div>
 
           <h3>Innate powers</h3>
           {info.innates.map(innate => (
@@ -143,7 +147,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
 }
 
 interface TrackProps {
-  title: string;
+  title: ComponentChildren;
   track: TrackName;
   slots: readonly SlotView[];
   /** Indexes of the slots whose presence has been taken: those are the ones whose benefit you now have. */
@@ -160,22 +164,29 @@ interface TrackProps {
 function Track({ title, track, slots, revealed, optionFor, spirit, moves, selected, pick, busy, choose }: TrackProps) {
   return (
     <div class="track">
-      <h3>{title}</h3>
+      <span class="track-label">{title}</span>
       <ol class="slots">
         {slots.map((slot, i) => {
           const open = revealed.includes(i);
           const option = optionFor(track, i);
           const source = slotSource(spirit, track, i);
           const movable = !option && moves.has(source); // presence that can be moved from this slot to a land
-          const classes = `slot ${open ? 'revealed' : 'covered'} ${option ? 'choosable' : ''} ${movable ? 'movable' : ''} ${selected === source ? 'selected' : ''}`;
-          const hint = open ? 'Revealed' : 'Presence still here';
+          // The presence sits on its slot's picture, a little above it; once taken, the slot is bare. A slot that presence can be put
+          // back on shows a faint presence to click. Clicking the presence (not the slot) is how a slot is chosen.
+          const classes = `slot-token ${open ? 'gone' : ''} ${option ? 'choosable' : ''} ${movable ? 'pickable' : ''} ${selected === source ? 'selected' : ''}`;
+          const clickable = option ? choose(option) : movable ? pick(source) : null;
+          const tokenImage = `Presence:${spirit}`;
+          const own = presenceImageUrl(tokenImage);
+          const picture = (
+            <img src={own ?? PRESENCE_IMAGE} alt="presence" width={40} height={40} draggable={false}
+              style={own ? undefined : { filter: `hue-rotate(${presenceHue(tokenImage)}deg)` }} />
+          );
           return (
-            <li key={i}>
-              {option
-                ? <button type="button" class={classes} disabled={busy} onClick={choose(option)} title={hint}>{slot.label}</button>
-                : movable
-                  ? <button type="button" class={classes} disabled={busy} onClick={pick(source)} title="Pick up this presence, then choose a land">{slot.label}</button>
-                  : <span class={classes} title={hint}>{slot.label}</span>}
+            <li key={i} class={`slot ${open ? 'revealed' : 'covered'}`}>
+              <img class="slot-icon" src={trackImageUrl(slot.id)} alt={slot.label} title={slot.label} width={40} height={53} loading="lazy" decoding="async" />
+              {clickable
+                ? <button type="button" class={classes} disabled={busy} onClick={clickable} title={option ? slot.label : 'Pick up this presence, then choose a land'}>{picture}</button>
+                : !open && <span class={classes}>{picture}</span>}
             </li>
           );
         })}

@@ -78,6 +78,27 @@ for (const [name, file] of [['jungle', 'Jungle'], ['mountain', 'Mountain'], ['oc
   copy('icons/Terrain', `${file}.png`, ICON_SIZE, 'icons', `${name}.png`);
 copy('invaders', 'escalation.png', ICON_SIZE, 'icons', 'escalation.png');
 
+// The presence track slots' pictures (60x80, used as they are): img/tracks/<resource name>.png. The MAUI app names them by the slot's
+// code ("2 cardplay" is z2_cardplay.png); see trackImageUrl in src/images.ts.
+const trackSource = join(here, '..', '..', '..', 'SpiritIsland.Maui', 'Resources', 'Images', 'presenceTrack');
+mkdirSync(join(target, 'tracks'), { recursive: true });
+for (const file of readdirSync(trackSource))
+  if (file.endsWith('.png')) {
+    copyFileSync(join(trackSource, file), join(target, 'tracks', file));
+    console.log(`tracks/${file}`);
+  }
+// The broken presence the MAUI spirit panel shows for presence that has been destroyed: img/icons/destroyed.png
+copyFileSync(join(trackSource, '..', 'destroyed_presence.png'), join(target, 'icons', 'destroyed.png'));
+console.log('icons/destroyed.png');
+// ...and the few the MAUI app keeps in other folders (its image folders are flattened): reclaim, gain 1 energy and the bare elements.
+const mauiImages = join(trackSource, '..');
+for (const [folder, file] of [['growth', 'reclaim_1z'], ['growth', 'gain_1_energy'], ...['fire', 'moon', 'water', 'earth', 'air'].map(e => ['tokens/elements', e])]) {
+  const png = PNG.sync.read(readFileSync(join(mauiImages, folder, `${file}.png`)));
+  const small = shrink(png, 80);
+  writeFileSync(join(target, 'tracks', `${file}.png`), PNG.sync.write(small, { colorType: 6 }));
+  console.log(`tracks/${file}.png  ${png.width}x${png.height} -> ${small.width}x${small.height}`);
+}
+
 // The spirits' pictures (JPEGs about 600 pixels wide, used as they are): img/spirits/<name>.jpg
 mkdirSync(join(target, 'spirits'), { recursive: true });
 for (const file of readdirSync(join(source, 'spirits')))
