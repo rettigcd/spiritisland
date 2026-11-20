@@ -163,3 +163,7 @@ details.rules p { font-size: .9em; }
 button.choosable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(in srgb, #d33 35%, transparent); }
 .spirit.reached { outline: 3px solid #2e7d32; outline-offset: 2px; }
 .target-spirit { margin-left: 8px; font-size: .75em; font-weight: 400; }
+
+/* The hand and the discard: closed unless wanted, with the name and count standing in for the heading. */
+details.collapsible { margin-top: 8px; }
+details.collapsible > summary { cursor: pointer; font-weight: 600; }

@@ -50,11 +50,14 @@ export function Speed({ speed }: { speed: string }) {
   );
 }
 
-/** An amount of energy: a number on top of a coin. */
-export function Coin({ value, title = 'energy' }: { value: number; title?: string }) {
+/** An amount of energy: a number on top of a coin. For a card's cost, the speed picks the coin (red for fast, blue for slow), so the speed needs no icon of its own. */
+export function Coin({ value, title = 'energy', speed }: { value: number; title?: string; speed?: string }) {
+  const lower = speed?.toLowerCase() ?? '';
+  const picture = lower.includes('fast') ? 'cost-fast' : lower.includes('slow') ? 'cost-slow' : 'coin';
+  const tip = picture === 'coin' ? undefined : `${picture === 'cost-fast' ? 'fast' : 'slow'}, ${value} ${title}`;
   return (
-    <span class="coin">
-      <img src="/img/icons/coin.png" alt="" width={24} height={24} loading="lazy" decoding="async" />
+    <span class="coin" title={tip}>
+      <img src={`/img/icons/${picture}.png`} alt="" width={24} height={24} loading="lazy" decoding="async" />
       <span class="coin-value" aria-label={`${value} ${title}`}>{value}</span>
     </span>
   );

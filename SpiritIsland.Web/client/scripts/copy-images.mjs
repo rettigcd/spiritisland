@@ -72,6 +72,8 @@ copy('icons', 'Fasticon.png', ICON_SIZE, 'icons', 'fast.png');
 copy('icons', 'Slowicon.png', ICON_SIZE, 'icons', 'slow.png');
 copy('icons', 'Coastal.png', ICON_SIZE, 'icons', 'coastal.png');
 copy('tokens', 'coin.png', ICON_SIZE, 'icons', 'coin.png');
+copy('tokens', 'CostFast.png', ICON_SIZE, 'icons', 'cost-fast.png');
+copy('tokens', 'CostSlow.png', ICON_SIZE, 'icons', 'cost-slow.png');
 for (const [name, file] of [['jungle', 'Jungle'], ['mountain', 'Mountain'], ['ocean', 'Ocean'], ['sands', 'Sands'], ['wetland', 'Wetlandland']])
   copy('icons/Terrain', `${file}.png`, ICON_SIZE, 'icons', `${name}.png`);
 copy('invaders', 'escalation.png', ICON_SIZE, 'icons', 'escalation.png');

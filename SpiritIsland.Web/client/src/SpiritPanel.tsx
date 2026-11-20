@@ -1,3 +1,5 @@
+import type { ComponentChildren } from 'preact';
+import { useState } from 'preact/hooks';
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
 import { destroyedSource, slotSource, sourceOf } from './moves';
 import type { OptionTarget } from './api/model';
@@ -121,12 +123,15 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         </>
       )}
 
-      <CardList title="Hand" cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
       <CardList title="In play" cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
-      <details>
-        <summary>Discard ({spirit.discard.length})</summary>
+      {/* The hand and the discard take a lot of room and are rarely what is being acted on, so they show as a count that opens on a click,
+          and open by themselves when the decision is about one of their cards (playing cards, reclaiming, forgetting). */}
+      <Collapsible title="Hand" count={spirit.hand.length} wanted={spirit.hand.some(c => cardOption(c.id) || cardStart(c.id))}>
+        <CardList title="" cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
+      </Collapsible>
+      <Collapsible title="Discard" count={spirit.discard.length} wanted={spirit.discard.some(c => cardOption(c.id) || cardStart(c.id))}>
         <CardList title="" cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
-      </details>
+      </Collapsible>
       {info && info.specialRules.length > 0 && (
         <details class="rules">
           <summary>Special rules</summary>
@@ -176,6 +181,17 @@ function Track({ title, track, slots, revealed, optionFor, spirit, moves, select
         })}
       </ol>
     </div>
+  );
+}
+
+/** A list that is closed (just its name and how many) unless the player opens it, or the current decision is about something in it. */
+function Collapsible({ title, count, wanted, children }: { title: string; count: number; wanted: boolean; children: ComponentChildren }) {
+  const [opened, setOpened] = useState(false);
+  return (
+    <details class="collapsible" open={wanted || opened} onToggle={e => { if (!wanted) setOpened(e.currentTarget.open); }}>
+      <summary>{title} ({count}){wanted ? ' - choose one' : ''}</summary>
+      {children}
+    </details>
   );
 }
 
@@ -245,7 +261,7 @@ function CardList({ title, cards, optionFor, startFor, selected, useStart, point
                 onClick={start ? useStart(start) : choose(option)} {...(start ? pointing(start) : {})}
                 title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
               >
-                {c.name} <span class="muted"><Coin value={c.cost} title="energy to play" /> <Speed speed={c.speed} /> <Elements text={c.elements} /></span>
+                <Coin value={c.cost} title="energy to play" speed={c.speed} /> {c.name} <Elements text={c.elements} />
               </button>
             </li>
           );
