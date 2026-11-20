@@ -195,6 +195,32 @@ The log, prompt details, the spirit panel (tracks, growth, innate powers, specia
 - Response diffs (`ObservationHistory` pattern) if the payload size matters.
 - Mobile layout.
 
+## Possible enhancements
+
+Ideas for the client, in the order they look worth doing. None is committed to; each is a candidate for Phase 5. The first group is cheap and fixes real space or clarity problems, the second wants a small decision first, the third goes with the "every decision is something you drag" work, and the last are ideas to look at again once the rest is in.
+
+**Cards and space (do first)**
+1. **In play above Hand.** The cards in play are the ones being acted with, so they go first.
+2. **Hide the hand unless it is needed.** When the player is not choosing cards to play, the hand shows as a count that opens on a click. When a decision is about the hand (playing cards), it opens by itself.
+3. **Hide the discard unless it is needed.** Same rule: shown when choosing a card to reclaim or forget, otherwise a count that opens on a click. Items 2 and 3 are what make the spirit panel shorter.
+4. **Coin and speed before the words on a card, elements after.** A reorder of the card line.
+5. **Game info.** Adversary, level and its description (the server already sends the adversary's name, level and rules in `AdversaryView`), opened from the hamburger menu as a dialog like the log, so it takes no room on the main screen. A longer description would need adding to the view.
+
+**Looks, once the layout is settled**
+6. **One icon for speed and energy cost.** A coin carrying the cost, with fast (red) or slow (blue) as its decoration colour. Try a coloured ring around the coin first; it must stay readable at about 24 pixels.
+7. **Counts as disks.** A stack shows as tokens on top of a red disk (5) and white disks (1), as in the physical game, instead of the "x7" text. Try it on a busy land before committing, since it competes with the token for room.
+8. **Damage as marks.** A damaged city or town gets evenly spread red slashes or Xs instead of the remaining-health number. Keep it to cities and towns, where damage varies.
+
+**With the drag work (see "every decision is something you drag")**
+9. **Presence tracks as tokens sitting on icons.** It matches the physical board and makes dragging presence from a track onto a land natural. A bigger change to how the spirit panel draws tracks.
+10. **The minor and major power decks on screen.** So that gaining a card can be a drag from the deck. Today those choices are buttons in the decision panel.
+
+**Look at again later**
+11. **Tooltips made visible by dragging a magnifying glass onto an item.** Hover tooltips already work with a mouse, so this only earns its place on touch screens (no hover); treat it as part of the mobile work.
+12. **Terrain backgrounds** on the lands, using the terrain pictures the desktop apps have. Check that tokens and the green target outline stay easy to read; a soft overlay may be needed.
+13. **A popup that shows all the cards of a group** (draw pile, hand, discard) in a scrollable list of whole cards, when a card's information is asked for. It wants whole-card pictures, and cards are drawn from data for now, so it waits on deciding whether to use real card artwork.
+14. **A big and a small view for each of the cards, the spirit panel and the board.** All three always visible, big showing every detail and small only the bare minimum. This is a layout system rather than a feature (every element needs two designs and something has to choose which view each gets, by hand or by what the player is acting on). Items 1 to 3 apply the same idea to the cards; do those first and see whether this is still needed.
+
 ## Multiplayer-ready choices
 
 The solo web UI is the test bed for multiplayer, so it must not bake in solo assumptions. These choices cost little now and avoid rewrites later:
