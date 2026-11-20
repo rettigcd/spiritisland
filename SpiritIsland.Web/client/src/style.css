@@ -157,7 +157,10 @@ details.rules p { font-size: .9em; }
 .result { padding: 8px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
 .result.victory { border-color: #2e7d32; }
 .result.defeat { border-color: var(--error); }
-.growth-action { padding: 2px 8px; }
+/* A growth action is the same size whether it is a button or plain text, so the list does not change size (or wrap differently) as choices come and go. */
+.growth-action { display: inline-block; padding: 0 5px; font-size: .92em; line-height: 1.45; border: 1px solid transparent; border-radius: 6px; }
+button.growth-action { border-color: var(--accent); }
+ul.growth li { margin: 2px 0; }
 
 /* Pictures in text: elements, speeds and invader-card terrains. */
 .icon { width: 1.25em; height: 1.25em; vertical-align: -0.3em; object-fit: contain; }

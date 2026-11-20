@@ -87,7 +87,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
                         ? <button type="button" class={`choosable growth-action ${selected === start ? 'selected' : ''}`} disabled={busy} onClick={useStart(start)} {...pointing(start)}>{action}</button>
                         : option
                           ? <button type="button" class="choosable growth-action" disabled={busy} onClick={choose(option)}>{action}</button>
-                          : action}
+                          : <span class="growth-action plain">{action}</span>}
                     </span>
                   );
                 })}
