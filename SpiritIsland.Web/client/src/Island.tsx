@@ -4,6 +4,7 @@ import { isPresence, PRESENCE_IMAGE, presenceHue, presenceImageUrl, STRIFE_IMAGE
 import { destinationsOf, tokenSource } from './moves';
 import type { SourceKey } from './moves';
 import { boardOptions, spacesOf, tokenKey } from './options';
+import { insetPolygon } from './geometry';
 
 interface Props {
   staticView: StaticView;
@@ -85,6 +86,12 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
   const pixel = useUnitsPerPixel(svg, width);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [over, setOver] = useState<string | null>(null); // the land the pointer is over while a move is being made
+  // Dragging something from the spirit panel (presence, a power) onto a land reports which land it is over, since the pointer is not on the island's own handlers.
+  useEffect(() => {
+    const on = (e: Event) => setOver((e as CustomEvent<string | null>).detail);
+    window.addEventListener('island-over', on);
+    return () => window.removeEventListener('island-over', on);
+  }, []);
 
   // Once a start is picked, every land its moves can reach is known. Pointing at an action (a card, an innate power) shows
   // the lands it could target as well, without picking it.
@@ -95,6 +102,9 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
   const shown = overMove ?? hovered; // what the island shows the effect of: the land the pointer is over, or the hovered button
   const hoveredSpaces = new Set(spacesOf(shown));
   const arrow = moveArrow(shown, staticView, view);
+  // A land's highlight is drawn a few pixels inside its corners (as the desktop app does), so only the land changes and its borders stay as they were.
+  const inside = (sp: SpaceGeometry) => insetPolygon(sp.corners, pixel * 5).map(c => `${c.x},${c.y}`).join(' ');
+  const targetSpace = over && destinations.has(over) ? staticView.spaces.find(sp => sp.id === over) : undefined;
 
   const choose = (o: OptionView) => { if (!disabled) onChoose(o.id); };
 
@@ -208,6 +218,21 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
           </g>
         );
       })}
+      {/* The borders again on top: a light band with a dark line in it, so the divide shows between lands whose pictures are alike (jungle next to jungle). */}
+      <g class="borders" pointer-events="none">
+        {staticView.spaces.map(space => <polygon key={`h${space.id}`} class="border-halo" points={space.corners.map(c => `${c.x},${c.y}`).join(' ')} stroke-width={pixel * 4} />)}
+        {staticView.spaces.map(space => <polygon key={`l${space.id}`} class="border-line" points={space.corners.map(c => `${c.x},${c.y}`).join(' ')} stroke-width={pixel * 1.5} />)}
+      </g>
+      {/* The lands that can be chosen or dropped on, outlined above the borders (a green wash for where a token, presence or power can go). */}
+      {staticView.spaces.filter(sp => reach.has(sp.id) || bySpace.has(sp.id) || hoveredSpaces.has(sp.id)).map(sp => (
+        <polygon
+          key={`m${sp.id}`} points={inside(sp)} stroke-width={pixel * 2.5} pointer-events="none"
+          stroke-dasharray={hoveredSpaces.has(sp.id) ? undefined : `${pixel * 7} ${pixel * 5}`}
+          class={['mark', bySpace.has(sp.id) ? 'choosable' : '', reach.has(sp.id) ? 'destination' : '', hoveredSpaces.has(sp.id) ? 'hovered' : ''].join(' ')}
+        />
+      ))}
+      {/* The land a drag would drop on right now, above the borders: a red wash and a thick red outline. */}
+      {targetSpace && <polygon class="target-over" points={inside(targetSpace)} stroke-width={pixel * 3} pointer-events="none" />}
       {arrow && <Arrow from={arrow.from} to={arrow.to} size={arrow.size} width={pixel * 4} />}
       {drag?.moved && (
         <g class="ghost">
@@ -283,7 +308,7 @@ function Token({ token, space, option, choose, movable, selected, quiet, flat, o
   const title = `${token.label}${token.count > 1 ? ` x${token.count}` : ''}${token.strife > 0 ? ` (strife ${token.strife})` : ''}`;
   return (
     <g
-      class={['token', option ? 'choosable' : '', movable ? 'movable' : '', selected ? 'selected' : ''].join(' ')}
+      class={['token', option ? 'choosable' : '', movable ? 'movable' : '', selected ? 'selected' : '', `on-${pictureOf(space.terrain) ?? 'other'}`].join(' ')}
       onClick={option ? () => choose(option) : undefined} onPointerDown={onPointerDown}
     >
       {!quiet && <title>{title}</title>}
@@ -303,8 +328,10 @@ function Picture({ token, url, r, small }: { token: TokenView; url: string; r: n
   return (
     <>
       {token.sacredSite && <Glow x={token.x} y={token.y} r={r} />}
-      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
-      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
+      {/* A dark ring under the bright ones, so they show on any terrain picture (orange on sand). */}
+      <circle class="ring-halo" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.17} />
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.08} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
+      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.08} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <image
         href={url} x={token.x - r} y={token.y - r} width={r * 2} height={r * 2}
         style={presence && !presenceImageUrl(token.image) ? { filter: `hue-rotate(${presenceHue(token.image)}deg)` } : undefined}
@@ -330,8 +357,10 @@ function Circle({ token, r }: { token: TokenView; r: number }) {
     <>
       {token.sacredSite && <Glow x={token.x} y={token.y} r={r} />}
       <circle cx={token.x} cy={token.y} r={r} fill={fill} stroke="#444" stroke-width={r * 0.08} />
-      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.2} />
-      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.18} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
+      {/* A dark ring under the bright ones, so they show on any terrain picture (orange on sand). */}
+      <circle class="ring-halo" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.17} />
+      <circle class="ring-choose" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.08} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
+      <circle class="ring-move" cx={token.x} cy={token.y} r={r * 1.1} fill="none" stroke-width={r * 0.08} stroke-dasharray={`${r * 0.5} ${r * 0.35}`} />
       <text x={token.x} y={token.y} font-size={size} text-anchor="middle" dominant-baseline="central">{token.label}</text>
     </>
   );
