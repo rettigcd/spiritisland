@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'preact/hooks';
 import { createGame, decide, getStaticView } from './api/client';
 import type { NewGameRequest, OracleResponse, StaticView } from './api/model';
+import { markPlayed } from './recent';
 
 /**
  * Client state (docs/WebClient-Plan.md): the game id, the checkpoint version, the picks made so far in the action in
@@ -79,6 +80,7 @@ export function useGame(): [GameState, GameActions] {
       response, notice, error: null, busy: false,
     });
     writeStorage(CURRENT, response.gameId);
+    markPlayed(response.gameId);
     writeStorage(saveKey(response.gameId), JSON.stringify({ checkpointVersion: response.checkpointVersion, picks: response.picks } satisfies Saved));
 
     if (latest.current.staticView?.staticVersion !== response.staticVersion) {

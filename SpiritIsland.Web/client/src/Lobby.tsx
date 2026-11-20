@@ -2,6 +2,7 @@ import { spiritImageUrl } from './spiritImage';
 import { useEffect, useState } from 'preact/hooks';
 import { getSetupOptions, listGames } from './api/client';
 import type { GameSummary, NewGameRequest, SetupOptions } from './api/model';
+import { gamesPlayedHere, noteSpirit, recentSpirits } from './recent';
 
 interface Props {
   busy: boolean;
@@ -16,6 +17,7 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
   const [games, setGames] = useState<GameSummary[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  const [recent, setRecent] = useState<string[]>(recentSpirits);
   const [spirit, setSpirit] = useState('');
   const [board, setBoard] = useState('');
   const [adversary, setAdversary] = useState('');
@@ -27,15 +29,23 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
       if (!r.ok) { setLoadError(r.message); return; }
       setOptions(r.value);
     });
-    listGames().then(r => { if (r.ok) setGames(r.value); });
+    listGames().then(r => {
+      if (!r.ok) return;
+      const mine = gamesPlayedHere(r.value);
+      setGames(mine);
+      // Before any spirit has been noted, the spirits of the games played here are the recent ones.
+      setRecent(now => now.length > 0 ? now : [...new Set(mine.map(g => g.spirit))].slice(0, 4));
+    });
   }, []);
 
   const levels = options?.adversaries[adversary] ?? [];
+  const spiritChoices = [...recent.filter(s => options?.spirits.includes(s)), ...(options?.spirits ?? []).filter(s => !recent.includes(s))];
 
   const submit = (e: Event) => {
     e.preventDefault();
     const parsed = seed.trim() === '' ? undefined : Number(seed);
     // No board chosen means any board: pick one now, so the game says which it is.
+    noteSpirit(spirit);
     const boards = options?.boards ?? [];
     const chosenBoard = board || boards[Math.floor(Math.random() * boards.length)] || '';
     onStart({
@@ -56,7 +66,8 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
         <label>Spirit
           <select value={spirit} required onChange={e => setSpirit(e.currentTarget.value)}>
             <option value="" disabled>(choose a spirit)</option>
-            {options?.spirits.map(s => <option key={s} value={s}>{s}</option>)}
+            {/* The spirits played last come first, marked, so the one played all the time is easy to find. */}
+            {spiritChoices.map(s => <option key={s} value={s}>{recent.includes(s) ? `${s} (recent)` : s}</option>)}
           </select>
         </label>
         {spirit && <img key={spirit} class="spirit-preview" src={spiritImageUrl(spirit)} alt={spirit} onError={e => { e.currentTarget.style.display = 'none'; }} />}
@@ -87,7 +98,7 @@ export function Lobby({ busy, error, onStart, onOpen }: Props) {
 
       {games.length > 0 && (
         <section class="panel">
-          <h2>Saved games</h2>
+          <h2>Saved games <span class="muted">(played here in the last month)</span></h2>
           <ul class="saved">
             {games.map(g => (
               <li key={g.gameId}>
