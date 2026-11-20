@@ -97,7 +97,8 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           </ul>
         </>
       )}
-      {spirit.elements && <p><Elements text={spirit.elements} /></p>}
+      {/* Always there, even with no elements, so what is below it does not move as elements come and go. */}
+      <p class="elements-row">{spirit.elements && <Elements text={spirit.elements} />}</p>
 
       {info && (
         <>
