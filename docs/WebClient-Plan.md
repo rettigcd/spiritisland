@@ -1,6 +1,6 @@
 # Plan: web play, solo first, then multiplayer
 
-The end goal is multiplayer Spirit Island in a browser. Multiplayer needs a UI to play-test with, so the first step is a solo web client, built so it can later become the multiplayer one. Nothing here is built yet.
+The end goal is multiplayer Spirit Island in a browser. Multiplayer needs a UI to play-test with, so the first step is a solo web client, built so it can later become the multiplayer one. The solo client is built and playable on the `web` branch; this file keeps the design and what is still open. Finished work is not listed here, so the code and the git log are the record of it.
 
 ## Goal: multiplayer
 
@@ -73,39 +73,45 @@ What you get for free:
 }
 ```
 
-## View projection: what is still open
+## View projection
 
-`View/` builds the player view, the static view and each option's target (see `GameViewBuilder`, `StaticViewBuilder`, `OptionTargets`). The rule that outlives that work: use `PlayerObservation` as the checklist for what a player may see. Anything it hides stays hidden, and the tests check the names of face-down fear cards and the unflipped blight card never appear.
+`View/` builds the player view, the static view and each option's target (`GameViewBuilder`, `StaticViewBuilder`, `OptionTargets`). The rule that outlives that work: use `PlayerObservation` as the checklist for what a player may see. Anything it hides stays hidden, and the tests check that the names of face-down fear cards and the unflipped blight card never appear.
 
-Not in the view yet, for Phases 3 and 4:
-- **The Explore slot is not sent.** The Explore card is flipped in the Invader Phase's Explore step and moves to Build as the cards advance at the end of that phase, so a player first sees it as the Build card (the log says what was explored). The engine draws the next card into the Explore slot as soon as the cards advance, which would show it all through the next Growth, Fast and Slow phases, so `InvadersView` has no Explore list and `UnrevealedCount` counts that waiting card with the deck. The status bar shows the deck count instead.
-- **The game's seed is sent** (`SetupView.Seed`, in the static view). The top bar shows it, and "Play again (same seed)" starts a new game with the same spirit, board, adversary and seed, which is the same game from the beginning (the first one stays saved).
-- **Prompt details and log: done.** `DecisionView.Details` spells out the "Play power card ($E / N)" prompt (same wording match as the MCP server's `PromptDetails`). `OracleResponse.Log` is the most recent 300 lines of what happened: rounds and phases, what the invaders did, blight and fear, presence destroyed and the end of the game (Debug detail such as each token moved, what the player chose, and failures are left out). The oracle keeps no state, so completed lines are stored in the game record with each checkpoint, tagged by the checkpoint version they were raised under; the lines after the checkpoint (the action in progress) are made again each time the picks are replayed.
-- **Full card text: done.** `CardView` also has range, target and instructions, and an `OptionView` that is a power card carries its `Card`, so the text can be read before choosing which card to gain.
-- **Picture keys: done.** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name). The client's `images.ts` maps those to the pictures in `client/public/img` (copied from `SpiritIsland.Utilities/images` by `npm run copy-images`; the copies are committed). A key with no picture is drawn as a labelled circle. Presence is the one red picture turned to a hue worked out from the spirit's name; the desktop apps instead build it from the spirit's artwork, which is a possible upgrade (about 3 MB of pictures).
-- **Arrows: done, for moves.** Hovering a move option draws an arrow on the island from the token (or its land) to the destination, and outlines both lands. Other decisions that carry arrows in the desktop apps (`IHaveArrows`) are not drawn.
-- **Moving tokens on the board: done.** A move option already says where it starts and where it ends, so once the player has picked a start every place it can go is known; the client needs nothing more from the server. Click a token (or a presence track slot, or the pile of destroyed presence in the spirit panel) to pick it up: the lands it can reach are highlighted, and clicking one sends the matching move. Dragging a token from the board and dropping it on a highlighted land does the same, and dropping anywhere else puts it down; Escape or Cancel also puts it down. What is sent is still the one option, so the request shape is unchanged. `moves.ts` groups a decision's moves by their start. Not done: dragging from the spirit panel onto the board (it is click then click), and touch screens have not been tried.
-- **Actions together with their targets: done (pick or point at, not yet drag).** The engine can offer a power or growth action together with what it targets as one choice (`Spirit.CombineActionsAndTargets`, `TargetedAction`; off by default in the engine, on for every web game, set by `OracleSession` each time it builds or replays a game). `OptionTargets` reports it as kind "act": the card (or the growth group and action) plus `ToSpace`, a land it targets, or `ToSpirit`, a spirit it targets. A growth action targets the spirit growing, so every action has the same form. The client groups acts by their action like moves (`moves.ts`): pointing at a card, an innate's "Use" button or the power's entry in the decision panel highlights the lands (or the spirit) it could target; clicking picks it, and then clicking a highlighted land or the spirit's "Use it on this spirit" button sends the one option. An action with a single target is chosen when it is clicked. Powers that must ask something before they know where they can target (element thresholds that change the range) and Shroud of Silent Mist (it gathers presence while it targets) stay as two steps, so they arrive as kind "card" or "innate" as before.
+## Design Decisions
 
-## Engine problems found by playing every spirit
+Choices made for the web UI, briefly. The code is the detail.
 
-Playing every spirit found failures in the engine, not in the oracle. They are all fixed. `EverySpirit_Tests` plays each spirit for 100 random picks and fails on any engine error. Its `KnownFailures` list is empty. Add a spirit there only while a known engine bug stops it, and the test fails when a listed one is fixed so it gets removed. The oracle reports an engine failure as a 500 with the engine's message.
+**The screen**
+- **Everything needed to act fits on one screen.** The board, the decision, the spirit panel and the status line are on screen together. Anything that does not help with the decision stays off screen until asked for and opens on top of the game: the log and a spirit's special rules are modal dialogs. The hamburger menu in the status line holds Games, Replay game, Land backgrounds and Log. A new element on the main screen has to be something the player acts on or needs in order to act. Where the screen is too small the panels scroll inside themselves, not the page. It is checked at about 1400 x 900 and zoomed out.
+- **Nothing moves when something appears.** The growth list keeps one height, the elements row is always there, and the hint above the board has its own strip. A hint, button or label that shows up while dragging is drawn out of the flow, so the layout does not jump.
+- **Board left, spirit panel right**, with a drag handle to resize the right column (the width is remembered).
+- **Terrain pictures on the lands** (repeating SVG patterns), with a menu toggle for flat colours, remembered in `localStorage`.
+- **Status bar:** round, phase, fear, blight, the Build and Ravage cards and the deck count. There is no Explore slot: that card is flipped and moved to Build within the Invader Phase, and the engine has already drawn the next one, so showing it would mislead. The seed is shown, and "Replay game" starts the same spirit, board, adversary and seed again (the first game stays saved).
 
-### Found by playing whole games in the browser
+**The spirit panel** follows the MAUI app, not the older desktop app.
+- **Presence tracks:** each slot is its picture with a presence token on it, covering about half of it, and the slot's text is its tooltip. To place presence, click or drag the token, not the slot. Labels are "Energy" and "Card plays: N", with no space of their own. Beside the energy track is a large coin with the energy now; beside the card-plays track is the pile of destroyed presence.
+- **Growth** lists each group with a G1, G2... label and says how many to pick ("Growth (pick 2)"). The count and the note on its restrictions are worked out from the spirit's pick groups on the server.
+- **Spirit badge** (the round MAUI picture) sits in the top right, behind the content. It is where a power that targets a spirit is dropped.
+- **Cards:** a card's line is its cost coin (on the fast or slow coin picture, so it carries the speed), its name, then its elements. The elements sit almost touching, so two cards fit on a line.
+- **Card areas:** In play, Hand, Draw and Discard are always on screen, full width, with the name as a faint watermark and the cards left-aligned. A click on the empty part of an area folds or opens it; an area with no cards stays folded and does nothing; a folded area shows only its count. An area opens by itself when the decision is about one of its cards (the player can still close it) and when a card is dropped on it. In play and Discard start folded, Hand open. Draw appears only while cards are being drawn.
+- **Special rules** are a button after the spirit's name that opens a dialog.
+- **Card and innate details** open in a popover: press and hold a finger still on one (about half a second), rest the mouse on it, or right-click it. It replaces the hover tooltips, which touch cannot use. Moving cancels it, so it never clashes with a drag, and lifting the finger closes it. Cards being drawn show their full text inline instead, since the text is what the choice is made on.
 
-The browser client (and then a script over the API) played one game per spirit on board A, with seed 100 plus the spirit's position and always taking the first option, until the game ended. 31 of 37 spirits reached a Victory/Defeat screen; the other six found these engine bugs. Each has a fix and a test on the `engine-bugs` branch (to be merged into `main`), after which all 37 spirits play to the end:
-- **Finder of Paths Unseen**: A Circuitous and Wending Journey set a source quota once per kind of token, and a selector takes only one ("Cannot set Quota twice").
-- **Grinning Trickster**: Let's See What Happens started a spirit-power scope with `ActionScope.Start`, which is for non-spirit actions.
-- **Relentless Gaze**: a repeated power is not targeted again, so powers that read their origin lands from the targetting details (Unbearable Gaze) crashed. The repeater now keeps the origins and sets those details.
-- **Starlight Seeks Its Form**: `ReclaimN` had no serializer, so the one-off Reclaim action from Gather the Scattered Light of Stars could not be saved.
-- **Vital Strength**: Earth's Vitality gave Defend 3 only when a sacred site formed, but Defend is cleared every round and the starting sacred site never got it, so losing a sacred site threw "Defend sync issue". It now re-grants Defend each round and at the start.
-- **Ember-Eyed Behemoth** and **Relentless Gaze (Scorching Convergence)**: a move from a land to the same land was offered; it moves nothing, leaves the token where it was selected from, and a mover with no limit asked for it again forever. `TokenMover` no longer offers it.
+**Picking and dragging**
+- **Every decision is something you drag, where there is a natural thing and place.** Everything a thing can be dropped on is known from the decision's options, so the client asks the server nothing while dragging. What is sent is always the one option, so the request shape did not change. The click path (pick it, then click where it goes) always works too, so a drag is never the only way. A press that moves under 5 pixels is a click.
+- **What can be dragged now:** a token from the board onto a land; presence from a track slot or the destroyed pile onto a land (the picture follows the cursor); a power card, an innate power or a growth action onto a land or onto a spirit's badge (a copy of its button follows the cursor); a card from the Hand onto In play to play it; a drawn card from Draw onto the Hand; a card from the Discard onto the Hand to reclaim it; a card onto the Discard when the decision is to discard it. Where a card may be dropped comes from what choosing it does: each card option carries `Target.Use`, the engine's `CardUse` (Play, AddToHand, Reclaim, Discard, Forget, Repeat...), read from the pending card decision. A Forget area, red-edged, appears below the Discard only while the decision is to forget one of the spirit's cards, and that card is dropped on it. A use with no card area (Repeat, Gift, Impend, Accept) is click only, and a card's details popover says what choosing it does.
+- **Targets have one generic form.** A power is offered together with each target it can have (`TargetedAction`, the "act" option kind; on for every web game, set by `OracleSession`), and a growth action targets the spirit growing. Spirit targets stay in the options even when a solo player has no choice, so the client treats every power the same way. An action with a single target is chosen as soon as it is clicked. Powers that must ask something before they know where they can target, and Shroud of Silent Mist, stay as two steps (kind "card" or "innate").
+- **Where a power targets a spirit, the badge is the drop site**, and a small "Use here" button on the badge is the click alternative. Dropping where it cannot go puts the thing back.
+- **Seeing the target while dragging:** the land under the pointer, when a drop there is allowed, gets a red wash and a thick red outline (drags that start in the spirit panel tell the island which land they are over); a spirit's badge gets a red ring. Lines and rings are made to show on any terrain picture: land borders are a light band with a dark line in it, one look marks everything that can be picked or dropped on: a dashed orange line means "you can" and a solid green one means "this is the one" (picked up, or under the pointer). It is used for the ring on a token, a presence track slot, a spirit's badge, a card area and the lands a token, presence or power can go to (an orange wash, a green one on the land under the pointer; drawn a few pixels inside the land with `insetPolygon`, the same idea as the MAUI app's `Polygons.InnerPoints`, so the borders do not change). The dashes on the badge and the track slots are 3 pixels thick so the dash pattern is long enough to read. A thin dark edge under the token ring appears only on sand, where orange is hard to see. With a picked power that targets spirits, a spirit's badge shows a red ring while the pointer is on it and can be clicked, as well as dropped on.
+- **Highlights:** pointing at an action, or picking it, highlights the lands (and spirit badges) it can reach. Moves draw an arrow from the token to its destination. Other arrows the desktop apps draw (`IHaveArrows`) are not drawn.
+- **Prompt details and log:** the "Play power card ($E / N)" prompt is spelled out (`DecisionView.Details`). The log is the last 300 lines of what happened (rounds, phases, invader actions, blight, fear, presence destroyed, the end). Completed lines are stored in the game record with each checkpoint and the action in progress is made again on each replay, because the oracle keeps no state.
+- **Pictures:** `TokenView.Image` is the engine's `Img` name (or "Presence:" and a spirit name), mapped to `client/public/img` by `images.ts`; a key with no picture is a labelled circle. Presence is one red picture turned to a hue from the spirit's name, unless the spirit has its own picture. Picture names follow MAUI's resource naming. `npm run copy-images` copies from the engine's and MAUI's image folders, and the copies are committed. Cards are drawn from data, with no card art.
 
-Not changed, but looks wrong: Relentless Punishment adds the repeater when `Sources.Any(s => spirit.Presence.CountOn(s) >= 0)`, which is always true; the rule asks for at least 3 presence in the origin land.
-
-Also open:
-- **Every-spirit coverage is shallow.** `EverySpirit_Tests` stops each game after 100 picks, so it only finds failures reachable early. Late-game saves (many tokens, blight cascades) and games played to the end are untested, as is the oracle's cost late in a game (Phase 0 measured early game only).
-- **Prompts that time out.** The oracle gives up after 30 s waiting for the engine to reach a decision (`Settle`). `todo.txt` lists Ravage and Build prompts timing out as needing tests; they may surface here as 500s.
+**Games kept in the browser**
+- The server keeps every game file forever and has no idea who played it. The Saved games list shows only games played in this browser in the last 30 days, newest first (kept in `localStorage`; older ones are forgotten there, not deleted on the server). The last four distinct spirits played come first in the spirit list, marked "(recent)".
+- **First-time hints** (`hints.tsx`) are short notes that float at the bottom of the screen, taking no room and no clicks, and stay until the player has done what they teach, then never show again (the done list is in `localStorage`). The first one: "Long-press a power to see its details." Add others the same way.
+- Picks of the action in progress are kept per game in `localStorage`, so a refresh loses at most the current action.
+- Every API call carries a shared access token (`X-Access-Token`; `AccessToken.Value`, "blue32" to start). The page is served without it, so the client asks for it when a call is turned down and keeps it in `localStorage`. It is one token for everyone, over plain HTTP, so it only keeps casual visitors out.
 
 ## Generated types
 
@@ -119,107 +125,40 @@ The generated file is committed, so the client builds without running the server
 
 Watch for: option targets and other union-like records. Model them as one record with a `kind` enum plus optional fields, which OpenAPI describes cleanly, rather than as a C# class hierarchy.
 
-## Client
+## Running it
 
-A Preact + TypeScript single-page app built with Vite into `SpiritIsland.Web/wwwroot`.
-
-Views:
-- **New-game screen**: pick the spirit, board, adversary and seed.
-- **Island**: one `<svg viewBox>` set from `WorldBounds`, with a `<polygon>` per space and an `<image>` per token at its `xy`. SVG scaling replaces `PointMapper`. Spaces and tokens that are options are highlighted, and clicking one sends the pick.
-- **Decision panel**: the prompt, buttons for options that aren't on the board, and Undo (drop the last pick).
-- **Spirit panel**: energy, elements, presence tracks (revealed and clickable when they are options), growth and innates.
-- **Cards**: hand, in play and discard. Cards that are options are highlighted.
-- **Status bar**: round, phase, fear, blight, and the invader explore, build and ravage slots.
-- **Log**: off the main screen, opened from the menu as a modal dialog (see the design goal below).
-
-### Design goal: everything needed to act fits on one screen
-
-The player should be able to see all the information they need to make the current decision at once, without scrolling the page. That means the board, the decision and its options, the spirit's panel (tracks, growth, innates, hand) and the status line (round, phase, fear, blight, invader cards) are always on screen together.
-
-Anything that does not help with the decision is kept off the screen until asked for, and shown on top of the game while it is open:
-- **The log** is hidden by default. A menu item opens it as a modal dialog that the player closes when done.
-- Other reference material gets the same treatment: the discard pile, special rules, card text, and the game's number and seed. The hamburger menu in the status line is where these open from.
-
-Rules of thumb that follow from it:
-- A new element on the main screen has to be something the player acts on or needs to see to act. If it only explains what happened, it goes off-screen.
-- Where the screen is too small for everything, the panels scroll inside themselves (the right-hand column already does), and the page itself does not.
-- The page is checked at a normal laptop window size (about 1400 x 900) and zoomed out, since browser zoom is how players fit more on screen.
-
-### Design goal: every decision is something you drag
-
-For many players it is more natural when everything they do in a UI is moving something physical, so every decision should, where it can, read as "drag this onto that". Moving tokens already works that way (drag a token onto a land). The goal is to carry it through every decision the game asks for, not only moving tokens. In particular **powers are dragged onto their targets**: a power card or an innate power dropped on a land it can target, or on a spirit it can target, depending on what the power targets. Other decisions follow the same idea where there is a natural thing and place for it, for example dragging a card you may gain onto your hand, or dragging a presence from a track onto the land it is placed on.
-
-The engine and server are shaped for this already:
-- A decision's options say *a thing together with where it goes*, never two separate decisions: a move is a token with its destination, and a power is an action with its target (`TargetedAction`, the "act" option kind). The client does not need to ask the server anything while the player drags, because everything a thing can be dropped on is known from the decision's options.
-- Targets have one generic form. A power that targets a spirit is offered with each spirit it can target, even when there is only one (solo play), and a growth action targets the spirit growing, so a UI can treat every power and action the same way: drop it on its target. That is why spirit targets are kept in the options even though a solo player has no choice.
-- Dropping something where it cannot go, or releasing it away from any target, puts it back (the same as tokens today).
-
-What is built now is the click path (pick the action, then click its target) and highlighting what a power can target while the pointer is on it. Dragging a card or an innate power onto a land or a spirit, and dragging a growth action onto the spirit, is not built. When it is, the drop targets are the lands on the island and the spirit panels, and the option the pair names is what is sent. Decisions that are not yet a thing-and-where (a plain list of choices such as "Done", picking which card to gain, answering a yes or no) need looking at one by one: some have a natural thing and place to drag between, and some will stay as buttons.
-
-Client state: `gameId`, `checkpointVersion`, `picks[]`, the cached `StaticView` and the last response. Everything else comes from the server.
-
-Assets: copy the token, icon and track images from `SpiritIsland.Maui/Resources/Images` into `wwwroot/img`. Cards are drawn from data for now, with no card art.
-
-## Phases
-
-Each phase ends with something that runs.
-
-### Phase 3: minimal client (built)
-Vite + Preact + TypeScript in `SpiritIsland.Web/client/`, with types generated from the server's OpenAPI document, built into `wwwroot/` and served by `SpiritIsland.Web`. It has the new-game screen (and a list of saved games), the island SVG with highlighted options, the decision panel with Undo, a plain status bar and spirit panel (energy, elements, cards), and `localStorage` for picks.
-- **Exit:** a whole game can be played in the browser, ugly but complete. Met: games were played from the new-game screen to a Victory/Defeat screen in a real browser (see "Found by playing whole games" above for the engine bugs that stopped six spirits).
-
-Running it:
 - `cd SpiritIsland.Web/client && npm install` once.
 - **Built:** `npm run build` (regenerates the types, type-checks, writes `wwwroot/`), then `dotnet run --project SpiritIsland.Web` and open http://localhost:5000.
-- **From other devices on your network:** add `--lan` after `--`, as in `dotnet run --project SpiritIsland.Web -- --lan`. The server then listens on every network interface (keeping the port it would have used, 5000 unless `--urls` says otherwise) and prints the addresses to type on the other device. Windows asks to allow the program through its firewall the first time. There is no login, so anyone who can reach the computer on that network can play and see the games; without `--lan` only this computer can connect.
-- **From the internet:** add `--wan` (it includes `--lan`). The server asks the router, over UPnP (an Internet Gateway Device, using the Mono.Nat package), to forward its TCP port: leased for 1 hour, renewed every 30 minutes, and removed when the server stops normally (if it is killed, the lease runs out by itself). It logs the outside address to use and tries that address from the server as a check; the check can fail while forwarding works, because many routers do not send a request from inside back to their own outside address, so also try it from a phone with Wi-Fi off. If no router answers, or it refuses (the port is already forwarded elsewhere), that is logged and the server carries on on the local network. It warns when the router's outside address is a private or carrier-shared one (it cannot be reached from outside) and when the access token is still "blue32". This is not tested against a real router yet: the tests use a fake one (`WanPortForwarder`, `IRouter`), and `MonoNatRouter` is the only part that talks UPnP.
-- **Access token:** every API call must carry the shared token in an `X-Access-Token` header; otherwise it is a 401. The token is the constant `AccessToken.Value` (`SpiritIsland.Web/AccessToken.cs`, "blue32" to start with); change it there. The page and its scripts are served without it (a browser cannot add a header to those), so the client asks for the token when its first call is turned down, keeps it in `localStorage`, and sends it from then on; if a saved token stops working it asks again. It is one token for everyone, with no login and over plain HTTP, so it only keeps casual visitors out. Anything else that calls the API (a script, a test client) has to send the header too.
 - **Hot reload:** `dotnet run --project SpiritIsland.Web --urls http://localhost:5080`, and in `client/` run `npm run dev`; Vite proxies `/api` to the server.
+- **From other devices on your network:** add `--lan` after `--`, as in `dotnet run --project SpiritIsland.Web -- --lan`. The server then listens on every network interface and prints the addresses to type on the other device. Windows asks to allow the program through its firewall the first time. Without `--lan` only this computer can connect.
+- **From the internet:** add `--wan` (it includes `--lan`). The server asks the router, over UPnP (Mono.Nat), to forward its TCP port: leased for 1 hour, renewed every 30 minutes, removed when the server stops normally. It logs the outside address and tries it from the server as a check; the check can fail while forwarding works, because many routers do not loop back, so also try it from a phone with Wi-Fi off. If no router answers or it refuses, that is logged and the server carries on on the local network. It warns when the router's outside address is private or carrier-shared, and when the access token is still "blue32". It has been tried on a real router and works. The tests use a fake one (`WanPortForwarder`, `IRouter`); `MonoNatRouter` is the only part that talks UPnP.
 - Building `SpiritIsland.Web` writes `client/openapi.json`; `npm run gen` turns it into `client/src/api/types.ts`. Both are committed.
 
-How the client works, in short:
-- It keeps `gameId`, `checkpointVersion`, `picks[]`, the static view and the last response. `localStorage` holds the version and picks per game, so a refresh replays the action in progress.
-- A pick is sent as `{ checkpointVersion, picks: [...picks, pick] }`. A 200 replaces the picks with the server's list; a 409 (stale) takes the server's state and drops the picks with a notice; a 400 shows the message and changes nothing.
-- Undo sends the picks without the last one. Every option is a button in the decision panel; options that are a space or a token are also highlighted and clickable on the island.
-- The island is drawn in the server's own units (about 1.5 wide), so strokes are in screen pixels (`vector-effect: non-scaling-stroke`).
-- Tokens are coloured circles with their text for now; pictures come with Phase 4.
+## Still open
 
-### Phase 4: full player panels (built)
-The log, prompt details, the spirit panel (tracks, growth, innate powers, special rules, cards with their text), token pictures and move arrows. What is left from the original list is a fuller status bar and the other arrows.
+**Engine and oracle**
+- **The engine fixes are on `web`, not `main`.** They reach `main` when `web` is merged.
+- **Every-spirit coverage is shallow.** `EverySpirit_Tests` plays each spirit for 100 random picks and fails on any engine error (its `KnownFailures` list is empty; add a spirit there only while a known engine bug stops it). It only finds failures reachable early. Late-game saves (many tokens, blight cascades) and games played to the end are untested, as is the oracle's cost late in a game (`OracleCost_Tests` measured about 7 ms a request in rounds 1-4).
+- **Prompts that time out.** The oracle gives up after 30 s waiting for the engine to reach a decision (`Settle`). `todo.txt` lists Ravage and Build prompts timing out as needing tests; they may surface as 500s.
 
-### Phase 5: polish (pick as needed)
-- **One screen.** Move the log into a modal dialog opened from the hamburger menu, and check the rest of the main screen against the "everything needed to act fits on one screen" goal (first candidates: the discard list and the special rules).
-- **Tokens jumping.** Positions are computed fresh each request, so tokens may move when others come or go. If that's distracting, send ordered slot lists and port the slot-assignment part of `ManageInternalPoints` (~100 lines) to TypeScript.
-- **Drag every decision.** Drag a power card or an innate power onto the land or spirit it targets, and a growth action onto the spirit; then go through the other decisions one by one and make each a drag where it has a natural thing and place (see "every decision is something you drag").
-- Island rotation to fit the screen (Maui computes this from the corners).
-- Response diffs (`ObservationHistory` pattern) if the payload size matters.
-- Mobile layout.
+**Dragging**
+- **Spirit targets in multiplayer.** When several spirits are eligible, their badges should appear next to the player's own so one can be chosen. Only a single spirit exists in solo play, so this is untested.
+- **The major and minor decks on screen**, so that gaining a card is a drag from the deck. Today the choice of deck is two buttons in the decision panel, and only the cards drawn show in the Draw area.
+- **The other decisions**, one by one (a plain list of choices such as "Done", answering yes or no): some have a natural thing and place to drag between, some stay as buttons.
+- **Not tried:** touch screens, and dragging an innate power, a growth action or the destroyed-presence pile in a real game (they share the code that was tried).
 
-## Possible enhancements
+**Looks and information**
+- **Game info:** adversary, level and its description (`AdversaryView` already has the name, level and rules; a longer description needs adding), opened from the menu as a dialog.
+- **Counts as disks.** A stack shows as tokens on a red disk (5) and white disks (1), as in the physical game, instead of "x7". Try it on a busy land first, since it competes with the token for room.
+- **Damage as marks.** A damaged city or town gets evenly spread red slashes instead of the remaining-health number.
+- **Tokens jumping.** Positions are computed fresh each request, so tokens may move when others come or go. If that is distracting, send ordered slot lists and port the slot-assignment part of `ManageInternalPoints` (~100 lines) to TypeScript.
+- **Island rotation** to fit the screen (MAUI computes it from the corners).
+- **Mobile layout.**
+- **Response diffs** (`ObservationHistory` pattern), if the payload size matters.
 
-Ideas for the client, in the order they look worth doing. None is committed to; each is a candidate for Phase 5. The first group is cheap and fixes real space or clarity problems, the second wants a small decision first, the third goes with the "every decision is something you drag" work, and the last are ideas to look at again once the rest is in.
-
-**Cards and space (do first)**
-1. **In play above Hand.** The cards in play are the ones being acted with, so they go first.
-2. **Hide the hand unless it is needed.** When the player is not choosing cards to play, the hand shows as a count that opens on a click. When a decision is about the hand (playing cards), it opens by itself.
-3. **Hide the discard unless it is needed.** Same rule: shown when choosing a card to reclaim or forget, otherwise a count that opens on a click. Items 2 and 3 are what make the spirit panel shorter.
-4. **Coin and speed before the words on a card, elements after.** A reorder of the card line.
-5. **Game info.** Adversary, level and its description (the server already sends the adversary's name, level and rules in `AdversaryView`), opened from the hamburger menu as a dialog like the log, so it takes no room on the main screen. A longer description would need adding to the view.
-
-**Looks, once the layout is settled**
-6. **One icon for speed and energy cost.** A coin carrying the cost, with fast (red) or slow (blue) as its decoration colour. Try a coloured ring around the coin first; it must stay readable at about 24 pixels.
-7. **Counts as disks.** A stack shows as tokens on top of a red disk (5) and white disks (1), as in the physical game, instead of the "x7" text. Try it on a busy land before committing, since it competes with the token for room.
-8. **Damage as marks.** A damaged city or town gets evenly spread red slashes or Xs instead of the remaining-health number. Keep it to cities and towns, where damage varies.
-
-**With the drag work (see "every decision is something you drag")**
-9. **Presence tracks as tokens sitting on icons.** It matches the physical board and makes dragging presence from a track onto a land natural. A bigger change to how the spirit panel draws tracks.
-10. **The minor and major power decks on screen.** So that gaining a card can be a drag from the deck. Today those choices are buttons in the decision panel.
-
-**Look at again later**
-11. **Tooltips made visible by dragging a magnifying glass onto an item.** Hover tooltips already work with a mouse, so this only earns its place on touch screens (no hover); treat it as part of the mobile work.
-12. **Terrain backgrounds** on the lands, using the terrain pictures the desktop apps have. Check that tokens and the green target outline stay easy to read; a soft overlay may be needed.
-13. **A popup that shows all the cards of a group** (draw pile, hand, discard) in a scrollable list of whole cards, when a card's information is asked for. It wants whole-card pictures, and cards are drawn from data for now, so it waits on deciding whether to use real card artwork.
-14. **A big and a small view for each of the cards, the spirit panel and the board.** All three always visible, big showing every detail and small only the bare minimum. This is a layout system rather than a feature (every element needs two designs and something has to choose which view each gets, by hand or by what the player is acting on). Items 1 to 3 apply the same idea to the cards; do those first and see whether this is still needed.
+**Ideas to look at again later**
+- A popup showing all the cards of a group (draw pile, hand, discard) as whole cards. It wants card artwork, which is not decided.
+- A big and a small view of each of the cards, the spirit panel and the board, all always visible. This is a layout system rather than a feature; the folding card areas already cover part of it.
 
 ## Multiplayer-ready choices
 
@@ -249,6 +188,5 @@ First step, if it ever comes to this: a small spike, a WASM console project that
 
 - Multiplayer and the coordinator.
 - WASM.
-- Accounts, authentication and hosting on the internet. The server is local only for now.
+- Accounts and real authentication. The shared access token and `--wan` are a stopgap.
 - Changes to the MCP server.
-
