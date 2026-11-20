@@ -18,6 +18,8 @@ interface Props {
   selected: SourceKey | null;
   onSelect(source: SourceKey | null): void;
   disabled: boolean;
+  /** Lands are drawn with their terrain's picture (otherwise a flat colour). */
+  pictures: boolean;
   onChoose(optionId: string): void;
 }
 
@@ -75,7 +77,7 @@ function useUnitsPerPixel(svg: { current: SVGSVGElement | null }, worldWidth: nu
   return unit;
 }
 
-export function Island({ staticView, view, options, hovered, hoveredSource, moves, selected, onSelect, disabled, onChoose }: Props) {
+export function Island({ staticView, view, options, hovered, hoveredSource, moves, selected, onSelect, disabled, pictures, onChoose }: Props) {
   const { x, y, width, height } = staticView.worldBounds;
   const { bySpace, byToken } = boardOptions(options);
   const tokensBySpace = new Map(view.spaces.map(s => [s.id, s.tokens]));
@@ -160,7 +162,7 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
       onPointerMove={dragTo} onPointerUp={endDrag} onPointerCancel={() => { setDrag(null); setOver(null); }}
     >
       <defs>
-        {terrainPicture.map(([, name]) => (
+        {pictures && terrainPicture.map(([, name]) => (
           <pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width={width / TILES_ACROSS} height={width / TILES_ACROSS}>
             <image href={`/img/terrain/${name}.jpg`} width={width / TILES_ACROSS} height={width / TILES_ACROSS} preserveAspectRatio="none" />
           </pattern>
@@ -181,7 +183,7 @@ export function Island({ staticView, view, options, hovered, hoveredSource, move
           <g key={space.id} data-space={space.id}>
             <polygon
               points={space.corners.map(c => `${c.x},${c.y}`).join(' ')}
-              fill={pictureOf(space.terrain) ? `url(#terrain-${pictureOf(space.terrain)})` : fillOf(space.terrain)}
+              fill={pictures && pictureOf(space.terrain) ? `url(#terrain-${pictureOf(space.terrain)})` : fillOf(space.terrain)}
               stroke-width={pixel * (reachable || option ? 4 : hoveredSpaces.has(space.id) ? 5 : 1.5)}
               class={['space', option ? 'choosable' : '', reachable ? 'destination' : '', hoveredSpaces.has(space.id) ? 'hovered' : ''].join(' ')}
               onClick={onClick}

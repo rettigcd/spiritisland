@@ -15,6 +15,13 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
   const [hovered, setHovered] = useState<OptionView | null>(null);
   const [sideWidth, setSideWidth] = useSideWidth();
   const [logOpen, setLogOpen] = useState(false);
+  // Lands drawn with their terrain's picture or a flat colour: remembered between visits (pictures unless the player turned them off)
+  const [landPictures, setLandPictures] = useState(() => { try { return localStorage.getItem('landPictures') !== 'off'; } catch { return true; } });
+  const toggleLandPictures = () => {
+    const next = !landPictures;
+    setLandPictures(next);
+    try { localStorage.setItem('landPictures', next ? 'on' : 'off'); } catch { /* it just is not remembered */ }
+  };
   const [picked, setPicked] = useState<SourceKey | null>(null); // where the move or action being made starts, once the player has picked it
   const [pointedAt, setPointedAt] = useState<SourceKey | null>(null); // the action the pointer is on: what it could target is shown
   const { response, staticView, busy } = state;
@@ -62,6 +69,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
         <Menu items={[
           { label: 'Back to games', onSelect: actions.leave },
           { label: 'Replay game', title: 'Start this game again from the beginning (same seed)', disabled: !setup || state.busy, onSelect: playAgain },
+          { label: `Land backgrounds: ${landPictures ? 'pictures' : 'flat colours'}`, title: 'Switch between terrain pictures and flat colours', onSelect: toggleLandPictures },
           { label: 'Log', title: 'What has happened in this game', onSelect: () => setLogOpen(true) },
         ]} />
       </StatusBar>
@@ -87,7 +95,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
               )}
             </div>
             {staticView
-              ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} hoveredSource={pointedAt} moves={moves} selected={selected} onSelect={setPicked} disabled={busy} onChoose={actions.choose} />
+              ? <Island staticView={staticView} view={response.view} options={options} hovered={hovered} hoveredSource={pointedAt} moves={moves} selected={selected} onSelect={setPicked} disabled={busy} pictures={landPictures} onChoose={actions.choose} />
               : <p>Loading the board...</p>}
           </div>
           <DecisionPanel
