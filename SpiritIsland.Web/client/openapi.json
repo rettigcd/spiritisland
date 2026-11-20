@@ -715,6 +715,12 @@
               "null",
               "string"
             ]
+          },
+          "use": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -209,6 +209,7 @@ export interface components {
             /** Format: int32 */
             action?: null | number;
             toSpirit?: null | string;
+            use?: null | string;
         };
         OptionView: {
             id: string;

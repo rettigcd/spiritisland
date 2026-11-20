@@ -121,7 +121,7 @@ public sealed class OracleSession : IDisposable {
 				SyncBaseline( ref moved, firstLook );
 			}
 			if( _pending is not null )
-				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ), CardOf( o ) ) )],
+				return new DecisionView( _pending.Prompt, [.. OptionIds( _pending ).Zip( _pending.Options, ( id, o ) => new OptionView( id, o.Text, OptionTargets.For( o, _game.Spirit ) with { Use = CardUseOf( _pending, o ) }, CardOf( o ) ) )],
 					PromptDetails.For( _pending.Prompt ) );
 			if( _game.EngineTask!.IsCompleted ) {
 				SyncBaseline( ref moved, firstLook );
@@ -131,6 +131,10 @@ public sealed class OracleSession : IDisposable {
 				throw new TimeoutException( "The game engine did not reach a decision within 30 seconds." );
 		}
 	}
+
+	/// <summary> What choosing a card does with it (play, add to hand, reclaim, forget, discard...), when the decision is a choice of cards. </summary>
+	static string? CardUseOf( IDecision decision, IOption option )
+		=> decision is SpiritIsland.A.PowerCard cards && option is PowerCard card && cards.CardOptions.Contains( card ) ? cards.Use( card ).ToString() : null;
 
 	/// <summary> The card's details, for an option that is a card (or a card together with what it targets). </summary>
 	static CardView? CardOf( IOption option )

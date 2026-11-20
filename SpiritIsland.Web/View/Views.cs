@@ -108,7 +108,8 @@ public record OptionView( string Id, string Label, OptionTarget Target, CardView
 /// <param name="Group">For growth, the index of the growth group (in the static view's GrowthGroups).</param>
 /// <param name="Action">For growth, the index of the action within that group's Actions.</param>
 /// <param name="ToSpirit">For an act, the id of the spirit it targets.</param>
-public record OptionTarget( string Kind, string? Space = null, string? Token = null, string? Spirit = null, string? Card = null, string? Track = null, int? Slot = null, string? ToSpace = null, int? Group = null, int? Action = null, string? ToSpirit = null );
+/// <param name="Use">For a card, what choosing it does with it (the engine's CardUse): "Play", "AddToHand", "Reclaim", "Forget", "Discard", "Repeat", "Gift", "Impend" or "Accept".</param>
+public record OptionTarget( string Kind, string? Space = null, string? Token = null, string? Spirit = null, string? Card = null, string? Track = null, int? Slot = null, string? ToSpace = null, int? Group = null, int? Action = null, string? ToSpirit = null, string? Use = null );
 
 public record ResultView( string Outcome, string Cause );
 
