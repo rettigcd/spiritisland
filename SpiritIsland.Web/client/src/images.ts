@@ -33,6 +33,14 @@ export const PRESENCE_IMAGE = '/img/presence/red.png';
  * lowercase, quotes dropped, anything but letters and digits an underscore, trailing underscores dropped, starting and ending in a letter.
  */
 export function trackImageUrl(code: string): string {
+  return `/img/tracks/${resourceName(code)}.png`;
+}
+
+/** The spirit's round badge (public/img/badges, named from the spirit's name the same way). */
+export const badgeUrl = (spiritName: string) => `/img/badges/${resourceName(spiritName)}.png`;
+
+/** The name the MAUI app gives a picture of something called <code>: lowercase, quotes dropped, anything but letters and digits an underscore. */
+function resourceName(code: string): string {
   let name = '';
   for (const ch of code) {
     if (ch === "'") continue;
@@ -41,7 +49,7 @@ export function trackImageUrl(code: string): string {
   while (name.length > 1 && name.endsWith('_')) name = name.slice(0, -1);
   if (!/^[a-z]/.test(name)) name = 'z' + name;
   if (!/[a-z]$/.test(name)) name += 'z';
-  return `/img/tracks/${name}.png`;
+  return name;
 }
 
 export const isPresence = (image: string) => image.startsWith('Presence:');

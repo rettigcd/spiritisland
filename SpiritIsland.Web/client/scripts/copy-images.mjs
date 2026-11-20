@@ -106,6 +106,16 @@ for (const name of ['ocean', 'jungle', 'wetlands', 'sand', 'mountains', 'none'])
   console.log(`terrain/${name}.jpg`);
 }
 
+// The spirits' round badges (200x200, shrunk): img/badges/<resource name>.png, from the MAUI app's bdg_<resource name>.png
+mkdirSync(join(target, 'badges'), { recursive: true });
+for (const file of readdirSync(join(trackSource, '..', 'badge')))
+  if (file.startsWith('bdg_') && file.endsWith('.png')) {
+    const png = PNG.sync.read(readFileSync(join(trackSource, '..', 'badge', file)));
+    const small = shrink(png, 128);
+    writeFileSync(join(target, 'badges', file.slice('bdg_'.length)), PNG.sync.write(small, { colorType: 6 }));
+    console.log(`badges/${file.slice('bdg_'.length)}  ${png.width}x${png.height} -> ${small.width}x${small.height}`);
+  }
+
 // The spirits' pictures (JPEGs about 600 pixels wide, used as they are): img/spirits/<name>.jpg
 mkdirSync(join(target, 'spirits'), { recursive: true });
 for (const file of readdirSync(join(source, 'spirits')))
