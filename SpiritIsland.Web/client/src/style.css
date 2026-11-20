@@ -136,6 +136,9 @@ button.destroyed-pile { cursor: pointer; }
 button.slot-token { cursor: pointer; }
 /* A slot whose presence can be picked now (or picked up): a thick ring around the presence. */
 .slot-token.choosable, .slot-token.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
+.slot-token.pickable, .destroyed-pile.pickable { touch-action: none; cursor: grab; }
+/* The presence being dragged from the panel to a land, under the pointer. */
+.presence-carried { position: fixed; left: 0; top: 0; z-index: 1000; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .5)); }
 .slot-token.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }

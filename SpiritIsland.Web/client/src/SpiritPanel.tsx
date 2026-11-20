@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
-import { destroyedSource, slotSource, sourceOf } from './moves';
+import { destinationsOf, destroyedSource, slotSource, sourceOf } from './moves';
 import { PRESENCE_IMAGE, presenceHue, presenceImageUrl, trackImageUrl } from './images';
 import type { OptionTarget } from './api/model';
 import type { SourceKey } from './moves';
@@ -62,7 +62,58 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   });
 
   const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
-  const pick = (source: SourceKey) => () => { if (!busy) onSelect(selected === source ? null : source); };
+  const pick = (source: SourceKey) => () => { if (!busy && !justDragged.current) onSelect(selected === source ? null : source); };
+
+  // ---- Presence picked up from a track (or the destroyed pile) can be dragged onto a land it can go to. Press, move, release on a land:
+  // ---- it is placed there; released anywhere else, it is put down. A press and release without moving is a click (pick, then click a land).
+  const [carrying, setCarrying] = useState(false);
+  const carriedPicture = useRef<HTMLImageElement | null>(null);
+  const pointer = useRef({ x: 0, y: 0 });
+  // The picture under the pointer is moved directly, on every pointer move, rather than by re-drawing the panel.
+  const placeCarried = () => {
+    const el = carriedPicture.current;
+    if (!el) return;
+    el.style.left = `${pointer.current.x}px`;
+    el.style.top = `${pointer.current.y}px`;
+    if (el.dataset.hue) el.style.filter = `hue-rotate(${el.dataset.hue}deg) drop-shadow(0 3px 4px rgba(0, 0, 0, .5))`; // the red picture, turned to the spirit's colour
+  };
+  const justDragged = useRef(false); // the click that can follow the end of a drag is not a pick
+  const stopCarrying = useRef<(() => void) | null>(null);
+  useEffect(() => () => stopCarrying.current?.(), []);
+  const drag = (source: SourceKey) => (e: PointerEvent) => {
+    if (busy || e.button !== 0) return;
+    e.preventDefault(); // no text selection while dragging
+    const startX = e.clientX, startY = e.clientY;
+    let moved = false;
+    const onMove = (ev: PointerEvent) => {
+      if (!moved && Math.hypot(ev.clientX - startX, ev.clientY - startY) > 5) { moved = true; onSelect(source); } // picked, so the lands it can reach show
+      pointer.current = { x: ev.clientX, y: ev.clientY };
+      if (moved) { setCarrying(true); placeCarried(); }
+    };
+    const finish = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onCancel);
+      stopCarrying.current = null;
+      setCarrying(false);
+    };
+    const onUp = (ev: PointerEvent) => {
+      finish();
+      if (!moved) return;
+      justDragged.current = true;
+      setTimeout(() => { justDragged.current = false; }, 0);
+      const land = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('[data-space]')?.getAttribute('data-space');
+      const move = land ? destinationsOf(moves.get(source) ?? []).get(land) : undefined;
+      if (move) onChoose(move.id); else onSelect(null);
+    };
+    const onCancel = () => { finish(); if (moved) onSelect(null); };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onCancel);
+    stopCarrying.current = finish;
+  };
+  const presenceTokenImage = `Presence:${spirit.id}`;
+  const ownPresencePicture = presenceImageUrl(presenceTokenImage);
   const pile = destroyedSource(spirit.id);
 
   return (
@@ -104,16 +155,16 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         <>
           {/* Beside the tracks: the energy there is now, and the presence that has been destroyed (click it to place it). */}
           <div class="track-row">
-            <Track title="Energy" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+            <Track title="Energy" track="energy" slots={info.energyTrack} revealed={spirit.presence.energy.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} drag={drag} busy={busy} choose={choose} />
             <div class="track-side big-coin"><Coin value={spirit.energy} /></div>
           </div>
           <div class="track-row">
-            <Track title={`Card plays: ${spirit.presence.cardPlaysPerTurn}`} track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} busy={busy} choose={choose} />
+            <Track title={`Card plays: ${spirit.presence.cardPlaysPerTurn}`} track="cardPlays" slots={info.cardPlayTrack} revealed={spirit.presence.cardPlays.revealed} optionFor={slotOption} spirit={spirit.id} moves={moves} selected={selected} pick={pick} drag={drag} busy={busy} choose={choose} />
             <div class="track-side">
               {0 < spirit.presence.destroyed && (() => {
                 const picture = <><img src="/img/icons/destroyed.png" alt="" width={54} height={54} /><span class="destroyed-count">{spirit.presence.destroyed}</span></>;
                 return moves.has(pile)
-                  ? <button type="button" class={`destroyed-pile pickable ${selected === pile ? 'selected' : ''}`} disabled={busy} onClick={pick(pile)} title={`Place destroyed presence (${spirit.presence.destroyed} in the pile), then choose a land`}>{picture}</button>
+                  ? <button type="button" class={`destroyed-pile pickable ${selected === pile ? 'selected' : ''}`} disabled={busy} onClick={pick(pile)} onPointerDown={drag(pile)} title={`Place destroyed presence (${spirit.presence.destroyed} in the pile), then choose a land`}>{picture}</button>
                   : <span class="destroyed-pile" title={`${spirit.presence.destroyed} presence destroyed`}>{picture}</span>;
               })()}
             </div>
@@ -143,6 +194,11 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           {info.specialRules.map(r => <p key={r.title}><strong>{r.title}.</strong> {r.description}</p>)}
         </details>
       )}
+      {carrying && (
+        <img class="presence-carried" src={ownPresencePicture ?? PRESENCE_IMAGE} alt="" width={45} height={45} draggable={false}
+          ref={el => { carriedPicture.current = el; placeCarried(); }}
+          data-hue={ownPresencePicture ? undefined : presenceHue(presenceTokenImage)} />
+      )}
     </section>
   );
 }
@@ -158,11 +214,13 @@ interface TrackProps {
   moves: ReadonlyMap<SourceKey, readonly OptionView[]>;
   selected: SourceKey | null;
   pick(source: SourceKey): () => void;
+  /** Starts dragging the presence on this start (a press on it). */
+  drag(source: SourceKey): (e: PointerEvent) => void;
   busy: boolean;
   choose(o: OptionView | undefined): () => void;
 }
 
-function Track({ title, track, slots, revealed, optionFor, spirit, moves, selected, pick, busy, choose }: TrackProps) {
+function Track({ title, track, slots, revealed, optionFor, spirit, moves, selected, pick, drag, busy, choose }: TrackProps) {
   return (
     <div class="track">
       <span class="track-label">{title}</span>
@@ -186,7 +244,7 @@ function Track({ title, track, slots, revealed, optionFor, spirit, moves, select
             <li key={i} class={`slot ${open ? 'revealed' : 'covered'}`}>
               <img class="slot-icon" src={trackImageUrl(slot.id)} alt={slot.label} title={slot.label} width={40} height={53} loading="lazy" decoding="async" />
               {clickable
-                ? <button type="button" class={classes} disabled={busy} onClick={clickable} title={option ? slot.label : 'Pick up this presence, then choose a land'}>{picture}</button>
+                ? <button type="button" class={classes} disabled={busy} onClick={clickable} onPointerDown={!option && movable ? drag(source) : undefined} title={option ? slot.label : 'Pick up this presence, then choose a land'}>{picture}</button>
                 : !open && <span class={classes}>{picture}</span>}
             </li>
           );
