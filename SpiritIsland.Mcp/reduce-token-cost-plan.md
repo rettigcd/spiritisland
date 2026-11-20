@@ -138,7 +138,7 @@ Keep the LLM out of routine moves:
 
 - Add a `HeuristicAgent` next to [RandomAgent.cs](Agent/RandomAgent.cs), with a configurable policy: growth priorities, which Presence track to focus on, and which threats to defend first.
 - The LLM writes and tunes that policy from game logs and [GAMELOG.md](GAMELOG.md). It steps in only at decisions the heuristic marks as close.
-- Simulated games then cost no tokens, which fits the strategy-discovery goal in [mcp_server_info.md](../mcp_server_info.md).
+- Simulated games then cost no tokens, which fits the strategy-discovery goal in [mcp_server_info.md](../docs/mcp_server_info.md).
 
 Changes that need no code:
 
