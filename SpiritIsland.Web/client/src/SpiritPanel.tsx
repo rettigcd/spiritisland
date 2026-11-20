@@ -8,6 +8,7 @@ import type { SourceKey } from './moves';
 import { rangeText } from './text';
 import { Coin, Elements, Speed } from './icons';
 import { spiritImageUrl } from './spiritImage';
+import { hintDone } from './hints';
 
 interface Props {
   spirit: SpiritView;
@@ -64,9 +65,57 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   });
 
   const choose = (o: OptionView | undefined) => () => { if (o && !busy && !justDragged.current) onChoose(o.id); };
-  // A card that is simply chosen (played, discarded) is dragged onto the area it goes to: 'inPlay' for a card from the hand, 'discard' for one in play or in hand.
-  const dragCard = (o: OptionView | undefined, to: readonly string[]) => o ? drag(null, true, { option: o, to }) : undefined;
+  // A card that is simply chosen is dragged onto the area its use puts it in: played onto In play, drawn or reclaimed onto the Hand, discarded
+  // onto the Discard. What choosing it does comes from the engine (the option's `use`); a use with no area (forget, repeat...) is click only.
+  const dragCard = (o: OptionView | undefined) => {
+    const to = o ? (AREA_OF_USE[o.target.use ?? ''] ?? []) : [];
+    return o && to.length > 0 ? drag(null, true, { option: o, to }) : undefined;
+  };
   const rulesDialog = useRef<HTMLDialogElement | null>(null);
+  // Choosing a spirit as the target by clicking: the badge is behind the panel's content, so whether the pointer is on it is judged by where it is drawn.
+  const badge = useRef<HTMLImageElement | null>(null);
+  const onBadge = (x: number, y: number) => {
+    const r = badge.current?.getBoundingClientRect();
+    return !!r && r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
+  };
+
+  // ---- Details of a card or an innate power: a popover. Hold a finger (or pen) still on it for a moment, or rest the mouse on it, or
+  // ---- right-click it. A touch screen has no hover, so this is how it reads a card; it never clashes with a drag, which moves.
+  const [peeking, setPeeking] = useState<{ x: number; y: number; content: ComponentChildren } | null>(null);
+  const peekTimer = useRef<number | undefined>(undefined);
+  const peek = (content: ComponentChildren): PeekHandlers => {
+    const show = (x: number, y: number) => { setPeeking({ x, y, content }); hintDone(PEEK_HINT); };
+    const hide = () => { window.clearTimeout(peekTimer.current); setPeeking(null); };
+    return {
+      onPointerDown: (e: PointerEvent) => {
+        if (e.pointerType === 'mouse') { hide(); return; } // pressing with a mouse is for clicking or dragging
+        const x0 = e.clientX, y0 = e.clientY;
+        window.clearTimeout(peekTimer.current);
+        peekTimer.current = window.setTimeout(() => show(x0, y0), PEEK_HOLD_MS);
+        const stop = () => {
+          hide();
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', stop);
+          window.removeEventListener('pointercancel', stop);
+        };
+        const onMove = (ev: PointerEvent) => { if (Math.hypot(ev.clientX - x0, ev.clientY - y0) > 5) stop(); };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', stop); // lifting the finger closes it: a peek
+        window.addEventListener('pointercancel', stop);
+      },
+      onPointerEnter: (e: PointerEvent) => {
+        if (e.pointerType !== 'mouse') return; // a finger has no hover
+        const x = e.clientX, y = e.clientY;
+        window.clearTimeout(peekTimer.current);
+        peekTimer.current = window.setTimeout(() => show(x, y), PEEK_HOVER_MS);
+      },
+      onPointerLeave: hide,
+      onContextMenu: (e: MouseEvent) => { e.preventDefault(); show(e.clientX, e.clientY); },
+    };
+  };
+  useEffect(() => () => window.clearTimeout(peekTimer.current), []);
+  // The Forget area is there only while the decision is to forget one of this spirit's cards.
+  const forgetting = options.some(o => o.target.kind === 'card' && o.target.spirit === spirit.id && o.target.use === 'Forget');
   // Cards this spirit is offered that it does not have yet: drawn, so they appear only in the draw area.
   const owned = new Set([...spirit.hand, ...spirit.inPlay, ...spirit.discard].map(c => c.id));
   const drawn: CardView[] = [];
@@ -129,8 +178,11 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
       if (copy) { copy.style.left = `${ev.clientX}px`; copy.style.top = `${ev.clientY}px`; }
       if (moved && !copyOfButton) { setCarrying(true); placeCarried(); }
       if (moved) {
+        if (!choice) window.dispatchEvent(new CustomEvent('island-over', { detail: document.elementFromPoint(ev.clientX, ev.clientY)?.closest('[data-space]')?.getAttribute('data-space') ?? null })); // the island marks the land under the pointer
         const over = badgeUnder(ev.clientX, ev.clientY);
-        document.querySelectorAll('[data-drop-spirit]').forEach(b => b.classList.toggle('drop-over', b === over));
+        // only a badge this drag can be dropped on (a power that targets that spirit) shows the red ring: presence and tokens cannot go on a badge
+        const aimed = (source && moves.get(source)) || [];
+        document.querySelectorAll('[data-drop-spirit]').forEach(b => b.classList.toggle('drop-over', b === over && aimed.some(o => o.target.toSpirit === b.getAttribute('data-drop-spirit'))));
         const zone = choice ? zoneUnder(button, ev.clientX, ev.clientY) : undefined;
         button.closest('.spirit')?.querySelectorAll('[data-drop-zone]').forEach(z => z.classList.toggle('drop-over', z === zone && choice!.to.includes(z.getAttribute('data-drop-zone')!)));
       }
@@ -141,6 +193,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
       window.removeEventListener('pointercancel', onCancel);
       stopCarrying.current = null;
       copy?.remove();
+      window.dispatchEvent(new CustomEvent('island-over', { detail: null }));
       document.querySelectorAll('.drop-over, .drop-ready').forEach(b => b.classList.remove('drop-over', 'drop-ready'));
       setCarrying(false);
     };
@@ -175,9 +228,14 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   const pile = destroyedSource(spirit.id);
 
   return (
-    <section class={`panel spirit ${reached ? 'reached' : ''}`} style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}>
+    <section
+      class={`panel spirit ${reached ? 'reached' : ''}`} style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}
+      onPointerMove={targetOption ? e => badge.current?.classList.toggle('drop-over', onBadge(e.clientX, e.clientY)) : undefined}
+      onPointerLeave={targetOption ? () => badge.current?.classList.remove('drop-over') : undefined}
+      onClick={targetOption ? e => { if (!busy && !(e.target as HTMLElement).closest('button') && onBadge(e.clientX, e.clientY)) onChoose(targetOption.id); } : undefined}
+    >
       {/* The spirit's badge, behind everything else: where a power that targets this spirit is dropped. */}
-      <img class={`spirit-badge ${reached ? 'ready' : ''}`} src={badgeUrl(spirit.name)} alt="" title={spirit.name} width={72} height={72} draggable={false} data-drop-spirit={spirit.id} />
+      <img ref={badge} class={`spirit-badge ${reached ? 'ready' : ''}`} src={badgeUrl(spirit.name)} alt="" title={spirit.name} width={72} height={72} draggable={false} data-drop-spirit={spirit.id} />
       <h2>
         {spirit.name}{isViewer ? '' : ' (other player)'}
         {info && info.specialRules.length > 0 && <button type="button" class="rules-button" onClick={() => rulesDialog.current?.showModal()} title="This spirit's special rules">✦ Special rules</button>}
@@ -237,7 +295,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           {info.innates.map(innate => (
             <Innate key={innate.name} innate={innate} status={spirit.innates.find(i => i.name === innate.name)?.tierStatus ?? []}
               option={innateOption(innate.name)} start={actionStart(t => t.card === innate.name && t.group == null)} selected={selected}
-              useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
+              useStart={useStart} pointing={pointing} busy={busy} choose={choose} peek={peek} />
           ))}
         </>
       )}
@@ -246,20 +304,21 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           of an area to fold or open it (an empty area stays folded; a folded one shows how many cards it holds). One opens by itself when the
           decision is about one of its cards. A card from the hand is dragged onto In play to play it; a card offered from the draw area onto the Hand. */}
       <Zone zone="inPlay" count={spirit.inPlay.length} wanted={spirit.inPlay.some(c => cardOption(c.id) || cardStart(c.id))} ignoreClick={ignoreClick}>
-        <CardList cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['discard'])} />
+        <CardList cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} peek={peek} dragCard={dragCard} />
       </Zone>
       <Zone zone="hand" count={spirit.hand.length} wanted={spirit.hand.some(c => cardOption(c.id) || cardStart(c.id))} startOpen ignoreClick={ignoreClick}>
-        <CardList cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['inPlay', 'discard'])} />
+        <CardList cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} peek={peek} dragCard={dragCard} />
       </Zone>
       {/* Cards newly brought into the game (drawn from the major or minor deck) and offered to this spirit: not in any other area. */}
       {drawn.length > 0 && (
         <Zone zone="draw" count={drawn.length} wanted startOpen ignoreClick={ignoreClick}>
-          <CardList cards={drawn} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['hand'])} />
+          <CardList cards={drawn} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} peek={peek} detailed dragCard={dragCard} />
         </Zone>
       )}
       <Zone zone="discard" count={spirit.discard.length} wanted={spirit.discard.some(c => cardOption(c.id) || cardStart(c.id))} ignoreClick={ignoreClick}>
-        <CardList cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['hand'])} />
+        <CardList cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} peek={peek} dragCard={dragCard} />
       </Zone>
+      {forgetting && <Zone zone="forget" count={0} wanted={false} ignoreClick={ignoreClick}>{null}</Zone>}
       {info && info.specialRules.length > 0 && (
         <dialog class="rules-dialog" ref={rulesDialog} onClick={e => { if (e.target === rulesDialog.current) rulesDialog.current?.close(); }}>
           <h2>{spirit.name}: special rules</h2>
@@ -267,6 +326,7 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
           <form method="dialog"><button type="submit">Close</button></form>
         </dialog>
       )}
+      {peeking && <PeekPopover at={peeking}>{peeking.content}</PeekPopover>}
       {carrying && (
         <img class="presence-carried" src={ownPresencePicture ?? PRESENCE_IMAGE} alt="" width={45} height={45} draggable={false}
           ref={el => { carriedPicture.current = el; placeCarried(); }}
@@ -364,6 +424,67 @@ function Zone({ zone, count, wanted, startOpen = false, ignoreClick, children }:
   );
 }
 
+/** The card area a card is dropped on, by what choosing it does (the engine's CardUse). */
+const AREA_OF_USE: Record<string, readonly string[]> = { Play: ['inPlay'], AddToHand: ['hand'], Reclaim: ['hand'], Discard: ['discard'], Forget: ['forget'] };
+const USE_TEXT: Record<string, string> = {
+  Play: 'Choose it to play it', AddToHand: 'Choose it to add it to your hand', Reclaim: 'Choose it to reclaim it', Discard: 'Choose it to discard it',
+  Forget: 'Choose it to forget it', Repeat: 'Choose it to repeat it', Gift: 'Choose it to give it', Impend: 'Choose it to impend it',
+};
+
+/** The first-time hint that teaches this (shown in GameScreen until a card's details have been opened once). */
+export const PEEK_HINT = 'peek-card';
+
+/** How long a finger rests on a card before its details open, and how long the mouse rests on one. */
+const PEEK_HOLD_MS = 450;
+const PEEK_HOVER_MS = 500;
+
+/** The handlers that open a card's details (see peek in SpiritPanel). */
+interface PeekHandlers {
+  onPointerDown(e: PointerEvent): void;
+  onPointerEnter(e: PointerEvent): void;
+  onPointerLeave(): void;
+  onContextMenu(e: MouseEvent): void;
+}
+
+/** Floats above the pointer (below it when too near the top), kept on screen. It takes no clicks. */
+function PeekPopover({ at, children }: { at: { x: number; y: number }; children: ComponentChildren }) {
+  const place = (el: HTMLElement | null) => {
+    if (!el) return;
+    const width = Math.min(320, window.innerWidth - 16);
+    el.style.width = `${width}px`;
+    el.style.left = `${Math.max(8, Math.min(at.x - width / 2, window.innerWidth - width - 8))}px`;
+    if (at.y > 280) { el.style.bottom = `${window.innerHeight - at.y + 18}px`; el.style.top = 'auto'; }
+    else { el.style.top = `${at.y + 26}px`; el.style.bottom = 'auto'; }
+  };
+  return <div class="peek" role="tooltip" ref={place}>{children}</div>;
+}
+
+/** A power card in full. */
+function CardDetails({ card, use }: { card: CardView; use?: string | null }) {
+  return (
+    <>
+      <h4><Coin value={card.cost} title="energy to play" speed={card.speed} /> {card.name}</h4>
+      <p><Elements text={card.elements} /></p>
+      <p class="muted">Range {rangeText(card.range)} · {card.target}</p>
+      <p>{card.instructions}</p>
+      {use && USE_TEXT[use] && <p class="peek-use">{USE_TEXT[use]}.</p>}
+    </>
+  );
+}
+
+function InnateDetails({ innate }: { innate: InnateStatic }) {
+  return (
+    <>
+      <h4>{innate.name} <Speed speed={innate.speed} /></h4>
+      <p class="muted">Range {rangeText(innate.range)} · {innate.target}</p>
+      <p>{innate.instructions}</p>
+      <ul class="peek-tiers">
+        {innate.tiers.map((t, i) => <li key={i}><Elements text={t.threshold} /> {t.effect}</li>)}
+      </ul>
+    </>
+  );
+}
+
 interface PickProps {
   /** Set when the power is offered with its targets: the start of its choices. */
   selected: SourceKey | null;
@@ -382,22 +503,24 @@ interface InnateProps extends PickProps {
   option: OptionView | undefined;
   busy: boolean;
   choose(o: OptionView | undefined): () => void;
+  peek(content: ComponentChildren): PeekHandlers;
 }
 
-function Innate({ innate, status, option, start, selected, useStart, pointing, busy, choose }: InnateProps) {
+function Innate({ innate, status, option, start, selected, useStart, pointing, busy, choose, peek }: InnateProps) {
+  const details = peek(<InnateDetails innate={innate} />);
   return (
     <div class="innate">
-      <h4 title={innate.instructions}>
+      <h4 {...details}>
         {innate.name}
         <span class="muted"> <Speed speed={innate.speed} /> · range {rangeText(innate.range)} · {innate.target}</span>
         {start
           ? <button type="button" class={`choosable ${selected === start ? 'selected' : ''}`} disabled={busy} onClick={useStart(start)} {...pointing(start)}>Use</button>
           : option && <button type="button" class="choosable" disabled={busy} onClick={choose(option)}>Use</button>}
       </h4>
-      {/* Which tiers are met is what matters while acting, so that stays on screen; what each one does is in its tooltip. */}
-      <ul class="tiers">
+      {/* Which tiers are met is what matters while acting, so that stays on screen; what each one does is in the details. */}
+      <ul class="tiers" {...details}>
         {innate.tiers.map((t, i) => (
-          <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`} title={t.effect}>
+          <li key={i} class={`tier tier-${(status[i] ?? 'No').toLowerCase()}`}>
             <Elements text={t.threshold} />
           </li>
         ))}
@@ -414,23 +537,26 @@ interface CardListProps extends PickProps {
   choose(o: OptionView | undefined): () => void;
   /** Starts dragging a card that is chosen by clicking (not aimed): onto the area it goes to. */
   dragCard?(o: OptionView | undefined): ((e: PointerEvent) => void) | undefined;
+  peek(content: ComponentChildren): PeekHandlers;
+  /** Each card with its full text, one to a row: for cards being drawn, where the text is what the choice is made on. */
+  detailed?: boolean;
 }
 
-function CardList({ cards, optionFor, startFor, selected, useStart, pointing, busy, choose, dragCard }: CardListProps) {
+function CardList({ cards, optionFor, startFor, selected, useStart, pointing, busy, choose, dragCard, peek, detailed = false }: CardListProps) {
   return (
     <div>
-      <ul class="cards">
+      <ul class={`cards ${detailed ? 'detailed' : ''}`}>
         {cards.map(c => {
           const option = optionFor(c.id);
           const start = startFor(c.id);
           return (
-            <li key={c.id}>
+            <li key={c.id} {...peek(<CardDetails card={c} use={option?.target.use} />)}>
               <button
                 type="button" class={`${option || start ? 'choosable' : ''} ${start && selected === start ? 'selected' : ''}`} disabled={busy || !(option || start)}
                 onClick={start ? useStart(start) : choose(option)} {...(start ? pointing(start) : { onPointerDown: dragCard?.(option) })}
-                title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
               >
                 <Coin value={c.cost} title="energy to play" speed={c.speed} /> {c.name} <span class="card-elements"><Elements text={c.elements} /></span>
+                {detailed && <span class="card-text">Range {rangeText(c.range)} · {c.target}. {c.instructions}</span>}
               </button>
             </li>
           );

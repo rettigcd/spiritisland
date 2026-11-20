@@ -8,7 +8,8 @@ import { LogPanel } from './LogPanel';
 import { Menu } from './Menu';
 import { Resizer, useSideWidth } from './Resizer';
 import { DecisionPanel } from './DecisionPanel';
-import { SpiritPanel } from './SpiritPanel';
+import { PEEK_HINT, SpiritPanel } from './SpiritPanel';
+import { Hint } from './hints';
 import { useFavicon } from './favicon';
 import { StatusBar } from './StatusBar';
 
@@ -75,6 +76,7 @@ export function GameScreen({ state, actions }: { state: GameState; actions: Game
           { label: 'Log', title: 'What has happened in this game', onSelect: () => setLogOpen(true) },
         ]} />
       </StatusBar>
+      <Hint id={PEEK_HINT}>Long-press a power to see its details.</Hint>
       {logOpen && <LogPanel log={response.log} onClose={() => setLogOpen(false)} />}
 
 

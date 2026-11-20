@@ -91,12 +91,9 @@ ul.saved button { width: 100%; }
 /* Making a move: a token that can be picked up, the one that is, the lands it can go to, and the copy that follows a drag. */
 .island .token .ring-move { display: none; }
 .island .token.movable { cursor: grab; touch-action: none; }
-.island .token.movable .ring-move { display: inline; stroke: var(--accent); }
-.island .token.selected .ring-move { stroke: #d33; stroke-dasharray: none; }
 .island .ghost { pointer-events: none; }
 .island.dragging { cursor: grabbing; }
 .island .space.destination { stroke: #2e7d32; cursor: pointer; }
-.island .token.choosable .ring-choose { display: inline; stroke: var(--accent); }
 
 /* The choices are as wide as their text and wrap, so more fit in the space under the board. */
 .decision ul.options { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -126,8 +123,6 @@ ol.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wr
 .destroyed-pile img { width: 100%; height: 100%; display: block; pointer-events: none; }
 .destroyed-count { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; color: #fff; font-weight: 700; text-shadow: 0 0 3px #000, 0 0 3px #000; pointer-events: none; }
 button.destroyed-pile { cursor: pointer; }
-.destroyed-pile.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
-.destroyed-pile.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 .track { position: relative; margin-top: 4px; }
 /* The label sits in the corner of the slots with no row of its own, over the presence floating above them so the number stays readable. */
 .track-label { position: absolute; left: 2px; top: 0; z-index: 2; pointer-events: none; text-shadow: 0 0 3px var(--panel), 0 0 3px var(--panel); font-size: .75em; font-weight: 700; color: var(--muted);
@@ -139,19 +134,15 @@ button.destroyed-pile { cursor: pointer; }
 .slot-token.gone { opacity: .35; } /* presence that could be put back here */
 button.slot-token { cursor: pointer; }
 /* A slot whose presence can be picked now (or picked up): a thick ring around the presence. */
-.slot-token.choosable, .slot-token.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
 .slot-token.pickable, .destroyed-pile.pickable { touch-action: none; cursor: grab; }
 /* The presence being dragged from the panel to a land, under the pointer. */
 .spirit-badge { position: absolute; z-index: -1; top: 8px; right: 10px; width: 72px; height: 72px; border-radius: 50%; pointer-events: none; }
 /* Over the lower part of the badge, with no border or ring, so it does not look like a place to drop. */
 button.target-spirit { position: absolute; top: 56px; right: 17px; z-index: 3; padding: 0 7px; border: 0; box-shadow: none; border-radius: 999px; font-size: .75em; font-weight: 600; color: #fff; background: rgba(0, 0, 0, .6); }
-.spirit-badge.ready { box-shadow: 0 0 0 3px #2e7d32, 0 0 0 6px color-mix(in srgb, #2e7d32 35%, transparent); } /* a power can be dropped here */
-.spirit-badge.drop-over { box-shadow: 0 0 0 4px #d33, 0 0 0 8px color-mix(in srgb, #d33 35%, transparent); }
 /* A copy of the action's button, under the pointer while it is dragged. */
 .carried { position: fixed !important; z-index: 1000; margin: 0 !important; white-space: nowrap; transform: translate(14px, -50%); pointer-events: none; /* beside the pointer, so what it is over stays in view */ opacity: .95; box-shadow: 0 4px 10px rgba(0, 0, 0, .4); }
 button.growth-action, .spirit ul.cards button { touch-action: none; }
 .presence-carried { position: fixed; left: 0; top: 0; z-index: 1000; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .5)); }
-.slot-token.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }
 ul.growth { list-style: none; margin: 0; padding: 0; }
@@ -207,14 +198,14 @@ button.choosable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(
 .zone-inPlay::before { content: 'In play'; text-transform: none; }
 .zone-discard::before { content: 'Discard'; text-transform: none; }
 .zone-hand::before { content: 'Hand'; text-transform: none; }
+.zone-forget::before { content: 'Forget'; text-transform: none; }
+.zone-forget { border-color: #d33; }
 .zone-draw::before { content: 'Draw'; text-transform: none; }
 .zone > * { position: relative; z-index: 1; }
 .zone.folded { min-height: 40px; }
 .zone.has-cards { cursor: pointer; }
 .zone ul.cards { justify-content: flex-start; } /* cards to the left; empty space on the right */
 .zone-count { position: absolute; top: 4px; right: 8px; min-width: 1.4em; padding: 0 5px; border-radius: 999px; background: var(--muted); color: var(--panel); font-size: .75em; font-weight: 700; text-align: center; }
-.zone.drop-ready { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-.zone.drop-over { border-style: solid; border-color: #d33; background: color-mix(in srgb, #d33 12%, transparent); }
 
 /* Special rules: a button by the spirit's name, and the rules in a modal. */
 button.rules-button { margin-left: 10px; padding: 2px 12px; font-size: .6em; font-weight: 600; vertical-align: middle; border-radius: 999px;
@@ -222,3 +213,47 @@ button.rules-button { margin-left: 10px; padding: 2px 12px; font-size: .6em; fon
 dialog.rules-dialog { width: min(560px, 90vw); max-height: 80vh; padding: 16px 20px; border: 1px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--text); }
 dialog.rules-dialog::backdrop { background: rgba(0, 0, 0, .5); }
 dialog.rules-dialog p { font-size: .95em; }
+
+/* Card details: a popover that opens on a hold (touch), a rest of the mouse, or a right-click. */
+.peek { position: fixed; z-index: 2000; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--text);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .4); pointer-events: none; font-size: .9em; }
+.peek h4 { margin: 0 0 4px; font-size: 1.05em; }
+.peek p { margin: 4px 0; }
+.peek-tiers { list-style: none; margin: 4px 0 0; padding: 0; }
+.peek-tiers li { margin: 3px 0; padding-left: 6px; border-left: 3px solid var(--border); }
+/* No page-level touch menus or text selection while holding a card; a disabled card still takes the hold (its li does). */
+.spirit ul.cards li, .innate h4, ul.tiers { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+.spirit ul.cards button:disabled { pointer-events: none; }
+/* Cards being drawn: the full text, one card to a row. */
+.spirit ul.cards.detailed li { flex: 1 1 100%; }
+.spirit ul.cards.detailed button { display: block; width: 100%; }
+.card-text { display: block; margin-top: 3px; font-size: .9em; font-weight: 400; white-space: normal; color: var(--muted); }
+
+/* A first-time hint: floats at the bottom of the screen, over everything, taking no room and no clicks. */
+.hint { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 1500; max-width: min(90vw, 420px); padding: 8px 16px; border-radius: 999px;
+  background: rgba(20, 20, 20, .88); color: #fff; font-size: .9em; text-align: center; pointer-events: none; box-shadow: 0 4px 14px rgba(0, 0, 0, .35); }
+.peek-use { font-weight: 600; color: var(--accent); }
+
+/* Lines and rings that must show on any terrain picture. */
+.island .border-halo { fill: none; stroke: rgba(255, 255, 255, .85); stroke-linejoin: round; }
+.island .border-line { fill: none; stroke: #1b1b1b; stroke-linejoin: round; }
+
+/* One look for everything that can be picked or dropped on: a dashed orange line means "you can", a solid green one means "this is the one"
+   (picked up, or under the pointer right now). */
+:root { --option: #f08c00; --active: #1faa4a; }
+.island .token .ring-choose, .island .token .ring-move { stroke: var(--option); }
+.island .token.movable .ring-move, .island .token.choosable .ring-choose { display: inline; }
+.island .token.selected .ring-move { stroke: var(--active); stroke-dasharray: none; }
+/* A thin edge under the token ring, only on the lands where the orange is hard to see. */
+.island .token .ring-halo { display: none; stroke: #4a2a00; stroke-opacity: .9; }
+.island .token.on-sand.movable .ring-halo, .island .token.on-sand.choosable .ring-halo { display: inline; }
+.slot-token.choosable, .slot-token.pickable, .destroyed-pile.pickable { box-shadow: none; outline: 3px dashed var(--option); outline-offset: 2px; }
+.slot-token.pickable.selected, .destroyed-pile.pickable.selected { box-shadow: none; outline-style: solid; outline-color: var(--active); }
+.spirit-badge.ready { box-shadow: none; outline: 3px dashed var(--option); outline-offset: 3px; } /* a power can be dropped here */
+.spirit-badge.drop-over { box-shadow: none; outline: 3px solid var(--active); outline-offset: 3px; }
+.zone.drop-ready { border-color: var(--option); border-style: dashed; background: color-mix(in srgb, var(--option) 9%, transparent); }
+.zone.drop-over { border-color: var(--active); border-style: solid; background: color-mix(in srgb, var(--active) 16%, transparent); }
+.island .mark { fill: none; stroke: var(--option); stroke-linejoin: round; }
+.island .mark.destination { fill: rgba(240, 140, 0, .16); }
+.island .mark.hovered { stroke: var(--active); }
+.island .target-over { fill: rgba(31, 170, 74, .4); stroke: var(--active); stroke-linejoin: round; }
