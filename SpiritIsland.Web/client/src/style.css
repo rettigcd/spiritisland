@@ -35,7 +35,11 @@ h3 { font-size: 1em; }
 ul.saved, ul.options, ul.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 /* A hand is a wrapped row of cards (the details are in the tooltip), not a column of them. */
 .spirit ul.cards { display: flex; flex-wrap: wrap; gap: 4px; }
-.spirit ul.cards button { padding: 3px 8px; font-size: .9em; }
+.spirit ul.cards button { padding: 3px 6px; font-size: .9em; }
+/* On a card the elements nearly touch, to keep the card narrow. */
+.card-elements { word-spacing: -.3em; }
+.card-elements .icon { margin: 0 -1px; }
+.card-elements .elements { margin-right: 0; }
 ul.saved button { width: 100%; }
 
 .game { padding: 12px 16px; }
@@ -138,6 +142,14 @@ button.slot-token { cursor: pointer; }
 .slot-token.choosable, .slot-token.pickable { box-shadow: 0 0 0 3px var(--accent), 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent); }
 .slot-token.pickable, .destroyed-pile.pickable { touch-action: none; cursor: grab; }
 /* The presence being dragged from the panel to a land, under the pointer. */
+.spirit-badge { position: absolute; z-index: -1; top: 8px; right: 10px; width: 72px; height: 72px; border-radius: 50%; pointer-events: none; }
+/* Over the lower part of the badge, with no border or ring, so it does not look like a place to drop. */
+button.target-spirit { position: absolute; top: 56px; right: 17px; z-index: 3; padding: 0 7px; border: 0; box-shadow: none; border-radius: 999px; font-size: .75em; font-weight: 600; color: #fff; background: rgba(0, 0, 0, .6); }
+.spirit-badge.ready { box-shadow: 0 0 0 3px #2e7d32, 0 0 0 6px color-mix(in srgb, #2e7d32 35%, transparent); } /* a power can be dropped here */
+.spirit-badge.drop-over { box-shadow: 0 0 0 4px #d33, 0 0 0 8px color-mix(in srgb, #d33 35%, transparent); }
+/* A copy of the action's button, under the pointer while it is dragged. */
+.carried { position: fixed !important; z-index: 1000; margin: 0 !important; white-space: nowrap; transform: translate(14px, -50%); pointer-events: none; /* beside the pointer, so what it is over stays in view */ opacity: .95; box-shadow: 0 4px 10px rgba(0, 0, 0, .4); }
+button.growth-action, .spirit ul.cards button { touch-action: none; }
 .presence-carried { position: fixed; left: 0; top: 0; z-index: 1000; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .5)); }
 .slot-token.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 button.movable { border-style: dashed; border-color: var(--accent); }
@@ -150,8 +162,6 @@ ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: flex; fl
 .tier { padding: 1px 6px; border: 1px solid var(--border); border-left-width: 3px; border-radius: 4px; color: var(--muted); cursor: help; }
 .tier-yes { border-left-color: #2e7d32; color: var(--text); }
 .tier-asprepared { border-left-color: var(--accent); color: var(--text); }
-details.rules { margin-top: 8px; }
-details.rules p { font-size: .9em; }
 .log-lines { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; font-size: .9em; display: grid; gap: 2px; }
 .log-lines li { padding: 1px 4px; border-left: 3px solid transparent; white-space: pre-line; }
 .log-lines .log-phase { color: var(--muted); font-weight: 600; border-left-color: var(--border); }
@@ -188,8 +198,27 @@ ul.growth li { margin: 2px 0; }
 /* An action picked to be used on a target, and a spirit it can target. */
 button.choosable.selected { border-color: #d33; box-shadow: 0 0 0 2px color-mix(in srgb, #d33 35%, transparent); }
 .spirit.reached { outline: 3px solid #2e7d32; outline-offset: 2px; }
-.target-spirit { margin-left: 8px; font-size: .75em; font-weight: 400; }
 
-/* The hand and the discard: closed unless wanted, with the name and count standing in for the heading. */
-details.collapsible { margin-top: 8px; }
-details.collapsible > summary { cursor: pointer; font-weight: 600; }
+
+/* The card areas (In play, Discard): always there, full width, with the name written in the background. */
+.zone { position: relative; margin-top: 8px; min-height: 56px; padding: 4px 8px 8px; border: 2px dashed var(--border); border-radius: 8px; overflow: hidden; }
+.zone::before { content: attr(data-drop-zone); position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 0; font-size: 1.95em; font-weight: 800; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--muted); opacity: .16; pointer-events: none; white-space: nowrap; }
+.zone-inPlay::before { content: 'In play'; text-transform: none; }
+.zone-discard::before { content: 'Discard'; text-transform: none; }
+.zone-hand::before { content: 'Hand'; text-transform: none; }
+.zone-draw::before { content: 'Draw'; text-transform: none; }
+.zone > * { position: relative; z-index: 1; }
+.zone.folded { min-height: 40px; }
+.zone.has-cards { cursor: pointer; }
+.zone ul.cards { justify-content: flex-start; } /* cards to the left; empty space on the right */
+.zone-count { position: absolute; top: 4px; right: 8px; min-width: 1.4em; padding: 0 5px; border-radius: 999px; background: var(--muted); color: var(--panel); font-size: .75em; font-weight: 700; text-align: center; }
+.zone.drop-ready { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.zone.drop-over { border-style: solid; border-color: #d33; background: color-mix(in srgb, #d33 12%, transparent); }
+
+/* Special rules: a button by the spirit's name, and the rules in a modal. */
+button.rules-button { margin-left: 10px; padding: 2px 12px; font-size: .6em; font-weight: 600; vertical-align: middle; border-radius: 999px;
+  border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--panel)); letter-spacing: .03em; }
+dialog.rules-dialog { width: min(560px, 90vw); max-height: 80vh; padding: 16px 20px; border: 1px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--text); }
+dialog.rules-dialog::backdrop { background: rgba(0, 0, 0, .5); }
+dialog.rules-dialog p { font-size: .95em; }

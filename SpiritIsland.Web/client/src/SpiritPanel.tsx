@@ -2,7 +2,7 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { CardView, InnateStatic, OptionView, SlotView, SpiritStatic, SpiritView } from './api/model';
 import { destinationsOf, destroyedSource, slotSource, sourceOf } from './moves';
-import { PRESENCE_IMAGE, presenceHue, presenceImageUrl, trackImageUrl } from './images';
+import { badgeUrl, PRESENCE_IMAGE, presenceHue, presenceImageUrl, trackImageUrl } from './images';
 import type { OptionTarget } from './api/model';
 import type { SourceKey } from './moves';
 import { rangeText } from './text';
@@ -55,13 +55,24 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   };
   const cardStart = (card: string) => actionStart(t => t.card === card && t.group == null);
   const growthStart = (group: number, action: number) => actionStart(t => t.group === group && t.action === action);
-  const useStart = (source: SourceKey) => () => { if (!busy) onPickSource(source); };
+  const useStart = (source: SourceKey) => () => { if (!busy && !justDragged.current) onPickSource(source); };
+  // Pointing at an action shows what it could target; pressing and moving drags it onto one of them (a land, or a spirit's badge).
   const pointing = (source: SourceKey) => ({
     onMouseEnter: () => onHoverSource(source), onMouseLeave: () => onHoverSource(null),
     onFocus: () => onHoverSource(source), onBlur: () => onHoverSource(null),
+    onPointerDown: drag(source, true),
   });
 
-  const choose = (o: OptionView | undefined) => () => { if (o && !busy) onChoose(o.id); };
+  const choose = (o: OptionView | undefined) => () => { if (o && !busy && !justDragged.current) onChoose(o.id); };
+  // A card that is simply chosen (played, discarded) is dragged onto the area it goes to: 'inPlay' for a card from the hand, 'discard' for one in play or in hand.
+  const dragCard = (o: OptionView | undefined, to: readonly string[]) => o ? drag(null, true, { option: o, to }) : undefined;
+  const rulesDialog = useRef<HTMLDialogElement | null>(null);
+  // Cards this spirit is offered that it does not have yet: drawn, so they appear only in the draw area.
+  const owned = new Set([...spirit.hand, ...spirit.inPlay, ...spirit.discard].map(c => c.id));
+  const drawn: CardView[] = [];
+  for (const o of options)
+    if (o.target.kind === 'card' && o.target.spirit === spirit.id && o.card && !owned.has(o.card.id) && !drawn.some(c => c.id === o.card!.id)) drawn.push(o.card);
+  const ignoreClick = () => justDragged.current;
   const pick = (source: SourceKey) => () => { if (!busy && !justDragged.current) onSelect(selected === source ? null : source); };
 
   // ---- Presence picked up from a track (or the destroyed pile) can be dragged onto a land it can go to. Press, move, release on a land:
@@ -80,21 +91,57 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
   const justDragged = useRef(false); // the click that can follow the end of a drag is not a pick
   const stopCarrying = useRef<(() => void) | null>(null);
   useEffect(() => () => stopCarrying.current?.(), []);
-  const drag = (source: SourceKey) => (e: PointerEvent) => {
+  /** The spirit badge (anywhere on the page) under the pointer, if any: judged by where it is drawn, because it sits behind the panel's other things. */
+  const badgeUnder = (x: number, y: number) =>
+    [...document.querySelectorAll<HTMLElement>('[data-drop-spirit]')].find(b => {
+      const r = b.getBoundingClientRect();
+      return r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
+    });
+  /** This spirit's card area (In play, Discard) under the pointer, if any. */
+  const zoneUnder = (from: HTMLElement, x: number, y: number) =>
+    [...(from.closest('.spirit')?.querySelectorAll<HTMLElement>('[data-drop-zone]') ?? [])].find(z => {
+      const r = z.getBoundingClientRect();
+      return r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
+    });
+  /**
+   * @param copyOfButton what is carried: a copy of the button pressed (an action), or, if false, the spirit's presence.
+   * @param choice for a card that is chosen rather than aimed: the option, and the areas it can be dropped on to choose it.
+   */
+  const drag = (source: SourceKey | null, copyOfButton = false, choice?: { option: OptionView; to: readonly string[] }) => (e: PointerEvent) => {
     if (busy || e.button !== 0) return;
     e.preventDefault(); // no text selection while dragging
     const startX = e.clientX, startY = e.clientY;
     let moved = false;
+    let copy: HTMLElement | null = null;
+    const button = e.currentTarget as HTMLElement;
     const onMove = (ev: PointerEvent) => {
-      if (!moved && Math.hypot(ev.clientX - startX, ev.clientY - startY) > 5) { moved = true; onSelect(source); } // picked, so the lands it can reach show
+      if (!moved && Math.hypot(ev.clientX - startX, ev.clientY - startY) > 5) {
+        moved = true;
+        if (source) onSelect(source); // picked, so the lands (and spirits) it can reach show
+        if (choice) button.closest('.spirit')?.querySelectorAll<HTMLElement>('[data-drop-zone]').forEach(z => z.classList.toggle('drop-ready', choice.to.includes(z.dataset.dropZone!)));
+        if (copyOfButton) {
+          copy = button.cloneNode(true) as HTMLElement;
+          copy.classList.add('carried');
+          button.closest('.spirit')?.appendChild(copy);
+        }
+      }
       pointer.current = { x: ev.clientX, y: ev.clientY };
-      if (moved) { setCarrying(true); placeCarried(); }
+      if (copy) { copy.style.left = `${ev.clientX}px`; copy.style.top = `${ev.clientY}px`; }
+      if (moved && !copyOfButton) { setCarrying(true); placeCarried(); }
+      if (moved) {
+        const over = badgeUnder(ev.clientX, ev.clientY);
+        document.querySelectorAll('[data-drop-spirit]').forEach(b => b.classList.toggle('drop-over', b === over));
+        const zone = choice ? zoneUnder(button, ev.clientX, ev.clientY) : undefined;
+        button.closest('.spirit')?.querySelectorAll('[data-drop-zone]').forEach(z => z.classList.toggle('drop-over', z === zone && choice!.to.includes(z.getAttribute('data-drop-zone')!)));
+      }
     };
     const finish = () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onCancel);
       stopCarrying.current = null;
+      copy?.remove();
+      document.querySelectorAll('.drop-over, .drop-ready').forEach(b => b.classList.remove('drop-over', 'drop-ready'));
       setCarrying(false);
     };
     const onUp = (ev: PointerEvent) => {
@@ -102,8 +149,19 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
       if (!moved) return;
       justDragged.current = true;
       setTimeout(() => { justDragged.current = false; }, 0);
+      if (choice) {
+        const target = zoneUnder(button, ev.clientX, ev.clientY);
+        const zone = target?.getAttribute('data-drop-zone');
+        if (target && zone && choice.to.includes(zone)) {
+          target.dispatchEvent(new Event('zone-open')); // the card dropped there is shown, so a folded area opens
+          onChoose(choice.option.id);
+        }
+        return;
+      }
+      const ways = (source && moves.get(source)) || [];
       const land = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('[data-space]')?.getAttribute('data-space');
-      const move = land ? destinationsOf(moves.get(source) ?? []).get(land) : undefined;
+      const spiritId = badgeUnder(ev.clientX, ev.clientY)?.getAttribute('data-drop-spirit');
+      const move = land ? destinationsOf(ways).get(land) : spiritId ? ways.find(o => o.target.toSpirit === spiritId) : undefined;
       if (move) onChoose(move.id); else onSelect(null);
     };
     const onCancel = () => { finish(); if (moved) onSelect(null); };
@@ -118,10 +176,14 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
 
   return (
     <section class={`panel spirit ${reached ? 'reached' : ''}`} style={{ '--spirit-image': `url("${spiritImageUrl(spirit.name)}")` }}>
+      {/* The spirit's badge, behind everything else: where a power that targets this spirit is dropped. */}
+      <img class={`spirit-badge ${reached ? 'ready' : ''}`} src={badgeUrl(spirit.name)} alt="" title={spirit.name} width={72} height={72} draggable={false} data-drop-spirit={spirit.id} />
       <h2>
         {spirit.name}{isViewer ? '' : ' (other player)'}
-        {targetOption && <button type="button" class="choosable target-spirit" disabled={busy} onClick={choose(targetOption)}>Use it on this spirit</button>}
+        {info && info.specialRules.length > 0 && <button type="button" class="rules-button" onClick={() => rulesDialog.current?.showModal()} title="This spirit's special rules">✦ Special rules</button>}
       </h2>
+      {/* Out of the flow, below the badge, so showing it moves nothing: the click alternative to dropping the power on the badge. */}
+      {targetOption && <button type="button" class="choosable target-spirit" disabled={busy} onClick={choose(targetOption)} title="Use the picked power on this spirit">Use here</button>}
       {info && (
         <>
           <h3 title={info.growthPicksNote ? `Pick: ${info.growthPicksNote}` : undefined}>Growth (pick {info.growthPicks})</h3>
@@ -180,20 +242,30 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
         </>
       )}
 
-      <CardList title="In play" cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
-      {/* The hand and the discard take a lot of room and are rarely what is being acted on, so they show as a count that opens on a click,
-          and open by themselves when the decision is about one of their cards (playing cards, reclaiming, forgetting). */}
-      <Collapsible title="Hand" count={spirit.hand.length} wanted={spirit.hand.some(c => cardOption(c.id) || cardStart(c.id))}>
-        <CardList title="" cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
-      </Collapsible>
-      <Collapsible title="Discard" count={spirit.discard.length} wanted={spirit.discard.some(c => cardOption(c.id) || cardStart(c.id))}>
-        <CardList title="" cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} />
-      </Collapsible>
+      {/* The card areas are always on screen, full width, with their name in the background and their cards to the right. Click the empty part
+          of an area to fold or open it (an empty area stays folded; a folded one shows how many cards it holds). One opens by itself when the
+          decision is about one of its cards. A card from the hand is dragged onto In play to play it; a card offered from the draw area onto the Hand. */}
+      <Zone zone="inPlay" count={spirit.inPlay.length} wanted={spirit.inPlay.some(c => cardOption(c.id) || cardStart(c.id))} ignoreClick={ignoreClick}>
+        <CardList cards={spirit.inPlay} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['discard'])} />
+      </Zone>
+      <Zone zone="hand" count={spirit.hand.length} wanted={spirit.hand.some(c => cardOption(c.id) || cardStart(c.id))} startOpen ignoreClick={ignoreClick}>
+        <CardList cards={spirit.hand} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['inPlay', 'discard'])} />
+      </Zone>
+      {/* Cards newly brought into the game (drawn from the major or minor deck) and offered to this spirit: not in any other area. */}
+      {drawn.length > 0 && (
+        <Zone zone="draw" count={drawn.length} wanted startOpen ignoreClick={ignoreClick}>
+          <CardList cards={drawn} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['hand'])} />
+        </Zone>
+      )}
+      <Zone zone="discard" count={spirit.discard.length} wanted={spirit.discard.some(c => cardOption(c.id) || cardStart(c.id))} ignoreClick={ignoreClick}>
+        <CardList cards={spirit.discard} optionFor={cardOption} startFor={cardStart} selected={selected} useStart={useStart} pointing={pointing} busy={busy} choose={choose} dragCard={o => dragCard(o, ['hand'])} />
+      </Zone>
       {info && info.specialRules.length > 0 && (
-        <details class="rules">
-          <summary>Special rules</summary>
+        <dialog class="rules-dialog" ref={rulesDialog} onClick={e => { if (e.target === rulesDialog.current) rulesDialog.current?.close(); }}>
+          <h2>{spirit.name}: special rules</h2>
           {info.specialRules.map(r => <p key={r.title}><strong>{r.title}.</strong> {r.description}</p>)}
-        </details>
+          <form method="dialog"><button type="submit">Close</button></form>
+        </dialog>
       )}
       {carrying && (
         <img class="presence-carried" src={ownPresencePicture ?? PRESENCE_IMAGE} alt="" width={45} height={45} draggable={false}
@@ -255,14 +327,40 @@ function Track({ title, track, slots, revealed, optionFor, spirit, moves, select
   );
 }
 
-/** A list that is closed (just its name and how many) unless the player opens it, or the current decision is about something in it. */
-function Collapsible({ title, count, wanted, children }: { title: string; count: number; wanted: boolean; children: ComponentChildren }) {
-  const [opened, setOpened] = useState(false);
+interface ZoneProps {
+  zone: string;
+  count: number;
+  /** The decision is about one of its cards: it opens (the player can still close it, and open it again). */
+  wanted: boolean;
+  startOpen?: boolean;
+  /** True for the click that ends a drag, which is not a request to fold or open. */
+  ignoreClick(): boolean;
+  children: ComponentChildren;
+}
+
+/**
+ * A card area, always shown at full width with its name behind it, so a card can be dropped on it. Clicking its empty part (not a card)
+ * folds or opens it; an area with no cards stays folded and does nothing. Folded, it shows only how many cards it holds.
+ */
+function Zone({ zone, count, wanted, startOpen = false, ignoreClick, children }: ZoneProps) {
+  const [opened, setOpened] = useState(startOpen);
+  const element = useRef<HTMLDivElement | null>(null);
+  useEffect(() => { if (wanted) setOpened(true); }, [wanted]);
+  useEffect(() => { // a card dropped on the area opens it
+    const el = element.current;
+    const open = () => setOpened(true);
+    el?.addEventListener('zone-open', open);
+    return () => el?.removeEventListener('zone-open', open);
+  }, []);
+  const open = 0 < count && opened;
+  const toggle = (e: MouseEvent) => {
+    if (0 < count && !ignoreClick() && !(e.target as HTMLElement).closest('button')) setOpened(!opened);
+  };
   return (
-    <details class="collapsible" open={wanted || opened} onToggle={e => { if (!wanted) setOpened(e.currentTarget.open); }}>
-      <summary>{title} ({count}){wanted ? ' - choose one' : ''}</summary>
-      {children}
-    </details>
+    <div class={`zone zone-${zone} ${open ? 'open' : 'folded'} ${0 < count ? 'has-cards' : ''}`} data-drop-zone={zone} onClick={toggle} ref={element}>
+      {!open && 0 < count && <span class="zone-count" title={`${count} card${count === 1 ? '' : 's'}; click to open`}>{count}</span>}
+      {open && children}
+    </div>
   );
 }
 
@@ -309,18 +407,18 @@ function Innate({ innate, status, option, start, selected, useStart, pointing, b
 }
 
 interface CardListProps extends PickProps {
-  title: string;
   cards: readonly CardView[];
   optionFor(card: string): OptionView | undefined;
   startFor(card: string): SourceKey | undefined;
   busy: boolean;
   choose(o: OptionView | undefined): () => void;
+  /** Starts dragging a card that is chosen by clicking (not aimed): onto the area it goes to. */
+  dragCard?(o: OptionView | undefined): ((e: PointerEvent) => void) | undefined;
 }
 
-function CardList({ title, cards, optionFor, startFor, selected, useStart, pointing, busy, choose }: CardListProps) {
+function CardList({ cards, optionFor, startFor, selected, useStart, pointing, busy, choose, dragCard }: CardListProps) {
   return (
     <div>
-      {title && <h3>{title} ({cards.length})</h3>}
       <ul class="cards">
         {cards.map(c => {
           const option = optionFor(c.id);
@@ -329,10 +427,10 @@ function CardList({ title, cards, optionFor, startFor, selected, useStart, point
             <li key={c.id}>
               <button
                 type="button" class={`${option || start ? 'choosable' : ''} ${start && selected === start ? 'selected' : ''}`} disabled={busy || !(option || start)}
-                onClick={start ? useStart(start) : choose(option)} {...(start ? pointing(start) : {})}
+                onClick={start ? useStart(start) : choose(option)} {...(start ? pointing(start) : { onPointerDown: dragCard?.(option) })}
                 title={`${c.name}: range ${rangeText(c.range)} · ${c.target}. ${c.instructions}`}
               >
-                <Coin value={c.cost} title="energy to play" speed={c.speed} /> {c.name} <Elements text={c.elements} />
+                <Coin value={c.cost} title="energy to play" speed={c.speed} /> {c.name} <span class="card-elements"><Elements text={c.elements} /></span>
               </button>
             </li>
           );
