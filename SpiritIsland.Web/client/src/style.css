@@ -142,7 +142,9 @@ button.slot-token { cursor: pointer; }
 .slot-token.pickable.selected { box-shadow: 0 0 0 3px #d33, 0 0 0 5px color-mix(in srgb, #d33 35%, transparent); }
 button.movable { border-style: dashed; border-color: var(--accent); }
 button.movable.selected { border-style: solid; border-color: #d33; }
-ul.growth { margin: 0; padding-left: 18px; }
+ul.growth { list-style: none; margin: 0; padding: 0; }
+/* G1, G2...: stands where a bullet would, so the groups can be told apart and referred to. */
+.growth-label { display: inline-block; min-width: 2.1em; margin-right: 6px; padding: 0 3px; border: 1px solid var(--border); border-radius: 999px; text-align: center; font-size: .72em; font-weight: 700; color: var(--muted); vertical-align: .1em; }
 ul.growth li.used { text-decoration: line-through; color: var(--muted); }
 ul.tiers { margin: 2px 0 0; padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; font-size: .85em; }
 .tier { padding: 1px 6px; border: 1px solid var(--border); border-left-width: 3px; border-radius: 4px; color: var(--muted); cursor: help; }

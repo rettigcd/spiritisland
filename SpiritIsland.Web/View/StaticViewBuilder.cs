@@ -43,9 +43,23 @@ public static class StaticViewBuilder {
 		s.SpiritName, s.SpiritName,
 		[.. s.Presence.Energy.Slots.Select( SlotOf )], [.. s.Presence.CardPlays.Slots.Select( SlotOf )],
 		[.. s.GrowthTrack.Groups.Select( g => new GrowthGroupView( g.ToString(), [.. g.GrowthActionFactories.Select( f => ((IOption)f).Text )], g.GainEnergy ) )],
+		s.GrowthTrack.PickGroups.Sum( p => p.MustPickCount ), PickNote( s.GrowthTrack ),
 		[.. s.InnatePowers.Select( p => new InnateStatic( p.Title, p.Speed.ToString(), p.TargetFilter, p.RangeText, p.GeneralInstructions,
 			[.. p.DrawableOptions.Select( t => new TierView( t.ThresholdString, t.Description ) )] ) )],
 		[.. s.SpecialRules.Select( r => new RuleView( r.Title, r.Description ) )] );
+
+	/// <summary> Where the picks come from, when it is not just "any of them": the groups are named G1, G2... in order, as the client labels them. </summary>
+	static string PickNote( GrowthTrack track ) {
+		if( track.PickGroups.Count == 1 ) return "";
+		int first = 1;
+		List<string> parts = [];
+		foreach( PickGroups pick in track.PickGroups ) {
+			string names = string.Join( ", ", Enumerable.Range( first, pick.Groups.Length ).Select( n => $"G{n}" ) );
+			parts.Add( pick.Groups.Length == 1 ? names : $"{pick.MustPickCount} of {names}" );
+			first += pick.Groups.Length;
+		}
+		return string.Join( "; ", parts );
+	}
 
 	static SlotView SlotOf( Track slot )
 		=> new( slot.Code, ((IOption)slot).Text, slot.Energy, slot.CardPlay, [.. slot.Elements.Select( e => e.ToString() )] );

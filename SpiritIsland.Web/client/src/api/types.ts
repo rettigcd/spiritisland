@@ -293,6 +293,9 @@ export interface components {
             energyTrack: components["schemas"]["SlotView"][];
             cardPlayTrack: components["schemas"]["SlotView"][];
             growthGroups: components["schemas"]["GrowthGroupView"][];
+            /** Format: int32 */
+            growthPicks: number;
+            growthPicksNote: string;
             innates: components["schemas"]["InnateStatic"][];
             specialRules: components["schemas"]["RuleView"][];
         };

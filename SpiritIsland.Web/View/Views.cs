@@ -147,10 +147,12 @@ public record PointView( double X, double Y );
 public record SpaceGeometry( string Id, string Terrain, PointView[] Corners, PointView NameLocation, double TokenSize, string[] Adjacent );
 
 /// <param name="Id">The spirit's name.</param>
+/// <param name="GrowthPicks">How many growth groups the spirit uses each turn (the engine's pick counts added up).</param>
+/// <param name="GrowthPicksNote">Which of the groups they are picked from, with the groups named G1, G2... by position, when that is not simply "any of them": "G1; 1 of G2, G3, G4".</param>
 public record SpiritStatic(
 	string Id, string Name,
 	SlotView[] EnergyTrack, SlotView[] CardPlayTrack,
-	GrowthGroupView[] GrowthGroups, InnateStatic[] Innates, RuleView[] SpecialRules );
+	GrowthGroupView[] GrowthGroups, int GrowthPicks, string GrowthPicksNote, InnateStatic[] Innates, RuleView[] SpecialRules );
 
 /// <summary> One slot of a presence track. A track's revealed slots are indexes into this list. </summary>
 /// <param name="Id">The slot's code, like "2 energy" or "1 cardplay".</param>

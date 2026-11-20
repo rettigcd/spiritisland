@@ -124,10 +124,11 @@ export function SpiritPanel({ spirit, info, isViewer, options, moves, selected, 
       </h2>
       {info && (
         <>
-          <h3>Growth</h3>
+          <h3 title={info.growthPicksNote ? `Pick: ${info.growthPicksNote}` : undefined}>Growth (pick {info.growthPicks})</h3>
           <ul class="growth">
             {info.growthGroups.map((g, gi) => (
               <li key={g.id} class={spirit.growthGroupsUsed.includes(g.id) ? 'used' : ''}>
+                <span class="growth-label" title={`Growth ${gi + 1}`}>G{gi + 1}</span>
                 {g.actions.map((action, ai) => {
                   const option = growthOption(gi, ai);
                   const start = growthStart(gi, ai);

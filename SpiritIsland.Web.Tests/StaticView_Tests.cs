@@ -124,6 +124,17 @@ public class StaticView_Tests( GamesFactory factory ) : IClassFixture<GamesFacto
 		withAdversary.Setup.Adversary.Rules.ShouldNotBeNullOrEmpty();
 	}
 
+	[Theory]
+	[InlineData( RiverSurges.Name, 1, "" )] // pick one of three
+	[InlineData( "Lure of the Deep Wilderness", 2, "1 of G1, G2; 1 of G3, G4" )] // one from each pair
+	[InlineData( "A Spread of Rampant Green", 2, "G1; 1 of G2, G3, G4" )] // the first group is always used, then one of the rest
+	public async Task Spirit_SaysHowManyGrowthGroupsItPicks( string spiritName, int picks, string note ) {
+		SpiritStatic described = ( await StaticOfAsync( ( await NewGameAsync( new( spiritName, "A", Seed: 1 ) ) ).GameId ) ).Spirits.Single();
+
+		described.GrowthPicks.ShouldBe( picks );
+		described.GrowthPicksNote.ShouldBe( note );
+	}
+
 	[Fact]
 	public async Task Spirit_ListsItsTracksGrowthAndInnates() {
 		GameState reference = GameSetup.Builder.BuildGame( GameSetup.Configure( River ) );

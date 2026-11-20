@@ -1054,6 +1054,8 @@
           "energyTrack",
           "cardPlayTrack",
           "growthGroups",
+          "growthPicks",
+          "growthPicksNote",
           "innates",
           "specialRules"
         ],
@@ -1082,6 +1084,13 @@
             "items": {
               "$ref": "#/components/schemas/GrowthGroupView"
             }
+          },
+          "growthPicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "growthPicksNote": {
+            "type": "string"
           },
           "innates": {
             "type": "array",
